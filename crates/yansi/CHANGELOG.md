@@ -7,5 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.1] - 2022-05-18
+
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/1fd4f936999b5b3ecd5e3f0d8decb9e9c62b7f24...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v0.1.1...HEAD
+[0.1.1]: https://github.com/rust-cli/anstyle/compare/1fd4f936999b5b3ecd5e3f0d8decb9e9c62b7f24...anstyle-yansi-v0.1.1

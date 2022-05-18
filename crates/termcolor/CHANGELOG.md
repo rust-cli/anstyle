@@ -7,5 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.1] - 2022-05-18
+
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/2c1d02f...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v0.1.1...HEAD
+[0.1.1]: https://github.com/rust-cli/anstyle/compare/2c1d02f...anstyle-termcolor-v0.1.1
