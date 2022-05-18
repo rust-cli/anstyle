@@ -1,10 +1,21 @@
-# argfile
+# anstyle
 
-> Load additional CLI args from file
+> ANSI text styling
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
-![License](https://img.shields.io/crates/l/argfile.svg)
-[![Crates Status](https://img.shields.io/crates/v/argfile.svg)](https://crates.io/crates/argfile)
+![License](https://img.shields.io/crates/l/anstyle.svg)
+[![Crates Status](https://img.shields.io/crates/v/anstyle.svg)](https://crates.io/crates/anstyle)
+
+`anstyle` provides core types describing [ANSI styling escape
+codes](https://en.wikipedia.org/wiki/ANSI_escape_code) for interoperability
+between crates.  For example, this would allow a crate to provide an API for
+customizing the colors used without putting the underlying text styling crate
+in the API.
+
+For integration with your text styling crate, see:
+- [anstyle-termcolor](crates/termcolor)
+- [anstyle-owo-colors](crates/owo)
+- [anstyle-yansi](crates/yansi)
 
 ## License
 
@@ -22,5 +33,5 @@ submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
 
-[Crates.io]: https://crates.io/crates/argfile
-[Documentation]: https://docs.rs/argfile
+[Crates.io]: https://crates.io/crates/anstyle
+[Documentation]: https://docs.rs/anstyle
