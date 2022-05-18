@@ -139,11 +139,16 @@ impl Effects {
 
     /// Iterate over enabled effect indices
     #[inline(always)]
-    fn index_iter(self) -> EffectIndexIter {
+    pub(crate) fn index_iter(self) -> EffectIndexIter {
         EffectIndexIter {
             index: 0,
             effects: self,
         }
+    }
+
+    /// Render the ANSI code
+    pub fn render(self) -> impl std::fmt::Display {
+        EffectsDisplay(self)
     }
 }
 
@@ -228,22 +233,65 @@ impl std::ops::SubAssign for Effects {
     }
 }
 
-struct Metadata {
-    name: &'static str,
+pub(crate) struct Metadata {
+    pub(crate) name: &'static str,
+    pub(crate) code: usize,
 }
 
-const METADATA: [Metadata; 8] = [
-    Metadata { name: "BOLD" },
-    Metadata { name: "DIMMED" },
-    Metadata { name: "ITALIC" },
-    Metadata { name: "UNDERLINE" },
-    Metadata { name: "BLINK" },
-    Metadata { name: "INVERT" },
-    Metadata { name: "HIDDEN" },
+pub(crate) const METADATA: [Metadata; 8] = [
+    Metadata {
+        name: "BOLD",
+        code: 1,
+    },
+    Metadata {
+        name: "DIMMED",
+        code: 2,
+    },
+    Metadata {
+        name: "ITALIC",
+        code: 3,
+    },
+    Metadata {
+        name: "UNDERLINE",
+        code: 4,
+    },
+    Metadata {
+        name: "BLINK",
+        code: 5,
+    },
+    Metadata {
+        name: "INVERT",
+        code: 7,
+    },
+    Metadata {
+        name: "HIDDEN",
+        code: 8,
+    },
     Metadata {
         name: "STRIKETHROUGH",
+        code: 9,
     },
 ];
+
+struct EffectsDisplay(Effects);
+
+impl std::fmt::Display for EffectsDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.0.is_plain() {
+            return Ok(());
+        }
+
+        write!(f, "\x1B[")?;
+        for (i, index) in self.0.index_iter().enumerate() {
+            if i != 0 {
+                write!(f, ";")?;
+            }
+            write!(f, "{}", METADATA[index].code)?;
+        }
+        write!(f, "m")?;
+        Ok(())
+    }
+}
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct EffectIter {
@@ -270,7 +318,7 @@ impl Iterator for EffectIter {
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct EffectIndexIter {
+pub(crate) struct EffectIndexIter {
     index: usize,
     effects: Effects,
 }

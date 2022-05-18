@@ -6,6 +6,42 @@ pub enum Color {
     Rgb(RgbColor),
 }
 
+impl Color {
+    /// Render the ANSI code for a foreground color
+    pub fn render_fg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: false,
+        }
+    }
+
+    /// Render the ANSI code for a background color
+    pub fn render_bg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: true,
+        }
+    }
+
+    pub(crate) fn ansi_fmt(
+        &self,
+        f: &mut dyn std::fmt::Write,
+        is_background: bool,
+    ) -> std::fmt::Result {
+        match self {
+            Self::Ansi(color) => color.ansi_fmt(f, is_background),
+            Self::XTerm(color) => color.ansi_fmt(f, is_background),
+            Self::Rgb(color) => color.ansi_fmt(f, is_background),
+        }
+    }
+}
+
+impl AnsiColorFmt for Color {
+    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+        self.ansi_fmt(f, is_background)
+    }
+}
+
 impl From<AnsiColor> for Color {
     fn from(inner: AnsiColor) -> Self {
         Self::Ansi(inner)
@@ -76,10 +112,112 @@ pub enum AnsiColor {
     BrightWhite,
 }
 
+impl AnsiColor {
+    /// Render the ANSI code for a foreground color
+    pub fn render_fg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: false,
+        }
+    }
+
+    /// Render the ANSI code for a background color
+    pub fn render_bg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: true,
+        }
+    }
+
+    fn is_bright(self) -> bool {
+        match self {
+            Self::Black => false,
+            Self::Red => false,
+            Self::Green => false,
+            Self::Yellow => false,
+            Self::Blue => false,
+            Self::Magenta => false,
+            Self::Cyan => false,
+            Self::White => false,
+            Self::BrightBlack => true,
+            Self::BrightRed => true,
+            Self::BrightGreen => true,
+            Self::BrightYellow => true,
+            Self::BrightBlue => true,
+            Self::BrightMagenta => true,
+            Self::BrightCyan => true,
+            Self::BrightWhite => true,
+        }
+    }
+}
+
+impl AnsiColorFmt for AnsiColor {
+    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+        match (is_background, self.is_bright()) {
+            (true, true) => write!(f, "10"),
+            (false, true) => write!(f, "9"),
+            (true, false) => write!(f, "4"),
+            (false, false) => write!(f, "3"),
+        }?;
+
+        match self {
+            Self::Black => write!(f, "0"),
+            Self::Red => write!(f, "1"),
+            Self::Green => write!(f, "2"),
+            Self::Yellow => write!(f, "3"),
+            Self::Blue => write!(f, "4"),
+            Self::Magenta => write!(f, "5"),
+            Self::Cyan => write!(f, "6"),
+            Self::White => write!(f, "7"),
+            Self::BrightBlack => write!(f, "0"),
+            Self::BrightRed => write!(f, "1"),
+            Self::BrightGreen => write!(f, "2"),
+            Self::BrightYellow => write!(f, "3"),
+            Self::BrightBlue => write!(f, "4"),
+            Self::BrightMagenta => write!(f, "5"),
+            Self::BrightCyan => write!(f, "6"),
+            Self::BrightWhite => write!(f, "7"),
+        }
+    }
+}
+
 /// Index into the 8-bit ANSI color palette
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct XTermColor(pub u8);
+
+impl XTermColor {
+    pub fn index(self) -> u8 {
+        self.0
+    }
+
+    /// Render the ANSI code for a foreground color
+    pub fn render_fg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: false,
+        }
+    }
+
+    /// Render the ANSI code for a background color
+    pub fn render_bg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: true,
+        }
+    }
+}
+
+impl AnsiColorFmt for XTermColor {
+    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+        if is_background {
+            write!(f, "48;")?;
+        } else {
+            write!(f, "38;")?;
+        }
+        write!(f, "5;{}", self.index())
+    }
+}
 
 impl From<u8> for XTermColor {
     fn from(inner: u8) -> Self {
@@ -90,3 +228,62 @@ impl From<u8> for XTermColor {
 /// 24-bit ANSI RGB color codes
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct RgbColor(pub u8, pub u8, pub u8);
+
+impl RgbColor {
+    pub fn r(self) -> u8 {
+        self.0
+    }
+
+    pub fn g(self) -> u8 {
+        self.1
+    }
+
+    pub fn b(self) -> u8 {
+        self.2
+    }
+
+    /// Render the ANSI code for a foreground color
+    pub fn render_fg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: false,
+        }
+    }
+
+    /// Render the ANSI code for a background color
+    pub fn render_bg(self) -> impl std::fmt::Display {
+        DisplayColor {
+            color: self,
+            is_background: true,
+        }
+    }
+}
+
+impl AnsiColorFmt for RgbColor {
+    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+        if is_background {
+            write!(f, "48;")?;
+        } else {
+            write!(f, "38;")?;
+        }
+        write!(f, "2;{};{};{}", self.r(), self.g(), self.b())
+    }
+}
+
+trait AnsiColorFmt {
+    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result;
+}
+
+struct DisplayColor<C: AnsiColorFmt> {
+    color: C,
+    is_background: bool,
+}
+
+impl<C: AnsiColorFmt> std::fmt::Display for DisplayColor<C> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "\x1B[")?;
+        self.color.ansi_fmt(f, self.is_background)?;
+        write!(f, "m")?;
+        Ok(())
+    }
+}

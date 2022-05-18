@@ -64,6 +64,11 @@ impl Style {
         self.effects = effects;
         self
     }
+
+    /// Render the ANSI code
+    pub fn render(self) -> impl std::fmt::Display {
+        StyleDisplay(self)
+    }
 }
 
 /// # Convenience
@@ -249,5 +254,47 @@ impl std::ops::SubAssign<crate::Effects> for Style {
     #[inline]
     fn sub_assign(&mut self, other: crate::Effects) {
         self.effects -= other;
+    }
+}
+
+struct StyleDisplay(Style);
+
+impl std::fmt::Display for StyleDisplay {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.0.is_plain() {
+            return Ok(());
+        }
+
+        write!(f, "\x1B[")?;
+
+        let mut first = true;
+
+        for index in self.0.effects.index_iter() {
+            separator(f, &mut first)?;
+            write!(f, "{}", crate::effect::METADATA[index].code)?;
+        }
+
+        if let Some(fg) = self.0.fg {
+            separator(f, &mut first)?;
+            fg.ansi_fmt(f, false)?;
+        }
+
+        if let Some(bg) = self.0.bg {
+            separator(f, &mut first)?;
+            bg.ansi_fmt(f, true)?;
+        }
+
+        write!(f, "m")?;
+        Ok(())
+    }
+}
+
+#[inline]
+fn separator(f: &mut std::fmt::Formatter<'_>, first: &mut bool) -> std::fmt::Result {
+    if *first {
+        *first = false;
+        Ok(())
+    } else {
+        write!(f, ";")
     }
 }
