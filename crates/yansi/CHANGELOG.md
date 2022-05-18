@@ -8,4 +8,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased] - ReleaseDate
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/argfile/compare/40a277b...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/1fd4f936999b5b3ecd5e3f0d8decb9e9c62b7f24...HEAD
