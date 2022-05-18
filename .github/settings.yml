@@ -2,7 +2,7 @@
 
 repository:
   description: ANSI text styling
-  homepage: docs.rs/anstyle
+  homepage: https://docs.rs/anstyle
   topics: rust cli color
   has_issues: true
   has_projects: false
