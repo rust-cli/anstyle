@@ -190,6 +190,58 @@ impl Style {
     }
 }
 
+/// Define style with specified foreground color
+///
+/// # Examples
+///
+/// ```rust
+/// let style: anstyle::Style = anstyle::Color::from((0, 0, 0)).into();
+/// ```
+impl From<crate::Color> for Style {
+    fn from(color: crate::Color) -> Self {
+        Self::new().fg_color(Some(color))
+    }
+}
+
+/// Define style with specified foreground color
+///
+/// # Examples
+///
+/// ```rust
+/// let style: anstyle::Style = anstyle::AnsiColor::Black.into();
+/// ```
+impl From<crate::AnsiColor> for Style {
+    fn from(color: crate::AnsiColor) -> Self {
+        Self::new().fg_color(Some(color.into()))
+    }
+}
+
+/// Define style with specified foreground color
+///
+/// # Examples
+///
+/// ```rust
+/// let style: anstyle::Style = anstyle::XTermColor(0).into();
+/// ```
+impl From<crate::XTermColor> for Style {
+    fn from(color: crate::XTermColor) -> Self {
+        Self::new().fg_color(Some(color.into()))
+    }
+}
+
+/// Define style with specified foreground color
+///
+/// # Examples
+///
+/// ```rust
+/// let style: anstyle::Style = anstyle::RgbColor(0, 0, 0).into();
+/// ```
+impl From<crate::RgbColor> for Style {
+    fn from(color: crate::RgbColor) -> Self {
+        Self::new().fg_color(Some(color.into()))
+    }
+}
+
 /// # Examples
 ///
 /// ```rust
@@ -254,6 +306,36 @@ impl core::ops::SubAssign<crate::Effects> for Style {
     #[inline]
     fn sub_assign(&mut self, other: crate::Effects) {
         self.effects -= other;
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::RgbColor(0, 0, 0);
+/// assert_eq!(anstyle::Style::new().fg_color(Some(color.into())), color);
+/// assert_ne!(color | anstyle::Effects::BOLD, color);
+/// ```
+impl<C: Into<crate::Color> + Clone> core::cmp::PartialEq<C> for Style {
+    fn eq(&self, other: &C) -> bool {
+        let other = other.clone().into();
+        let other = Self::from(other);
+        *self == other
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let effects = anstyle::Effects::BOLD;
+/// assert_eq!(anstyle::Style::new().effects(effects), effects);
+/// assert_ne!(anstyle::Effects::UNDERLINE | effects, effects);
+/// assert_ne!(anstyle::RgbColor(0, 0, 0) | effects, effects);
+/// ```
+impl core::cmp::PartialEq<crate::Effects> for Style {
+    fn eq(&self, other: &crate::Effects) -> bool {
+        let other = Self::from(*other);
+        *self == other
     }
 }
 
