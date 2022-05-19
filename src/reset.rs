@@ -4,15 +4,15 @@ pub struct Reset;
 
 impl Reset {
     /// Render the ANSI code
-    pub fn render(self) -> impl std::fmt::Display {
+    pub fn render(self) -> impl core::fmt::Display {
         ResetDisplay
     }
 }
 
 struct ResetDisplay;
 
-impl std::fmt::Display for ResetDisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for ResetDisplay {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "\x1B[0m")
     }
 }

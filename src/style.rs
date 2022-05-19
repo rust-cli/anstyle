@@ -34,10 +34,10 @@ impl Style {
     /// # Examples
     ///
     /// ```rust
-    /// let style = anstyle::Style::new().fg_color(anstyle::AnsiColor::Red.into());
+    /// let style = anstyle::Style::new().fg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
-    pub const fn fg_color(mut self, fg: crate::Color) -> Self {
-        self.fg = Some(fg);
+    pub const fn fg_color(mut self, fg: Option<crate::Color>) -> Self {
+        self.fg = fg;
         self
     }
 
@@ -46,10 +46,10 @@ impl Style {
     /// # Examples
     ///
     /// ```rust
-    /// let style = anstyle::Style::new().bg_color(anstyle::AnsiColor::Red.into());
+    /// let style = anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
-    pub const fn bg_color(mut self, bg: crate::Color) -> Self {
-        self.bg = Some(bg);
+    pub const fn bg_color(mut self, bg: Option<crate::Color>) -> Self {
+        self.bg = bg;
         self
     }
 
@@ -66,7 +66,7 @@ impl Style {
     }
 
     /// Render the ANSI code
-    pub fn render(self) -> impl std::fmt::Display {
+    pub fn render(self) -> impl core::fmt::Display {
         StyleDisplay(self)
     }
 }
@@ -206,7 +206,7 @@ impl From<crate::Effects> for Style {
 /// ```rust
 /// let style = anstyle::Style::new() | anstyle::Effects::BOLD.into();
 /// ```
-impl std::ops::BitOr<crate::Effects> for Style {
+impl core::ops::BitOr<crate::Effects> for Style {
     type Output = Self;
 
     #[inline(always)]
@@ -222,7 +222,7 @@ impl std::ops::BitOr<crate::Effects> for Style {
 /// let mut style = anstyle::Style::new();
 /// style |= anstyle::Effects::BOLD.into();
 /// ```
-impl std::ops::BitOrAssign<crate::Effects> for Style {
+impl core::ops::BitOrAssign<crate::Effects> for Style {
     #[inline]
     fn bitor_assign(&mut self, other: crate::Effects) {
         self.effects |= other;
@@ -234,7 +234,7 @@ impl std::ops::BitOrAssign<crate::Effects> for Style {
 /// ```rust
 /// let style = anstyle::Style::new().bold().underline() - anstyle::Effects::BOLD.into();
 /// ```
-impl std::ops::Sub<crate::Effects> for Style {
+impl core::ops::Sub<crate::Effects> for Style {
     type Output = Self;
 
     #[inline]
@@ -250,7 +250,7 @@ impl std::ops::Sub<crate::Effects> for Style {
 /// let mut style = anstyle::Style::new().bold().underline();
 /// style -= anstyle::Effects::BOLD.into();
 /// ```
-impl std::ops::SubAssign<crate::Effects> for Style {
+impl core::ops::SubAssign<crate::Effects> for Style {
     #[inline]
     fn sub_assign(&mut self, other: crate::Effects) {
         self.effects -= other;
@@ -259,8 +259,8 @@ impl std::ops::SubAssign<crate::Effects> for Style {
 
 struct StyleDisplay(Style);
 
-impl std::fmt::Display for StyleDisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for StyleDisplay {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.0.is_plain() {
             return Ok(());
         }
@@ -290,7 +290,7 @@ impl std::fmt::Display for StyleDisplay {
 }
 
 #[inline]
-fn separator(f: &mut std::fmt::Formatter<'_>, first: &mut bool) -> std::fmt::Result {
+fn separator(f: &mut core::fmt::Formatter<'_>, first: &mut bool) -> core::fmt::Result {
     if *first {
         *first = false;
         Ok(())

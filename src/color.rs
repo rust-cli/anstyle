@@ -8,7 +8,7 @@ pub enum Color {
 
 impl Color {
     /// Render the ANSI code for a foreground color
-    pub fn render_fg(self) -> impl std::fmt::Display {
+    pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: false,
@@ -16,7 +16,7 @@ impl Color {
     }
 
     /// Render the ANSI code for a background color
-    pub fn render_bg(self) -> impl std::fmt::Display {
+    pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: true,
@@ -25,9 +25,9 @@ impl Color {
 
     pub(crate) fn ansi_fmt(
         &self,
-        f: &mut dyn std::fmt::Write,
+        f: &mut dyn core::fmt::Write,
         is_background: bool,
-    ) -> std::fmt::Result {
+    ) -> core::fmt::Result {
         match self {
             Self::Ansi(color) => color.ansi_fmt(f, is_background),
             Self::XTerm(color) => color.ansi_fmt(f, is_background),
@@ -37,7 +37,7 @@ impl Color {
 }
 
 impl AnsiColorFmt for Color {
-    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
         self.ansi_fmt(f, is_background)
     }
 }
@@ -57,6 +57,33 @@ impl From<XTermColor> for Color {
 impl From<RgbColor> for Color {
     fn from(inner: RgbColor) -> Self {
         Self::Rgb(inner)
+    }
+}
+
+impl From<u8> for Color {
+    fn from(inner: u8) -> Self {
+        Self::XTerm(inner.into())
+    }
+}
+
+impl From<(u8, u8, u8)> for Color {
+    fn from(inner: (u8, u8, u8)) -> Self {
+        Self::Rgb(inner.into())
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::Color::from((0, 0, 0));
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl core::ops::BitOr<crate::Effects> for Color {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self)) | rhs
     }
 }
 
@@ -114,7 +141,7 @@ pub enum AnsiColor {
 
 impl AnsiColor {
     /// Render the ANSI code for a foreground color
-    pub fn render_fg(self) -> impl std::fmt::Display {
+    pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: false,
@@ -122,7 +149,7 @@ impl AnsiColor {
     }
 
     /// Render the ANSI code for a background color
-    pub fn render_bg(self) -> impl std::fmt::Display {
+    pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: true,
@@ -152,7 +179,7 @@ impl AnsiColor {
 }
 
 impl AnsiColorFmt for AnsiColor {
-    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
         match (is_background, self.is_bright()) {
             (true, true) => write!(f, "10"),
             (false, true) => write!(f, "9"),
@@ -181,6 +208,21 @@ impl AnsiColorFmt for AnsiColor {
     }
 }
 
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::AnsiColor::Black;
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl core::ops::BitOr<crate::Effects> for AnsiColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
+    }
+}
+
 /// Index into the 8-bit ANSI color palette
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
@@ -192,7 +234,7 @@ impl XTermColor {
     }
 
     /// Render the ANSI code for a foreground color
-    pub fn render_fg(self) -> impl std::fmt::Display {
+    pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: false,
@@ -200,7 +242,7 @@ impl XTermColor {
     }
 
     /// Render the ANSI code for a background color
-    pub fn render_bg(self) -> impl std::fmt::Display {
+    pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: true,
@@ -209,7 +251,7 @@ impl XTermColor {
 }
 
 impl AnsiColorFmt for XTermColor {
-    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
         if is_background {
             write!(f, "48;")?;
         } else {
@@ -222,6 +264,21 @@ impl AnsiColorFmt for XTermColor {
 impl From<u8> for XTermColor {
     fn from(inner: u8) -> Self {
         Self(inner)
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::XTermColor(0);
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl core::ops::BitOr<crate::Effects> for XTermColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
     }
 }
 
@@ -243,7 +300,7 @@ impl RgbColor {
     }
 
     /// Render the ANSI code for a foreground color
-    pub fn render_fg(self) -> impl std::fmt::Display {
+    pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: false,
@@ -251,7 +308,7 @@ impl RgbColor {
     }
 
     /// Render the ANSI code for a background color
-    pub fn render_bg(self) -> impl std::fmt::Display {
+    pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
             is_background: true,
@@ -260,7 +317,7 @@ impl RgbColor {
 }
 
 impl AnsiColorFmt for RgbColor {
-    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result {
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
         if is_background {
             write!(f, "48;")?;
         } else {
@@ -270,8 +327,30 @@ impl AnsiColorFmt for RgbColor {
     }
 }
 
+impl From<(u8, u8, u8)> for RgbColor {
+    fn from(inner: (u8, u8, u8)) -> Self {
+        let (r, g, b) = inner;
+        Self(r, g, b)
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::RgbColor(0, 0, 0);
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl core::ops::BitOr<crate::Effects> for RgbColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
+    }
+}
+
 trait AnsiColorFmt {
-    fn ansi_fmt(&self, f: &mut dyn std::fmt::Write, is_background: bool) -> std::fmt::Result;
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result;
 }
 
 struct DisplayColor<C: AnsiColorFmt> {
@@ -279,8 +358,8 @@ struct DisplayColor<C: AnsiColorFmt> {
     is_background: bool,
 }
 
-impl<C: AnsiColorFmt> std::fmt::Display for DisplayColor<C> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl<C: AnsiColorFmt> core::fmt::Display for DisplayColor<C> {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "\x1B[")?;
         self.color.ansi_fmt(f, self.is_background)?;
         write!(f, "m")?;
