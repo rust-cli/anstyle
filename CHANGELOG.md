@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- With `From` and `PartialEq`, colors and `Effects` are considered equivalent of `Style`
+
 ## [0.2.0] - 2022-05-19
 
 ### Breaking Changes
