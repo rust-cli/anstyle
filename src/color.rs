@@ -72,6 +72,8 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
+/// Define style with specified foreground color and effects
+///
 /// # Examples
 ///
 /// ```rust
@@ -208,6 +210,8 @@ impl AnsiColorFmt for AnsiColor {
     }
 }
 
+/// Define style with specified foreground color and effects
+///
 /// # Examples
 ///
 /// ```rust
@@ -267,6 +271,8 @@ impl From<u8> for XTermColor {
     }
 }
 
+/// Define style with specified foreground color and effects
+///
 /// # Examples
 ///
 /// ```rust
@@ -334,6 +340,8 @@ impl From<(u8, u8, u8)> for RgbColor {
     }
 }
 
+/// Define style with specified foreground color and effects
+///
 /// # Examples
 ///
 /// ```rust
