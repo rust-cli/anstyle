@@ -17,6 +17,9 @@ For integration with your text styling crate, see:
 - [anstyle-owo-colors](crates/owo)
 - [anstyle-yansi](crates/yansi)
 
+General utilities:
+- [anstyle-git](crates/git): Parse Git style descriptions
+
 ## License
 
 Licensed under either of

@@ -19,6 +19,9 @@
 //! - [anstyle-owo-colors](https:://docs.rs/anstyle-owo-colors)
 //! - [anstyle-yansi](https:://docs.rs/anstyle-yansi)
 //!
+//! General utilities:
+//! - [anstyle-git](https:://docs.s/anstyle-git): Parse Git style descriptions
+//!
 //! # Examples
 //!
 //! The core type is [`Style`]:
