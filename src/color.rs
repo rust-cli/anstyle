@@ -72,6 +72,21 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::Color::from((0, 0, 0));
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl std::ops::BitOr<crate::Effects> for Color {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self)) | rhs
+    }
+}
+
 /// Available 4-bit ANSI color codes
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AnsiColor {
@@ -193,6 +208,21 @@ impl AnsiColorFmt for AnsiColor {
     }
 }
 
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::AnsiColor::Black;
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl std::ops::BitOr<crate::Effects> for AnsiColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
+    }
+}
+
 /// Index into the 8-bit ANSI color palette
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
@@ -234,6 +264,21 @@ impl AnsiColorFmt for XTermColor {
 impl From<u8> for XTermColor {
     fn from(inner: u8) -> Self {
         Self(inner)
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::XTermColor(0);
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl std::ops::BitOr<crate::Effects> for XTermColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
     }
 }
 
@@ -286,6 +331,21 @@ impl From<(u8, u8, u8)> for RgbColor {
     fn from(inner: (u8, u8, u8)) -> Self {
         let (r, g, b) = inner;
         Self(r, g, b)
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::RgbColor(0, 0, 0);
+/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// ```
+impl std::ops::BitOr<crate::Effects> for RgbColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: crate::Effects) -> Self::Output {
+        crate::Style::new().fg_color(Some(self.into())) | rhs
     }
 }
 
