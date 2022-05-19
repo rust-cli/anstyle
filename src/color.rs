@@ -60,6 +60,18 @@ impl From<RgbColor> for Color {
     }
 }
 
+impl From<u8> for Color {
+    fn from(inner: u8) -> Self {
+        Self::XTerm(inner.into())
+    }
+}
+
+impl From<(u8, u8, u8)> for Color {
+    fn from(inner: (u8, u8, u8)) -> Self {
+        Self::Rgb(inner.into())
+    }
+}
+
 /// Available 4-bit ANSI color codes
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AnsiColor {
@@ -267,6 +279,13 @@ impl AnsiColorFmt for RgbColor {
             write!(f, "38;")?;
         }
         write!(f, "2;{};{};{}", self.r(), self.g(), self.b())
+    }
+}
+
+impl From<(u8, u8, u8)> for RgbColor {
+    fn from(inner: (u8, u8, u8)) -> Self {
+        let (r, g, b) = inner;
+        Self(r, g, b)
     }
 }
 
