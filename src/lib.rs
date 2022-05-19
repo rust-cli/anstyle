@@ -26,6 +26,8 @@
 //! let style = anstyle::Style::new().bold();
 //! ```
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 mod color;
 mod effect;
 mod reset;

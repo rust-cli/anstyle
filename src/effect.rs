@@ -147,7 +147,7 @@ impl Effects {
     }
 
     /// Render the ANSI code
-    pub fn render(self) -> impl std::fmt::Display {
+    pub fn render(self) -> impl core::fmt::Display {
         EffectsDisplay(self)
     }
 }
@@ -161,8 +161,8 @@ impl Effects {
 /// let effects = anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// assert_eq!(format!("{:?}", effects), "Effects(BOLD | UNDERLINE)");
 /// ```
-impl std::fmt::Debug for Effects {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Effects {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "Effects(")?;
         for (i, index) in self.index_iter().enumerate() {
             if i != 0 {
@@ -181,7 +181,7 @@ impl std::fmt::Debug for Effects {
 /// let effects = anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// assert_eq!(format!("{:?}", effects), "Effects(BOLD | UNDERLINE)");
 /// ```
-impl std::ops::BitOr for Effects {
+impl core::ops::BitOr for Effects {
     type Output = Self;
 
     #[inline(always)]
@@ -197,7 +197,7 @@ impl std::ops::BitOr for Effects {
 /// effects |= anstyle::Effects::UNDERLINE;
 /// assert_eq!(format!("{:?}", effects), "Effects(BOLD | UNDERLINE)");
 /// ```
-impl std::ops::BitOrAssign for Effects {
+impl core::ops::BitOrAssign for Effects {
     #[inline]
     fn bitor_assign(&mut self, other: Self) {
         *self = self.insert(other);
@@ -210,7 +210,7 @@ impl std::ops::BitOrAssign for Effects {
 /// let effects = (anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE) - anstyle::Effects::BOLD;
 /// assert_eq!(format!("{:?}", effects), "Effects(UNDERLINE)");
 /// ```
-impl std::ops::Sub for Effects {
+impl core::ops::Sub for Effects {
     type Output = Self;
 
     #[inline]
@@ -226,7 +226,7 @@ impl std::ops::Sub for Effects {
 /// effects -= anstyle::Effects::BOLD;
 /// assert_eq!(format!("{:?}", effects), "Effects(UNDERLINE)");
 /// ```
-impl std::ops::SubAssign for Effects {
+impl core::ops::SubAssign for Effects {
     #[inline]
     fn sub_assign(&mut self, other: Self) {
         *self = self.remove(other);
@@ -275,8 +275,8 @@ pub(crate) const METADATA: [Metadata; 8] = [
 
 struct EffectsDisplay(Effects);
 
-impl std::fmt::Display for EffectsDisplay {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for EffectsDisplay {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.0.is_plain() {
             return Ok(());
         }
