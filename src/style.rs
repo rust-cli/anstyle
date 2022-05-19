@@ -309,6 +309,36 @@ impl core::ops::SubAssign<crate::Effects> for Style {
     }
 }
 
+/// # Examples
+///
+/// ```rust
+/// let color = anstyle::RgbColor(0, 0, 0);
+/// assert_eq!(anstyle::Style::new().fg_color(Some(color.into())), color);
+/// assert_ne!(color | anstyle::Effects::BOLD, color);
+/// ```
+impl<C: Into<crate::Color> + Clone> core::cmp::PartialEq<C> for Style {
+    fn eq(&self, other: &C) -> bool {
+        let other = other.clone().into();
+        let other = Self::from(other);
+        *self == other
+    }
+}
+
+/// # Examples
+///
+/// ```rust
+/// let effects = anstyle::Effects::BOLD;
+/// assert_eq!(anstyle::Style::new().effects(effects), effects);
+/// assert_ne!(anstyle::Effects::UNDERLINE | effects, effects);
+/// assert_ne!(anstyle::RgbColor(0, 0, 0) | effects, effects);
+/// ```
+impl core::cmp::PartialEq<crate::Effects> for Style {
+    fn eq(&self, other: &crate::Effects) -> bool {
+        let other = Self::from(*other);
+        *self == other
+    }
+}
+
 struct StyleDisplay(Style);
 
 impl core::fmt::Display for StyleDisplay {
