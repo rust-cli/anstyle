@@ -115,7 +115,7 @@ fn parse_color(word: &str) -> Result<Option<anstyle::Color>, ()> {
                 } else {
                     return Err(());
                 }
-            } else if let Ok(n) = u8::from_str_radix(word, 10) {
+            } else if let Ok(n) = word.parse::<u8>() {
                 Some(anstyle::Color::from(n))
             } else {
                 return Err(());
