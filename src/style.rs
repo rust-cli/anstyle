@@ -34,10 +34,10 @@ impl Style {
     /// # Examples
     ///
     /// ```rust
-    /// let style = anstyle::Style::new().fg_color(anstyle::AnsiColor::Red.into());
+    /// let style = anstyle::Style::new().fg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
-    pub const fn fg_color(mut self, fg: crate::Color) -> Self {
-        self.fg = Some(fg);
+    pub const fn fg_color(mut self, fg: Option<crate::Color>) -> Self {
+        self.fg = fg;
         self
     }
 
@@ -46,10 +46,10 @@ impl Style {
     /// # Examples
     ///
     /// ```rust
-    /// let style = anstyle::Style::new().bg_color(anstyle::AnsiColor::Red.into());
+    /// let style = anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
-    pub const fn bg_color(mut self, bg: crate::Color) -> Self {
-        self.bg = Some(bg);
+    pub const fn bg_color(mut self, bg: Option<crate::Color>) -> Self {
+        self.bg = bg;
         self
     }
 
