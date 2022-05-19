@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Changes
+
+- `Style::fg_color` / `Style::bg_color` now accept an `Option<Color>`
+
+### Features
+
+- `no_std` support
+- `let style = color | effects;` support for easier construction
+- Added `Color::from((r, g, b))` for easier creation
+
+### Fixes
+
+- Allow clearing fg/bg colors
+
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
