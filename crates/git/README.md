@@ -22,5 +22,9 @@ submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
 
+### Special Thanks
+
+[joshtriplett](https://github.com/joshtriplett) for [colorparse](https://github.com/joshtriplett/colorparse) which this was forked from
+
 [Crates.io]: https://crates.io/crates/anstyle-git
 [Documentation]: https://docs.rs/anstyle-git
