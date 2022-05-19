@@ -72,6 +72,26 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
+/// Define style with specified foreground and background colors
+///
+/// # Examples
+///
+/// ```rust
+/// let black = anstyle::Color::from((0, 0, 0));
+/// let white = anstyle::Color::from((0xff, 0xff, 0xff));
+/// let style = black | white;
+/// ```
+impl<C: Into<Color>> core::ops::BitOr<C> for Color {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: C) -> Self::Output {
+        crate::Style::new()
+            .fg_color(Some(self))
+            .bg_color(Some(rhs.into()))
+    }
+}
+
 /// Define style with specified foreground color and effects
 ///
 /// # Examples
@@ -210,6 +230,26 @@ impl AnsiColorFmt for AnsiColor {
     }
 }
 
+/// Define style with specified foreground and background colors
+///
+/// # Examples
+///
+/// ```rust
+/// let black = anstyle::AnsiColor::Black;
+/// let white = anstyle::AnsiColor::White;
+/// let style = black | white;
+/// ```
+impl<C: Into<Color>> core::ops::BitOr<C> for AnsiColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: C) -> Self::Output {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(rhs.into()))
+    }
+}
+
 /// Define style with specified foreground color and effects
 ///
 /// # Examples
@@ -268,6 +308,26 @@ impl AnsiColorFmt for XTermColor {
 impl From<u8> for XTermColor {
     fn from(inner: u8) -> Self {
         Self(inner)
+    }
+}
+
+/// Define style with specified foreground and background colors
+///
+/// # Examples
+///
+/// ```rust
+/// let black = anstyle::XTermColor(16);
+/// let white = anstyle::XTermColor(231);
+/// let style = black | white;
+/// ```
+impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: C) -> Self::Output {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(rhs.into()))
     }
 }
 
@@ -337,6 +397,26 @@ impl From<(u8, u8, u8)> for RgbColor {
     fn from(inner: (u8, u8, u8)) -> Self {
         let (r, g, b) = inner;
         Self(r, g, b)
+    }
+}
+
+/// Define style with specified foreground and background colors
+///
+/// # Examples
+///
+/// ```rust
+/// let black = anstyle::RgbColor(0, 0, 0);
+/// let white = anstyle::RgbColor(0xff, 0xff, 0xff);
+/// let style = black | white;
+/// ```
+impl<C: Into<Color>> core::ops::BitOr<C> for RgbColor {
+    type Output = crate::Style;
+
+    #[inline(always)]
+    fn bitor(self, rhs: C) -> Self::Output {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(rhs.into()))
     }
 }
 
