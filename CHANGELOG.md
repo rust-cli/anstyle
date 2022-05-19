@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.2.0] - 2022-05-19
+
 ### Breaking Changes
 
 - `Style::fg_color` / `Style::bg_color` now accept an `Option<Color>`
@@ -24,5 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/rust-cli/anstyle/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/6644c8911424a1451b483d39a3b415a41abfdf1b...v0.1.1

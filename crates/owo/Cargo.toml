@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-owo-colors"
-version = "0.1.1"
+version = "0.2.0"
 description = "Adapt between owo-colors and anstyle"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
@@ -32,5 +32,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.1.0", path = "../../" }
+anstyle = { version = "0.2.0", path = "../../" }
 owo-colors = "3.4.0"
