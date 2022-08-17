@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-termcolor"
-version = "0.2.0"
+version = "0.2.1"
 description = "Adapt between termcolor and anstyle"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
