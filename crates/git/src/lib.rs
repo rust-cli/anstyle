@@ -11,6 +11,22 @@
 //! assert_eq!(hyperlink_style, anstyle::RgbColor(0x00, 0x00, 0xee) | anstyle::Effects::UNDERLINE);
 //! ```
 
+mod sealed {
+    pub(crate) trait Sealed {}
+}
+
+trait Ext: sealed::Sealed + Sized {
+    fn parse(s: &str) -> Result<Self, Error>;
+}
+
+impl sealed::Sealed for anstyle::Style {}
+
+impl Ext for anstyle::Style {
+    fn parse(s: &str) -> Result<Self, Error> {
+        parse(s)
+    }
+}
+
 /// Parse a string in Git's color configuration syntax into an
 /// `ansi_term::Style`.
 pub fn parse(s: &str) -> Result<anstyle::Style, Error> {
@@ -255,5 +271,11 @@ mod tests {
         test!("#bcdefg" => UnknownWord "#bcdefg");
         test!("#blue" => UnknownWord "#blue");
         test!("blue#123456" => UnknownWord "blue#123456");
+    }
+
+    #[test]
+    fn test_extension_trait() {
+        let style = anstyle::Style::parse("red blue");
+        assert_eq!(style.unwrap(), Red | Blue);
     }
 }
