@@ -1,3 +1,19 @@
+mod sealed {
+    pub(crate) trait Sealed {}
+}
+
+trait Ext: sealed::Sealed {
+    fn to_yansi(self) -> yansi::Style;
+}
+
+impl sealed::Sealed for anstyle::Style {}
+
+impl Ext for anstyle::Style {
+    fn to_yansi(self) -> yansi::Style {
+        to_yansi_style(self)
+    }
+}
+
 pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
     let fg = style
         .get_fg_color()
