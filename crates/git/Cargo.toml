@@ -8,7 +8,7 @@ homepage = "https://github.com/rust-cli/anstyle"
 documentation = "http://docs.rs/anstyle-git/"
 readme = "README.md"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "git"]
+keywords = ["ansi", "terminal", "color", "git", "colorparse"]
 include = [
   "build.rs",
   "src/**/*",
