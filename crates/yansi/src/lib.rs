@@ -1,8 +1,8 @@
 pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
-    let fg = style
+    let (fg, fg_bold) = style
         .get_fg_color()
-        .map(to_yansi_color)
-        .unwrap_or(yansi::Color::Unset);
+        .map(to_yansi_color_with_bold)
+        .unwrap_or((yansi::Color::Unset, false));
     let bg = style
         .get_bg_color()
         .map(to_yansi_color)
@@ -10,7 +10,7 @@ pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
     let effects = style.get_effects();
 
     let mut style = yansi::Style::new(fg).bg(bg);
-    if effects.contains(anstyle::Effects::BOLD) {
+    if effects.contains(anstyle::Effects::BOLD) || fg_bold {
         style = style.bold();
     }
     if effects.contains(anstyle::Effects::DIMMED) {
@@ -38,31 +38,35 @@ pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
 }
 
 pub fn to_yansi_color(color: anstyle::Color) -> yansi::Color {
+    to_yansi_color_with_bold(color).0
+}
+
+fn to_yansi_color_with_bold(color: anstyle::Color) -> (yansi::Color, bool) {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_yansi_color(ansi),
-        anstyle::Color::XTerm(xterm) => xterm_to_yansi_color(xterm),
-        anstyle::Color::Rgb(rgb) => rgb_to_yansi_color(rgb),
+        anstyle::Color::XTerm(xterm) => (xterm_to_yansi_color(xterm), false),
+        anstyle::Color::Rgb(rgb) => (rgb_to_yansi_color(rgb), false),
     }
 }
 
-fn ansi_to_yansi_color(color: anstyle::AnsiColor) -> yansi::Color {
+fn ansi_to_yansi_color(color: anstyle::AnsiColor) -> (yansi::Color, bool) {
     match color {
-        anstyle::AnsiColor::Black => yansi::Color::Black,
-        anstyle::AnsiColor::Red => yansi::Color::Red,
-        anstyle::AnsiColor::Green => yansi::Color::Green,
-        anstyle::AnsiColor::Yellow => yansi::Color::Yellow,
-        anstyle::AnsiColor::Blue => yansi::Color::Blue,
-        anstyle::AnsiColor::Magenta => yansi::Color::Magenta,
-        anstyle::AnsiColor::Cyan => yansi::Color::Cyan,
-        anstyle::AnsiColor::White => yansi::Color::White,
-        anstyle::AnsiColor::BrightBlack => yansi::Color::Black,
-        anstyle::AnsiColor::BrightRed => yansi::Color::Red,
-        anstyle::AnsiColor::BrightGreen => yansi::Color::Green,
-        anstyle::AnsiColor::BrightYellow => yansi::Color::Yellow,
-        anstyle::AnsiColor::BrightBlue => yansi::Color::Black,
-        anstyle::AnsiColor::BrightMagenta => yansi::Color::Magenta,
-        anstyle::AnsiColor::BrightCyan => yansi::Color::Cyan,
-        anstyle::AnsiColor::BrightWhite => yansi::Color::White,
+        anstyle::AnsiColor::Black => (yansi::Color::Black, false),
+        anstyle::AnsiColor::Red => (yansi::Color::Red, false),
+        anstyle::AnsiColor::Green => (yansi::Color::Green, false),
+        anstyle::AnsiColor::Yellow => (yansi::Color::Yellow, false),
+        anstyle::AnsiColor::Blue => (yansi::Color::Blue, false),
+        anstyle::AnsiColor::Magenta => (yansi::Color::Magenta, false),
+        anstyle::AnsiColor::Cyan => (yansi::Color::Cyan, false),
+        anstyle::AnsiColor::White => (yansi::Color::White, false),
+        anstyle::AnsiColor::BrightBlack => (yansi::Color::Black, true),
+        anstyle::AnsiColor::BrightRed => (yansi::Color::Red, true),
+        anstyle::AnsiColor::BrightGreen => (yansi::Color::Green, true),
+        anstyle::AnsiColor::BrightYellow => (yansi::Color::Yellow, true),
+        anstyle::AnsiColor::BrightBlue => (yansi::Color::Black, true),
+        anstyle::AnsiColor::BrightMagenta => (yansi::Color::Magenta, true),
+        anstyle::AnsiColor::BrightCyan => (yansi::Color::Cyan, true),
+        anstyle::AnsiColor::BrightWhite => (yansi::Color::White, true),
     }
 }
 
