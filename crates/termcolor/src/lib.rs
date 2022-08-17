@@ -1,3 +1,19 @@
+mod sealed {
+    pub(crate) trait Sealed {}
+}
+
+trait Ext: sealed::Sealed {
+    fn to_termcolor(self) -> termcolor::ColorSpec;
+}
+
+impl sealed::Sealed for anstyle::Style {}
+
+impl Ext for anstyle::Style {
+    fn to_termcolor(self) -> termcolor::ColorSpec {
+        to_termcolor_spec(self)
+    }
+}
+
 pub fn to_termcolor_spec(style: anstyle::Style) -> termcolor::ColorSpec {
     let fg = style.get_fg_color().map(to_termcolor_color);
     let bg = style.get_bg_color().map(to_termcolor_color);

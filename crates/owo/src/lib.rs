@@ -1,3 +1,19 @@
+mod sealed {
+    pub(crate) trait Sealed {}
+}
+
+trait Ext: sealed::Sealed {
+    fn to_owo(self) -> owo_colors::Style;
+}
+
+impl sealed::Sealed for anstyle::Style {}
+
+impl Ext for anstyle::Style {
+    fn to_owo(self) -> owo_colors::Style {
+        to_owo_style(self)
+    }
+}
+
 pub fn to_owo_style(style: anstyle::Style) -> owo_colors::Style {
     let fg = style.get_fg_color().map(to_owo_colors);
     let bg = style.get_bg_color().map(to_owo_colors);
