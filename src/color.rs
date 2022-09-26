@@ -198,34 +198,36 @@ impl AnsiColor {
             Self::BrightWhite => true,
         }
     }
+
+    fn suffix(self) -> &'static str {
+        match self {
+            Self::Black => "0",
+            Self::Red => "1",
+            Self::Green => "2",
+            Self::Yellow => "3",
+            Self::Blue => "4",
+            Self::Magenta => "5",
+            Self::Cyan => "6",
+            Self::White => "7",
+            Self::BrightBlack => "0",
+            Self::BrightRed => "1",
+            Self::BrightGreen => "2",
+            Self::BrightYellow => "3",
+            Self::BrightBlue => "4",
+            Self::BrightMagenta => "5",
+            Self::BrightCyan => "6",
+            Self::BrightWhite => "7",
+        }
+    }
 }
 
 impl AnsiColorFmt for AnsiColor {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match (context, self.is_bright()) {
-            (ColorContext::Foreground, true) => write!(f, "10"),
-            (ColorContext::Background, true) => write!(f, "9"),
-            (ColorContext::Foreground, false) => write!(f, "4"),
-            (ColorContext::Background, false) => write!(f, "3"),
-        }?;
-
-        match self {
-            Self::Black => write!(f, "0"),
-            Self::Red => write!(f, "1"),
-            Self::Green => write!(f, "2"),
-            Self::Yellow => write!(f, "3"),
-            Self::Blue => write!(f, "4"),
-            Self::Magenta => write!(f, "5"),
-            Self::Cyan => write!(f, "6"),
-            Self::White => write!(f, "7"),
-            Self::BrightBlack => write!(f, "0"),
-            Self::BrightRed => write!(f, "1"),
-            Self::BrightGreen => write!(f, "2"),
-            Self::BrightYellow => write!(f, "3"),
-            Self::BrightBlue => write!(f, "4"),
-            Self::BrightMagenta => write!(f, "5"),
-            Self::BrightCyan => write!(f, "6"),
-            Self::BrightWhite => write!(f, "7"),
+            (ColorContext::Foreground, true) => write!(f, "10{}", self.suffix()),
+            (ColorContext::Background, true) => write!(f, "9{}", self.suffix()),
+            (ColorContext::Foreground, false) => write!(f, "4{}", self.suffix()),
+            (ColorContext::Background, false) => write!(f, "3{}", self.suffix()),
         }
     }
 }
