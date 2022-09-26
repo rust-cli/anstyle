@@ -228,6 +228,8 @@ impl AnsiColorFmt for AnsiColor {
             (ColorContext::Background, true) => write!(f, "9{}", self.suffix()),
             (ColorContext::Foreground, false) => write!(f, "4{}", self.suffix()),
             (ColorContext::Background, false) => write!(f, "3{}", self.suffix()),
+            // No per-color codes; must delegate to `XTermColor`
+            (ColorContext::Underline, _) => XTermColor::from(*self).ansi_fmt(f, context),
         }
     }
 }
@@ -304,6 +306,9 @@ impl AnsiColorFmt for XTermColor {
             }
             ColorContext::Background => {
                 write!(f, "38;")?;
+            }
+            ColorContext::Underline => {
+                write!(f, "58;")?;
             }
         }
         write!(f, "5;{}", self.index())
@@ -419,6 +424,9 @@ impl AnsiColorFmt for RgbColor {
             ColorContext::Background => {
                 write!(f, "38;")?;
             }
+            ColorContext::Underline => {
+                write!(f, "58;")?;
+            }
         }
         write!(f, "2;{};{};{}", self.r(), self.g(), self.b())
     }
@@ -472,6 +480,7 @@ impl core::ops::BitOr<crate::Effects> for RgbColor {
 pub(crate) enum ColorContext {
     Background,
     Foreground,
+    Underline,
 }
 
 trait AnsiColorFmt {
