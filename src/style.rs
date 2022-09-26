@@ -358,12 +358,12 @@ impl core::fmt::Display for StyleDisplay {
 
         if let Some(fg) = self.0.fg {
             separator(f, &mut first)?;
-            fg.ansi_fmt(f, false)?;
+            fg.ansi_fmt(f, crate::ColorContext::Foreground)?;
         }
 
         if let Some(bg) = self.0.bg {
             separator(f, &mut first)?;
-            bg.ansi_fmt(f, true)?;
+            bg.ansi_fmt(f, crate::ColorContext::Background)?;
         }
 
         write!(f, "m")?;

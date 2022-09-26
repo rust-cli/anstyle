@@ -11,7 +11,7 @@ impl Color {
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: false,
+            context: ColorContext::Foreground,
         }
     }
 
@@ -19,26 +19,26 @@ impl Color {
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: true,
+            context: ColorContext::Background,
         }
     }
 
     pub(crate) fn ansi_fmt(
         &self,
         f: &mut dyn core::fmt::Write,
-        is_background: bool,
+        context: ColorContext,
     ) -> core::fmt::Result {
         match self {
-            Self::Ansi(color) => color.ansi_fmt(f, is_background),
-            Self::XTerm(color) => color.ansi_fmt(f, is_background),
-            Self::Rgb(color) => color.ansi_fmt(f, is_background),
+            Self::Ansi(color) => color.ansi_fmt(f, context),
+            Self::XTerm(color) => color.ansi_fmt(f, context),
+            Self::Rgb(color) => color.ansi_fmt(f, context),
         }
     }
 }
 
 impl AnsiColorFmt for Color {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
-        self.ansi_fmt(f, is_background)
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
+        self.ansi_fmt(f, context)
     }
 }
 
@@ -166,7 +166,7 @@ impl AnsiColor {
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: false,
+            context: ColorContext::Foreground,
         }
     }
 
@@ -174,7 +174,7 @@ impl AnsiColor {
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: true,
+            context: ColorContext::Background,
         }
     }
 
@@ -201,12 +201,12 @@ impl AnsiColor {
 }
 
 impl AnsiColorFmt for AnsiColor {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
-        match (is_background, self.is_bright()) {
-            (true, true) => write!(f, "10"),
-            (false, true) => write!(f, "9"),
-            (true, false) => write!(f, "4"),
-            (false, false) => write!(f, "3"),
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
+        match (context, self.is_bright()) {
+            (ColorContext::Foreground, true) => write!(f, "10"),
+            (ColorContext::Background, true) => write!(f, "9"),
+            (ColorContext::Foreground, false) => write!(f, "4"),
+            (ColorContext::Background, false) => write!(f, "3"),
         }?;
 
         match self {
@@ -281,7 +281,7 @@ impl XTermColor {
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: false,
+            context: ColorContext::Foreground,
         }
     }
 
@@ -289,17 +289,20 @@ impl XTermColor {
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: true,
+            context: ColorContext::Background,
         }
     }
 }
 
 impl AnsiColorFmt for XTermColor {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
-        if is_background {
-            write!(f, "48;")?;
-        } else {
-            write!(f, "38;")?;
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
+        match context {
+            ColorContext::Foreground => {
+                write!(f, "48;")?;
+            }
+            ColorContext::Background => {
+                write!(f, "38;")?;
+            }
         }
         write!(f, "5;{}", self.index())
     }
@@ -369,7 +372,7 @@ impl RgbColor {
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: false,
+            context: ColorContext::Foreground,
         }
     }
 
@@ -377,17 +380,20 @@ impl RgbColor {
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
-            is_background: true,
+            context: ColorContext::Background,
         }
     }
 }
 
 impl AnsiColorFmt for RgbColor {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result {
-        if is_background {
-            write!(f, "48;")?;
-        } else {
-            write!(f, "38;")?;
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
+        match context {
+            ColorContext::Foreground => {
+                write!(f, "48;")?;
+            }
+            ColorContext::Background => {
+                write!(f, "38;")?;
+            }
         }
         write!(f, "2;{};{};{}", self.r(), self.g(), self.b())
     }
@@ -437,19 +443,25 @@ impl core::ops::BitOr<crate::Effects> for RgbColor {
     }
 }
 
+#[derive(Copy, Clone)]
+pub(crate) enum ColorContext {
+    Background,
+    Foreground,
+}
+
 trait AnsiColorFmt {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, is_background: bool) -> core::fmt::Result;
+    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result;
 }
 
 struct DisplayColor<C: AnsiColorFmt> {
     color: C,
-    is_background: bool,
+    context: ColorContext,
 }
 
 impl<C: AnsiColorFmt> core::fmt::Display for DisplayColor<C> {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         write!(f, "\x1B[")?;
-        self.color.ansi_fmt(f, self.is_background)?;
+        self.color.ansi_fmt(f, self.context)?;
         write!(f, "m")?;
         Ok(())
     }
