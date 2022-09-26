@@ -314,6 +314,29 @@ impl From<u8> for XTermColor {
     }
 }
 
+impl From<AnsiColor> for XTermColor {
+    fn from(inner: AnsiColor) -> Self {
+        match inner {
+            AnsiColor::Black => 0.into(),
+            AnsiColor::Red => 1.into(),
+            AnsiColor::Green => 2.into(),
+            AnsiColor::Yellow => 3.into(),
+            AnsiColor::Blue => 4.into(),
+            AnsiColor::Magenta => 5.into(),
+            AnsiColor::Cyan => 6.into(),
+            AnsiColor::White => 7.into(),
+            AnsiColor::BrightBlack => 8.into(),
+            AnsiColor::BrightRed => 9.into(),
+            AnsiColor::BrightGreen => 10.into(),
+            AnsiColor::BrightYellow => 11.into(),
+            AnsiColor::BrightBlue => 12.into(),
+            AnsiColor::BrightMagenta => 13.into(),
+            AnsiColor::BrightCyan => 14.into(),
+            AnsiColor::BrightWhite => 15.into(),
+        }
+    }
+}
+
 /// Define style with specified foreground and background colors
 ///
 /// # Examples
