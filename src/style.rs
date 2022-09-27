@@ -9,6 +9,7 @@
 pub struct Style {
     fg: Option<crate::Color>,
     bg: Option<crate::Color>,
+    underline: Option<crate::Color>,
     effects: crate::Effects,
 }
 
@@ -25,6 +26,7 @@ impl Style {
         Self {
             fg: None,
             bg: None,
+            underline: None,
             effects: crate::Effects::new(),
         }
     }
@@ -50,6 +52,18 @@ impl Style {
     /// ```
     pub const fn bg_color(mut self, bg: Option<crate::Color>) -> Self {
         self.bg = bg;
+        self
+    }
+
+    /// Set underline color
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// let style = anstyle::Style::new().underline_color(Some(anstyle::AnsiColor::Red.into()));
+    /// ```
+    pub const fn underline_color(mut self, underline: Option<crate::Color>) -> Self {
+        self.underline = underline;
         self
     }
 
@@ -180,13 +194,20 @@ impl Style {
         self.bg
     }
 
+    pub const fn get_underline_color(self) -> Option<crate::Color> {
+        self.underline
+    }
+
     pub const fn get_effects(self) -> crate::Effects {
         self.effects
     }
 
     /// Check if no effects are enabled
     pub const fn is_plain(self) -> bool {
-        self.fg.is_none() && self.bg.is_none() && self.effects.is_plain()
+        self.fg.is_none()
+            && self.bg.is_none()
+            && self.underline.is_none()
+            && self.effects.is_plain()
     }
 }
 
@@ -358,12 +379,17 @@ impl core::fmt::Display for StyleDisplay {
 
         if let Some(fg) = self.0.fg {
             separator(f, &mut first)?;
-            fg.ansi_fmt(f, false)?;
+            fg.ansi_fmt(f, crate::ColorContext::Foreground)?;
         }
 
         if let Some(bg) = self.0.bg {
             separator(f, &mut first)?;
-            bg.ansi_fmt(f, true)?;
+            bg.ansi_fmt(f, crate::ColorContext::Background)?;
+        }
+
+        if let Some(underline) = self.0.underline {
+            separator(f, &mut first)?;
+            underline.ansi_fmt(f, crate::ColorContext::Underline)?;
         }
 
         write!(f, "m")?;
