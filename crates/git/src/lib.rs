@@ -16,13 +16,13 @@ mod sealed {
 }
 
 trait Ext: sealed::Sealed + Sized {
-    fn parse(s: &str) -> Result<Self, Error>;
+    fn parse_git(s: &str) -> Result<Self, Error>;
 }
 
 impl sealed::Sealed for anstyle::Style {}
 
 impl Ext for anstyle::Style {
-    fn parse(s: &str) -> Result<Self, Error> {
+    fn parse_git(s: &str) -> Result<Self, Error> {
         parse(s)
     }
 }
@@ -275,7 +275,7 @@ mod tests {
 
     #[test]
     fn test_extension_trait() {
-        let style = anstyle::Style::parse("red blue");
+        let style = anstyle::Style::parse_git("red blue");
         assert_eq!(style.unwrap(), Red | Blue);
     }
 }
