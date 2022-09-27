@@ -13,13 +13,13 @@ mod sealed {
 }
 
 trait Ext: sealed::Sealed + Sized {
-    fn parse(code: &str) -> Option<Self>;
+    fn parse_ls(code: &str) -> Option<Self>;
 }
 
 impl sealed::Sealed for anstyle::Style {}
 
 impl Ext for anstyle::Style {
-    fn parse(code: &str) -> Option<Self> {
+    fn parse_ls(code: &str) -> Option<Self> {
         parse(code)
     }
 }
@@ -179,7 +179,7 @@ mod tests {
 
     #[track_caller]
     fn assert_style(code: &str, expected: impl Into<anstyle::Style>) {
-        let actual = anstyle::Style::parse(code).unwrap();
+        let actual = anstyle::Style::parse_ls(code).unwrap();
         let expected = expected.into();
         assert_eq!(actual, expected);
     }
@@ -204,9 +204,9 @@ mod tests {
 
     #[test]
     fn parse_reject() {
-        assert_eq!(None, anstyle::Style::parse("a"));
-        assert_eq!(None, anstyle::Style::parse("1;"));
-        assert_eq!(None, anstyle::Style::parse("33; 42"));
+        assert_eq!(None, anstyle::Style::parse_ls("a"));
+        assert_eq!(None, anstyle::Style::parse_ls("1;"));
+        assert_eq!(None, anstyle::Style::parse_ls("33; 42"));
     }
 
     #[test]
