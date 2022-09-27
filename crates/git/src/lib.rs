@@ -28,7 +28,7 @@ impl Ext for anstyle::Style {
 }
 
 /// Parse a string in Git's color configuration syntax into an
-/// `ansi_term::Style`.
+/// `anstyle::Style`.
 pub fn parse(s: &str) -> Result<anstyle::Style, Error> {
     let mut style = anstyle::Style::new();
     let mut num_colors = 0;
