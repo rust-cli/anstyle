@@ -1,10 +1,10 @@
-# anstyle-yansi
+# anstyle-ansi-term
 
 > Convert from color styling types to [`ansi_term`](https:://lib.rs/ansi_term) color types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
-![License](https://img.shields.io/crates/l/anstyle-yansi.svg)
-[![Crates Status](https://img.shields.io/crates/v/anstyle-yansi.svg)](https://crates.io/crates/anstyle-yansi)
+![License](https://img.shields.io/crates/l/anstyle-ansi-term.svg)
+[![Crates Status](https://img.shields.io/crates/v/anstyle-ansi-term.svg)](https://crates.io/crates/anstyle-ansi-term)
 
 ## License
 
@@ -22,5 +22,5 @@ submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
 
-[Crates.io]: https://crates.io/crates/anstyle-yansi
-[Documentation]: https://docs.rs/anstyle-yansi
+[Crates.io]: https://crates.io/crates/anstyle-ansi-term
+[Documentation]: https://docs.rs/anstyle-ansi-term
