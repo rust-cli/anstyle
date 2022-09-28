@@ -142,7 +142,7 @@ fn parse_color(word: &str) -> Result<Option<anstyle::Color>, ()> {
 }
 
 /// Type for errors returned by the parser.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 #[non_exhaustive]
 pub enum Error {
     /// An extra color appeared after the foreground and background colors.
