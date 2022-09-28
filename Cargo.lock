@@ -39,6 +39,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-lossy"
+version = "0.1.0"
+dependencies = [
+ "anstyle",
+]
+
+[[package]]
 name = "anstyle-ls"
 version = "0.1.0"
 dependencies = [
