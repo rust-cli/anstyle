@@ -1,6 +1,6 @@
 # anstyle-owo-colors
 
-> Convert from color styling types to [owo-colors](https:://lib.rs/owo-colors) color types
+> Convert from color styling types to [owo-colors](https://lib.rs/owo-colors) color types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-owo-colors.svg)

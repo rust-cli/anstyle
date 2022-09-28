@@ -1,6 +1,6 @@
 # anstyle-termcolor
 
-> Convert from color styling types to [termcolor](https:://lib.rs/termcolor) color types
+> Convert from color styling types to [termcolor](https://lib.rs/termcolor) color types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-termcolor.svg)

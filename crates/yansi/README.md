@@ -1,6 +1,6 @@
 # anstyle-yansi
 
-> Convert from color styling types to [yansi](https:://lib.rs/yansi) color types
+> Convert from color styling types to [yansi](https://lib.rs/yansi) color types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-yansi.svg)
