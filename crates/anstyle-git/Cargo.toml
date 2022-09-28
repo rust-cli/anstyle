@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-crossterm"
-version = "0.1.0"
-description = "Adapt between crossterm and anstyle"
+name = "anstyle-git"
+version = "0.2.2"
+description = "Parse Git Style Descriptions"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "crossterm"]
+keywords = ["ansi", "terminal", "color", "git", "colorparse"]
 include = [
   "build.rs",
   "src/**/*",
@@ -30,5 +30,4 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
-crossterm = { version = "0.25.0", default-features = false }
+anstyle = { version = "0.2.0", path = "../anstyle" }

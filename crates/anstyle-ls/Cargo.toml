@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-git"
-version = "0.2.2"
-description = "Parse Git Style Descriptions"
+name = "anstyle-ls"
+version = "0.1.0"
+description = "Parse LS_COLORS Style Descriptions"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "git", "colorparse"]
+keywords = ["ansi", "terminal", "color", "ls", "colorparse"]
 include = [
   "build.rs",
   "src/**/*",
@@ -30,4 +30,4 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
+anstyle = { version = "0.2.0", path = "../anstyle" }

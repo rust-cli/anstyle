@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-lossy"
-version = "0.1.0"
-description = "Lossy conversion between ANSI Color Codes"
+name = "anstyle-termcolor"
+version = "0.2.1"
+description = "Adapt between termcolor and anstyle"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color"]
+keywords = ["ansi", "terminal", "color", "termcolor"]
 include = [
   "build.rs",
   "src/**/*",
@@ -30,4 +30,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
+anstyle = { version = "0.2.0", path = "../anstyle" }
+termcolor = "1.1.3"

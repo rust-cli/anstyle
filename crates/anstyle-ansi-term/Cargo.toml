@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-owo-colors"
-version = "0.2.1"
-description = "Adapt between owo-colors and anstyle"
+name = "anstyle-ansi-term"
+version = "0.1.1"
+description = "Adapt between ansi_term and anstyle"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "owo-colors"]
+keywords = ["ansi", "terminal", "color", "ansi_term"]
 include = [
   "build.rs",
   "src/**/*",
@@ -30,5 +30,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
-owo-colors = "3.5.0"
+anstyle = { version = "0.2.0", path = "../anstyle" }
+ansi_term = "0.12.1"

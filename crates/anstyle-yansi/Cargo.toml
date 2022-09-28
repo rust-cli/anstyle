@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-ls"
-version = "0.1.0"
-description = "Parse LS_COLORS Style Descriptions"
+name = "anstyle-yansi"
+version = "0.2.1"
+description = "Adapt between yansi and anstyle"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "ls", "colorparse"]
+keywords = ["ansi", "terminal", "color", "yansi"]
 include = [
   "build.rs",
   "src/**/*",
@@ -30,4 +30,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
+anstyle = { version = "0.2.0", path = "../anstyle" }
+yansi = "0.5.1"

@@ -1,12 +1,12 @@
 [package]
-name = "anstyle-ansi-term"
-version = "0.1.1"
-description = "Adapt between ansi_term and anstyle"
+name = "anstyle"
+version = "0.2.2"
+description = "ANSI text styling"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
-keywords = ["ansi", "terminal", "color", "ansi_term"]
+keywords = ["ansi", "terminal", "color", "no_std"]
 include = [
   "build.rs",
   "src/**/*",
@@ -28,7 +28,8 @@ pre-release-replacements = [
   {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/rust-cli/anstyle/compare/{{tag_name}}...HEAD", exactly=1},
 ]
 
+[features]
+default = ["std"]
+std = []
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../../" }
-ansi_term = "0.12.1"
