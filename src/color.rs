@@ -277,8 +277,51 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
 pub struct XTermColor(pub u8);
 
 impl XTermColor {
-    pub fn index(self) -> u8 {
+    pub const fn index(self) -> u8 {
         self.0
+    }
+
+    pub const fn into_ansi(self) -> Option<AnsiColor> {
+        match self.index() {
+            0 => Some(AnsiColor::Black),
+            1 => Some(AnsiColor::Red),
+            2 => Some(AnsiColor::Green),
+            3 => Some(AnsiColor::Yellow),
+            4 => Some(AnsiColor::Blue),
+            5 => Some(AnsiColor::Magenta),
+            6 => Some(AnsiColor::Cyan),
+            7 => Some(AnsiColor::White),
+            8 => Some(AnsiColor::BrightBlack),
+            9 => Some(AnsiColor::BrightRed),
+            10 => Some(AnsiColor::BrightGreen),
+            11 => Some(AnsiColor::BrightYellow),
+            12 => Some(AnsiColor::BrightBlue),
+            13 => Some(AnsiColor::BrightMagenta),
+            14 => Some(AnsiColor::BrightCyan),
+            15 => Some(AnsiColor::BrightWhite),
+            _ => None,
+        }
+    }
+
+    pub const fn from_ansi(color: AnsiColor) -> Self {
+        match color {
+            AnsiColor::Black => Self(0),
+            AnsiColor::Red => Self(1),
+            AnsiColor::Green => Self(2),
+            AnsiColor::Yellow => Self(3),
+            AnsiColor::Blue => Self(4),
+            AnsiColor::Magenta => Self(5),
+            AnsiColor::Cyan => Self(6),
+            AnsiColor::White => Self(7),
+            AnsiColor::BrightBlack => Self(8),
+            AnsiColor::BrightRed => Self(9),
+            AnsiColor::BrightGreen => Self(10),
+            AnsiColor::BrightYellow => Self(11),
+            AnsiColor::BrightBlue => Self(12),
+            AnsiColor::BrightMagenta => Self(13),
+            AnsiColor::BrightCyan => Self(14),
+            AnsiColor::BrightWhite => Self(15),
+        }
     }
 
     /// Render the ANSI code for a foreground color
@@ -323,24 +366,7 @@ impl From<u8> for XTermColor {
 
 impl From<AnsiColor> for XTermColor {
     fn from(inner: AnsiColor) -> Self {
-        match inner {
-            AnsiColor::Black => 0.into(),
-            AnsiColor::Red => 1.into(),
-            AnsiColor::Green => 2.into(),
-            AnsiColor::Yellow => 3.into(),
-            AnsiColor::Blue => 4.into(),
-            AnsiColor::Magenta => 5.into(),
-            AnsiColor::Cyan => 6.into(),
-            AnsiColor::White => 7.into(),
-            AnsiColor::BrightBlack => 8.into(),
-            AnsiColor::BrightRed => 9.into(),
-            AnsiColor::BrightGreen => 10.into(),
-            AnsiColor::BrightYellow => 11.into(),
-            AnsiColor::BrightBlue => 12.into(),
-            AnsiColor::BrightMagenta => 13.into(),
-            AnsiColor::BrightCyan => 14.into(),
-            AnsiColor::BrightWhite => 15.into(),
-        }
+        Self::from_ansi(inner)
     }
 }
 
@@ -386,15 +412,15 @@ impl core::ops::BitOr<crate::Effects> for XTermColor {
 pub struct RgbColor(pub u8, pub u8, pub u8);
 
 impl RgbColor {
-    pub fn r(self) -> u8 {
+    pub const fn r(self) -> u8 {
         self.0
     }
 
-    pub fn g(self) -> u8 {
+    pub const fn g(self) -> u8 {
         self.1
     }
 
-    pub fn b(self) -> u8 {
+    pub const fn b(self) -> u8 {
         self.2
     }
 
