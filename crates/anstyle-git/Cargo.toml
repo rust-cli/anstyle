@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-git"
-version = "0.2.2"
+version = "0.2.3"
 description = "Parse Git Style Descriptions"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/rust-cli/anstyle.git"
