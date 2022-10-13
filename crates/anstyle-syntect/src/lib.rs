@@ -21,11 +21,11 @@ pub fn to_anstyle(style: syntect::highlighting::Style) -> anstyle::Style {
         .effects(to_anstyle_effects(style.font_style))
 }
 
-fn to_anstyle_color(color: syntect::highlighting::Color) -> anstyle::Color {
+pub fn to_anstyle_color(color: syntect::highlighting::Color) -> anstyle::Color {
     anstyle::RgbColor(color.r, color.g, color.b).into()
 }
 
-fn to_anstyle_effects(style: syntect::highlighting::FontStyle) -> anstyle::Effects {
+pub fn to_anstyle_effects(style: syntect::highlighting::FontStyle) -> anstyle::Effects {
     let mut effects = anstyle::Effects::new();
 
     if style.contains(syntect::highlighting::FontStyle::BOLD) {
