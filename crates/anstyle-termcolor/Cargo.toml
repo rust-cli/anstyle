@@ -30,5 +30,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.0", path = "../anstyle" }
+anstyle = { version = "0.2.5", path = "../anstyle" }
 termcolor = "1.1.3"
