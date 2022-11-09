@@ -224,10 +224,10 @@ impl AnsiColor {
 impl AnsiColorFmt for AnsiColor {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match (context, self.is_bright()) {
-            (ColorContext::Foreground, true) => write!(f, "10{}", self.suffix()),
-            (ColorContext::Background, true) => write!(f, "9{}", self.suffix()),
-            (ColorContext::Foreground, false) => write!(f, "4{}", self.suffix()),
-            (ColorContext::Background, false) => write!(f, "3{}", self.suffix()),
+            (ColorContext::Background, true) => write!(f, "10{}", self.suffix()),
+            (ColorContext::Foreground, true) => write!(f, "9{}", self.suffix()),
+            (ColorContext::Background, false) => write!(f, "4{}", self.suffix()),
+            (ColorContext::Foreground, false) => write!(f, "3{}", self.suffix()),
             // No per-color codes; must delegate to `XTermColor`
             (ColorContext::Underline, _) => XTermColor::from(*self).ansi_fmt(f, context),
         }
@@ -344,10 +344,10 @@ impl XTermColor {
 impl AnsiColorFmt for XTermColor {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match context {
-            ColorContext::Foreground => {
+            ColorContext::Background => {
                 write!(f, "48;")?;
             }
-            ColorContext::Background => {
+            ColorContext::Foreground => {
                 write!(f, "38;")?;
             }
             ColorContext::Underline => {
@@ -444,10 +444,10 @@ impl RgbColor {
 impl AnsiColorFmt for RgbColor {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match context {
-            ColorContext::Foreground => {
+            ColorContext::Background => {
                 write!(f, "48;")?;
             }
-            ColorContext::Background => {
+            ColorContext::Foreground => {
                 write!(f, "38;")?;
             }
             ColorContext::Underline => {
