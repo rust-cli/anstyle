@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Fix swapping of foreground and background introduced in 0.2.3
+
 ## [0.2.4] - 2022-10-07
 
 ## [0.2.3] - 2022-10-07
