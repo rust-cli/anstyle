@@ -1,0 +1,18 @@
+{
+  "semanticCommits": "enabled",
+  "configMigration": true,
+  "packageRules": [
+    {
+      "groupName": "dev",
+      "matchManagers": ["cargo"],
+      "matchDepTypes": ["dev-dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+    },
+    {
+      "groupName": "breaking",
+      "matchManagers": ["cargo"],
+      "matchUpdateTypes": ["major"],
+    },
+  ],
+}
