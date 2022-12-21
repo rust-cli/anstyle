@@ -1,0 +1,26 @@
+[package]
+name = "anstyle-roff"
+version = "0.1.0"
+description = "Adapt between anstyle and roff"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/rust-cli/anstyle.git"
+homepage = "https://github.com/rust-cli/anstyle"
+categories = ["command-line-interface"]
+keywords = ["ansi", "terminal", "roff"]
+edition = "2021"
+
+[package.metadata.release]
+pre-release-replacements = [
+  {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
+  {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
+  {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}", min=1},
+  {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n## [Unreleased] - ReleaseDate\n", exactly=1},
+  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/rust-cli/anstyle/compare/{{tag_name}}...HEAD", exactly=1},
+]
+
+[dependencies]
+anstyle = { version = "0.2.5", path = "../anstyle" }
+roff = "0.2.1" 
+
+[dev-dependencies]
+snapbox = "0.4.4"
