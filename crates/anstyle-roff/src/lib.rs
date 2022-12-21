@@ -1,0 +1,173 @@
+//! Convert from ansi stylings to ROFF Control Lines
+//! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
+//! roff output.
+
+mod styled_str;
+use anstyle::{AnsiColor, Color, RgbColor, Style, XTermColor};
+use anstyle_lossy::palette::Palette;
+use roff::{bold, italic, Roff};
+use styled_str::StyledStr;
+
+/// Static Strings defining ROFF Control Requests
+mod control_requests {
+    /// Control to Create a Color definition
+    pub const CREATE_COLOR: &str = "defcolor";
+    /// Roff control request to set background color (fill color)
+    pub const BACKGROUND: &str = "fcolor";
+    /// Roff control request to set foreground color (glyph color)
+    pub const FOREGROUND: &str = "gcolor";
+}
+
+/// Generate A RoffStyle from Style
+///
+/// ```rust
+/// use anstyle::{Color, RgbColor};
+///
+/// let text = "\u{1b}[44;31mtest\u{1b}[0m";
+///
+/// let roff_doc = anstyle_roff::to_roff(text);
+/// let expected = r#".gcolor red
+/// .fcolor blue
+/// test
+/// "#;
+///
+/// assert_eq!(roff_doc.to_roff(), expected);
+/// ```
+pub fn to_roff(styled_text: &str) -> Roff {
+    let mut doc = Roff::new();
+    for styled in styled_str::styled_stream(styled_text) {
+        set_color(
+            (&styled.style.get_fg_color(), &styled.style.get_bg_color()),
+            &mut doc,
+        );
+        set_effects_and_text(&styled, &mut doc);
+    }
+    doc
+}
+
+fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
+    // Roff (the crate) only supports these inline commands
+    //  - Bold
+    //  - Italic
+    //  - Roman (plain text)
+    // If we want more support, or even support combined formats, we will need
+    // to push improvements to roff upstream or implement a more thorough roff crate
+    // perhaps by spinning off some of this code
+    let effects = styled.style.get_effects();
+    if effects.contains(anstyle::Effects::BOLD) | has_bright_fg(&styled.style) {
+        doc.text(vec![bold(styled.text)]);
+    } else if effects.contains(anstyle::Effects::ITALIC) {
+        doc.text(vec![italic(styled.text)]);
+    } else {
+        doc.text(vec![roff::roman(styled.text)]);
+    }
+}
+
+fn has_bright_fg(style: &Style) -> bool {
+    style
+        .get_fg_color()
+        .as_ref()
+        .map(is_bright)
+        .unwrap_or(false)
+}
+
+/// Check if Color is an AnsiColor::Bright* variant
+fn is_bright(fg_color: &Color) -> bool {
+    if let Color::Ansi(color) = fg_color {
+        matches!(
+            color,
+            AnsiColor::BrightRed
+                | AnsiColor::BrightBlue
+                | AnsiColor::BrightBlack
+                | AnsiColor::BrightCyan
+                | AnsiColor::BrightGreen
+                | AnsiColor::BrightWhite
+                | AnsiColor::BrightYellow
+                | AnsiColor::BrightMagenta
+        )
+    } else {
+        false
+    }
+}
+
+type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
+
+fn set_color(colors: ColorSet, doc: &mut Roff) {
+    add_color_to_roff(doc, control_requests::FOREGROUND, colors.0);
+    add_color_to_roff(doc, control_requests::BACKGROUND, colors.1);
+}
+
+fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
+    match color {
+        Some(Color::Rgb(c)) => {
+            // Adding Support for RGB colors, however cansi does not support
+            // RGB Colors, so this is not executed. If we switch to a provider
+            // That has RGB support we will also get it for Roff
+            let name = rgb_name(c);
+            doc.control(
+                control_requests::CREATE_COLOR,
+                vec![name.as_str(), "rgb", to_hex(c).as_str()],
+            )
+            .control(control_request, vec![name.as_str()]);
+        }
+
+        Some(Color::Ansi(c)) => {
+            doc.control(control_request, vec![ansi_color_to_roff(c)]);
+        }
+        Some(Color::XTerm(c)) => {
+            // Adding Support for XTerm colors, however cansi does not support
+            // XTerm Colors, so this is not executed. If we switch to a provider
+            // That has Xterm support we will also get it for Roff
+            add_color_to_roff(doc, control_request, &Some(xterm_to_ansi_or_rgb(*c)))
+        }
+        None => {
+            // TODO: get rid of "default" hardcoded str?
+            doc.control(control_request, vec!["default"]);
+        }
+    }
+}
+
+/// Non Lossy Conversion of Xterm color to one that Roff can handle
+fn xterm_to_ansi_or_rgb(color: XTermColor) -> Color {
+    match color.into_ansi() {
+        Some(ansi_color) => Color::Ansi(ansi_color),
+        None => Color::Rgb(anstyle_lossy::xterm_to_rgb(color, Palette::default())),
+    }
+}
+
+fn rgb_name(c: &RgbColor) -> String {
+    format!("hex_{}", to_hex(c).as_str())
+}
+
+fn to_hex(rgb: &RgbColor) -> String {
+    let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
+    format!("#{:06x}", val)
+}
+
+/// Map Color and Bright Variants to Roff Color styles
+fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
+    match color {
+        AnsiColor::Black | AnsiColor::BrightBlack => "black",
+        AnsiColor::Red | AnsiColor::BrightRed => "red",
+        AnsiColor::Green | AnsiColor::BrightGreen => "green",
+        AnsiColor::Yellow | AnsiColor::BrightYellow => "yellow",
+        AnsiColor::Blue | AnsiColor::BrightBlue => "blue",
+        AnsiColor::Magenta | AnsiColor::BrightMagenta => "magenta",
+        AnsiColor::Cyan | AnsiColor::BrightCyan => "cyan",
+        AnsiColor::White | AnsiColor::BrightWhite => "white",
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anstyle::RgbColor;
+
+    #[test]
+    fn test_to_hex() {
+        assert_eq!(to_hex(&RgbColor(0, 0, 0)).as_str(), "#000000");
+        assert_eq!(to_hex(&RgbColor(255, 0, 0)).as_str(), "#ff0000");
+        assert_eq!(to_hex(&RgbColor(0, 255, 0)).as_str(), "#00ff00");
+        assert_eq!(to_hex(&RgbColor(0, 0, 255)).as_str(), "#0000ff");
+    }
+}
