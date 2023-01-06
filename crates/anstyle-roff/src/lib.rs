@@ -3,6 +3,7 @@
 //! roff output.
 
 mod roff_styles;
+mod style_stream;
 use roff::{bold, italic, Roff};
 
 mod sealed {
@@ -178,5 +179,3 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<roff_
     }
 }
 
-#[cfg(test)]
-mod tests {}

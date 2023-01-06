@@ -65,6 +65,7 @@ name = "anstyle-roff"
 version = "0.1.0"
 dependencies = [
  "anstyle",
+ "cansi",
  "roff",
  "snapbox",
 ]
@@ -104,6 +105,12 @@ name = "bitflags"
 version = "1.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "cansi"
+version = "2.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4bdcae87153686017415ce77e48c53e6818a0a058f0e21b56640d1e944967ef8"
 
 [[package]]
 name = "cc"

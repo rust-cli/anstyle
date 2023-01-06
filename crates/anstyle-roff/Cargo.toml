@@ -20,7 +20,8 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "0.2.5", path = "../anstyle" }
-roff = "0.2.1" 
+roff = "0.2.1"
+cansi = "2.2.1"
 
 [dev-dependencies]
 snapbox = "0.4.4"
