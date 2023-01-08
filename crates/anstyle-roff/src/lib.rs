@@ -6,21 +6,6 @@ mod roff_styles;
 mod style_stream;
 use roff::{bold, italic, Roff};
 
-mod sealed {
-    pub(crate) trait Sealed {}
-}
-
-trait Ext: sealed::Sealed {
-    fn to_roff(self) -> RoffStyle;
-}
-
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_roff(self) -> RoffStyle {
-        to_roff(self)
-    }
-}
 
 #[derive(Debug, Default, Clone)]
 pub struct RoffStyle {
@@ -60,10 +45,16 @@ impl RoffStyle {
         self
     }
 
-    /// Render the style, with associated text as Roff Document
-    pub fn render(&self) -> String {
+    /// Get the style out as a Roff type
+    pub (crate) fn as_roff(&self) -> Roff {
         let mut doc = Roff::new();
         doc.extend([set_color((&self.fg, &self.bg)), self.set_effects()]);
+        doc
+    }
+
+    /// Render the style, with associated text as Roff Document
+    pub fn render(&self) -> String {
+        let doc = self.as_roff();
         doc.to_roff()
     }
 
@@ -109,15 +100,23 @@ impl RoffStyle {
 /// "#;
 /// assert_eq!(roff_style.render(), expected);
 /// ```
-pub fn to_roff(style: anstyle::Style) -> RoffStyle {
-    let fg = ansi_color_to_roff(style.get_fg_color());
-    let bg = ansi_color_to_roff(style.get_bg_color());
-    let effect = style.get_effects();
+pub fn to_roff(styled_text: &str) -> Vec<Roff> {
 
-    // doc.extend([set_color((fg, bg))]);
-    let mut roff_style = RoffStyle::new();
-    roff_style.fg(fg).bg(bg).effects(effect);
-    roff_style
+    let stream = style_stream::StyledStream::new(styled_text);
+
+    let mut roff_docs = vec![];
+    for style_str in stream {
+        let style = style_str.style();
+        let fg = ansi_color_to_roff(style.get_fg_color());
+        let bg = ansi_color_to_roff(style.get_bg_color());
+        let effect = style.get_effects();
+        let mut roff_style = RoffStyle::new();
+        roff_style.fg(fg).bg(bg).effects(effect);
+        roff_style.text(style_str.text().to_string());
+        roff_docs.push(roff_style.as_roff())
+    }
+    roff_docs
+
 }
 
 fn ansi_color_to_roff(color: Option<anstyle::Color>) -> Option<roff_styles::Color> {
@@ -128,9 +127,9 @@ fn ansi_color_to_roff(color: Option<anstyle::Color>) -> Option<roff_styles::Colo
         Some(anstyle::Color::Ansi(color)) => {
             Some(roff_styles::Color::AnsiColor(ansi_color(color).to_string()))
         }
-        Some(anstyle::Color::XTerm(color)) => {
-            color.into_ansi().map(|c| roff_styles::Color::AnsiColor(ansi_color(c).to_string()))
-        }
+        Some(anstyle::Color::XTerm(color)) => color
+            .into_ansi()
+            .map(|c| roff_styles::Color::AnsiColor(ansi_color(c).to_string())),
         _ => None,
     }
 }
@@ -178,4 +177,3 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<roff_
         }
     }
 }
-

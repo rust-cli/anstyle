@@ -1,10 +1,12 @@
+use std::ops::{Deref, DerefMut};
+
 #[derive(Debug, Default, Clone)]
 pub(crate) struct StyledStream<'text> {
     inner: Vec<StyledStr<'text>>,
 }
 
 #[derive(Debug, Default, Clone, Copy)]
-struct StyledStr<'text> {
+pub(crate) struct  StyledStr<'text> {
     text: &'text str,
     style: anstyle::Style,
 }
@@ -48,6 +50,40 @@ fn is_faint(intensity: Option<cansi::Intensity>) -> bool {
     matches!(intensity, Some(cansi::Intensity::Faint))
 }
 
+impl StyledStr<'_> {
+    pub(crate) fn text(&self) -> &str {
+        self.text
+    }
+
+    pub(crate) fn style(&self) -> &anstyle::Style {
+        &self.style
+    }
+}
+
+impl<'a> IntoIterator for StyledStream<'a> {
+    type Item = StyledStr<'a>;
+    type IntoIter = <Vec<StyledStr<'a>> as IntoIterator>::IntoIter;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.inner.into_iter()
+    }
+}
+
+impl<'a> Deref for StyledStream<'a> {
+    type Target = [StyledStr<'a>];
+
+    fn deref(&self) -> &Self::Target {
+        &self.inner[..]
+    }
+}
+
+impl<'a> DerefMut for StyledStream<'a> {
+
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.inner[..]
+    }
+}
+
 fn cansi_to_anstyle_color(color: Option<cansi::Color>) -> Option<anstyle::Color> {
     match color {
         Some(cansi::Color::Black) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Black)),
@@ -85,7 +121,7 @@ fn cansi_to_anstyle_color(color: Option<cansi::Color>) -> Option<anstyle::Color>
 }
 
 impl<'text> StyledStream<'text> {
-    fn new(s: &'text str) -> Self {
+    pub(crate) fn new(s: &'text str) -> Self {
         let categorized = cansi::v3::categorise_text(s);
         Self {
             inner: categorized.into_iter().map(|x| x.into()).collect(),
