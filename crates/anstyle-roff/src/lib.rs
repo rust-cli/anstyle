@@ -6,9 +6,8 @@ mod roff_styles;
 mod style_stream;
 use roff::{bold, italic, Roff};
 
-
 #[derive(Debug, Default, Clone)]
-pub struct RoffStyle {
+pub(crate) struct RoffStyle {
     fg: Option<roff_styles::Color>,
     bg: Option<roff_styles::Color>,
     effects: anstyle::Effects,
@@ -46,16 +45,10 @@ impl RoffStyle {
     }
 
     /// Get the style out as a Roff type
-    pub (crate) fn as_roff(&self) -> Roff {
+    pub(crate) fn as_roff(&self) -> Roff {
         let mut doc = Roff::new();
         doc.extend([set_color((&self.fg, &self.bg)), self.set_effects()]);
         doc
-    }
-
-    /// Render the style, with associated text as Roff Document
-    pub fn render(&self) -> String {
-        let doc = self.as_roff();
-        doc.to_roff()
     }
 
     fn set_effects(&self) -> Roff {
@@ -90,18 +83,17 @@ impl RoffStyle {
 /// ```rust
 /// use anstyle::{Color, RgbColor};
 ///
-/// let style = anstyle::Style::new()
-///     .fg_color(Some(Color::Rgb(RgbColor(255, 0, 170))));
+/// let text = "\u{1b}[44;31mtest\u{1b}[0m";
 ///
-/// let roff_style = anstyle_roff::to_roff(style);
-/// let expected = r#".defcolor hex_#ff00aa rgb #ff00aa
-/// .gcolor hex_#ff00aa
-/// .fcolor default
+/// let roff_doc = anstyle_roff::to_roff(text);
+/// let expected = r#".gcolor red
+/// .fcolor blue
+/// test
 /// "#;
-/// assert_eq!(roff_style.render(), expected);
+///
+/// assert_eq!(roff_doc.to_roff(), expected);
 /// ```
-pub fn to_roff(styled_text: &str) -> Vec<Roff> {
-
+pub fn to_roff(styled_text: &str) -> Roff {
     let stream = style_stream::StyledStream::new(styled_text);
 
     let mut roff_docs = vec![];
@@ -115,8 +107,10 @@ pub fn to_roff(styled_text: &str) -> Vec<Roff> {
         roff_style.text(style_str.text().to_string());
         roff_docs.push(roff_style.as_roff())
     }
-    roff_docs
 
+    let mut doc = Roff::new();
+    doc.extend(roff_docs);
+    doc
 }
 
 fn ansi_color_to_roff(color: Option<anstyle::Color>) -> Option<roff_styles::Color> {

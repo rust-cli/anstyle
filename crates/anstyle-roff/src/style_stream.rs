@@ -6,19 +6,20 @@ pub(crate) struct StyledStream<'text> {
 }
 
 #[derive(Debug, Default, Clone, Copy)]
-pub(crate) struct  StyledStr<'text> {
+pub(crate) struct StyledStr<'text> {
     text: &'text str,
     style: anstyle::Style,
 }
 
 impl<'text> From<cansi::v3::CategorisedSlice<'text>> for StyledStr<'text> {
     fn from(category: cansi::v3::CategorisedSlice<'text>) -> Self {
-        let style = anstyle::Style::new();
-        style
+        let mut style = anstyle::Style::new();
+        style = style
             .fg_color(cansi_to_anstyle_color(category.fg))
             .bg_color(cansi_to_anstyle_color(category.bg));
+
         if let Some(true) = category.underline {
-            style.underline();
+            style = style.underline();
         }
 
         let effects = anstyle::Effects::new()
@@ -33,7 +34,7 @@ impl<'text> From<cansi::v3::CategorisedSlice<'text>> for StyledStr<'text> {
             .set(anstyle::Effects::BOLD, is_bold(category.intensity))
             .set(anstyle::Effects::DIMMED, is_faint(category.intensity));
 
-        style.effects(effects);
+        style = style.effects(effects);
 
         Self {
             text: category.text,
@@ -78,7 +79,6 @@ impl<'a> Deref for StyledStream<'a> {
 }
 
 impl<'a> DerefMut for StyledStream<'a> {
-
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.inner[..]
     }
@@ -124,7 +124,7 @@ impl<'text> StyledStream<'text> {
     pub(crate) fn new(s: &'text str) -> Self {
         let categorized = cansi::v3::categorise_text(s);
         Self {
-            inner: categorized.into_iter().map(|x| x.into()).collect(),
+            inner: categorized.into_iter().map(|x| dbg!(x.into())).collect(),
         }
     }
 }
