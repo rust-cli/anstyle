@@ -162,14 +162,12 @@ mod tests {
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
     }
 
-
     #[test]
     fn from_categorized_blink() {
         let categorised = styled_str!("Hello", Effects:"blink":Some(true););
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::BLINK));
     }
-
 
     #[test]
     fn from_categorized_reversed() {
@@ -182,7 +180,10 @@ mod tests {
     fn from_categorized_strikthrough() {
         let categorised = styled_str!("Hello", Effects:"strikethrough":Some(true););
         let styled_str: StyledStr = categorised.into();
-        assert!(styled_str.style.get_effects().contains(Effects::STRIKETHROUGH));
+        assert!(styled_str
+            .style
+            .get_effects()
+            .contains(Effects::STRIKETHROUGH));
     }
 
     #[test]
@@ -196,15 +197,20 @@ mod tests {
     fn from_categorized_bg() {
         let categorised = styled_str!("Hello", Color:"bg":Some(Color::Blue););
         let styled_str: StyledStr = categorised.into();
-        assert!(matches!(styled_str.style.get_bg_color(), Some(AColor::Ansi(AnsiColor::Blue))));
+        assert!(matches!(
+            styled_str.style.get_bg_color(),
+            Some(AColor::Ansi(AnsiColor::Blue))
+        ));
     }
-
 
     #[test]
     fn from_categorized_fg() {
         let categorised = styled_str!("Hello", Color:"fg":Some(Color::Blue););
         let styled_str: StyledStr = categorised.into();
-        assert!(matches!(styled_str.style.get_fg_color(), Some(AColor::Ansi(AnsiColor::Blue))));
+        assert!(matches!(
+            styled_str.style.get_fg_color(),
+            Some(AColor::Ansi(AnsiColor::Blue))
+        ));
     }
 
     #[test]
@@ -216,7 +222,7 @@ mod tests {
 
     #[test]
     fn from_categorized_faint() {
-        let categorised = styled_str!("Hello", Intensity:Some(Intensity::Faint);) ;
+        let categorised = styled_str!("Hello", Intensity:Some(Intensity::Faint););
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::DIMMED));
     }
