@@ -1,3 +1,4 @@
+use anstyle::{AnsiColor, Color as AColor, Effects, Style};
 use cansi::{v3::CategorisedSlice, Color, Intensity};
 use std::ops::{Deref, DerefMut};
 
@@ -9,12 +10,12 @@ pub(crate) struct StyledStream<'text> {
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct StyledStr<'text> {
     text: &'text str,
-    style: anstyle::Style,
+    style: Style,
 }
 
 impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
-    fn from(category: cansi::v3::CategorisedSlice<'text>) -> Self {
-        let mut style = anstyle::Style::new();
+    fn from(category: CategorisedSlice<'text>) -> Self {
+        let mut style = Style::new();
         style = style
             .fg_color(cansi_to_anstyle_color(category.fg))
             .bg_color(cansi_to_anstyle_color(category.bg));
@@ -33,18 +34,18 @@ impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
     }
 }
 
-fn create_effects(category: &CategorisedSlice) -> anstyle::Effects {
-    anstyle::Effects::new()
-        .set(anstyle::Effects::ITALIC, category.italic.unwrap_or(false))
-        .set(anstyle::Effects::BLINK, category.blink.unwrap_or(false))
-        .set(anstyle::Effects::INVERT, category.reversed.unwrap_or(false))
-        .set(anstyle::Effects::HIDDEN, category.hidden.unwrap_or(false))
+fn create_effects(category: &CategorisedSlice) -> Effects {
+    Effects::new()
+        .set(Effects::ITALIC, category.italic.unwrap_or(false))
+        .set(Effects::BLINK, category.blink.unwrap_or(false))
+        .set(Effects::INVERT, category.reversed.unwrap_or(false))
+        .set(Effects::HIDDEN, category.hidden.unwrap_or(false))
         .set(
-            anstyle::Effects::STRIKETHROUGH,
+            Effects::STRIKETHROUGH,
             category.strikethrough.unwrap_or(false),
         )
-        .set(anstyle::Effects::BOLD, is_bold(category.intensity))
-        .set(anstyle::Effects::DIMMED, is_faint(category.intensity))
+        .set(Effects::BOLD, is_bold(category.intensity))
+        .set(Effects::DIMMED, is_faint(category.intensity))
 }
 
 fn is_bold(intensity: Option<Intensity>) -> bool {
@@ -60,7 +61,7 @@ impl StyledStr<'_> {
         self.text
     }
 
-    pub(crate) fn style(&self) -> &anstyle::Style {
+    pub(crate) fn style(&self) -> &Style {
         &self.style
     }
 }
@@ -88,24 +89,24 @@ impl<'a> DerefMut for StyledStream<'a> {
     }
 }
 
-fn cansi_to_anstyle_color(color: Option<Color>) -> Option<anstyle::Color> {
+fn cansi_to_anstyle_color(color: Option<Color>) -> Option<AColor> {
     match color {
-        Some(Color::Black) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Black)),
-        Some(Color::Red) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Red)),
-        Some(Color::Green) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Green)),
-        Some(Color::Yellow) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Yellow)),
-        Some(Color::Blue) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Blue)),
-        Some(Color::Magenta) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Magenta)),
-        Some(Color::Cyan) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Cyan)),
-        Some(Color::White) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::White)),
-        Some(Color::BrightBlack) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlack)),
-        Some(Color::BrightRed) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightRed)),
-        Some(Color::BrightGreen) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightGreen)),
-        Some(Color::BrightYellow) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightYellow)),
-        Some(Color::BrightBlue) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlue)),
-        Some(Color::BrightMagenta) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightMagenta)),
-        Some(Color::BrightCyan) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightCyan)),
-        Some(Color::BrightWhite) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightWhite)),
+        Some(Color::Black) => Some(AColor::Ansi(AnsiColor::Black)),
+        Some(Color::Red) => Some(AColor::Ansi(AnsiColor::Red)),
+        Some(Color::Green) => Some(AColor::Ansi(AnsiColor::Green)),
+        Some(Color::Yellow) => Some(AColor::Ansi(AnsiColor::Yellow)),
+        Some(Color::Blue) => Some(AColor::Ansi(AnsiColor::Blue)),
+        Some(Color::Magenta) => Some(AColor::Ansi(AnsiColor::Magenta)),
+        Some(Color::Cyan) => Some(AColor::Ansi(AnsiColor::Cyan)),
+        Some(Color::White) => Some(AColor::Ansi(AnsiColor::White)),
+        Some(Color::BrightBlack) => Some(AColor::Ansi(AnsiColor::BrightBlack)),
+        Some(Color::BrightRed) => Some(AColor::Ansi(AnsiColor::BrightRed)),
+        Some(Color::BrightGreen) => Some(AColor::Ansi(AnsiColor::BrightGreen)),
+        Some(Color::BrightYellow) => Some(AColor::Ansi(AnsiColor::BrightYellow)),
+        Some(Color::BrightBlue) => Some(AColor::Ansi(AnsiColor::BrightBlue)),
+        Some(Color::BrightMagenta) => Some(AColor::Ansi(AnsiColor::BrightMagenta)),
+        Some(Color::BrightCyan) => Some(AColor::Ansi(AnsiColor::BrightCyan)),
+        Some(Color::BrightWhite) => Some(AColor::Ansi(AnsiColor::BrightWhite)),
         None => None,
     }
 }
