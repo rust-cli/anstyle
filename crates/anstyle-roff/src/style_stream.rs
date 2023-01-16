@@ -1,3 +1,4 @@
+use cansi::{v3::CategorisedSlice, Color, Intensity};
 use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Default, Clone)]
@@ -11,7 +12,7 @@ pub(crate) struct StyledStr<'text> {
     style: anstyle::Style,
 }
 
-impl<'text> From<cansi::v3::CategorisedSlice<'text>> for StyledStr<'text> {
+impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
     fn from(category: cansi::v3::CategorisedSlice<'text>) -> Self {
         let mut style = anstyle::Style::new();
         style = style
@@ -22,18 +23,7 @@ impl<'text> From<cansi::v3::CategorisedSlice<'text>> for StyledStr<'text> {
             style = style.underline();
         }
 
-        let effects = anstyle::Effects::new()
-            .set(anstyle::Effects::ITALIC, category.italic.unwrap_or(false))
-            .set(anstyle::Effects::BLINK, category.blink.unwrap_or(false))
-            .set(anstyle::Effects::INVERT, category.reversed.unwrap_or(false))
-            .set(anstyle::Effects::HIDDEN, category.hidden.unwrap_or(false))
-            .set(
-                anstyle::Effects::STRIKETHROUGH,
-                category.strikethrough.unwrap_or(false),
-            )
-            .set(anstyle::Effects::BOLD, is_bold(category.intensity))
-            .set(anstyle::Effects::DIMMED, is_faint(category.intensity));
-
+        let effects = create_effects(&category);
         style = style.effects(effects);
 
         Self {
@@ -43,12 +33,26 @@ impl<'text> From<cansi::v3::CategorisedSlice<'text>> for StyledStr<'text> {
     }
 }
 
-fn is_bold(intensity: Option<cansi::Intensity>) -> bool {
-    matches!(intensity, Some(cansi::Intensity::Bold))
+fn create_effects(category: &CategorisedSlice) -> anstyle::Effects {
+    anstyle::Effects::new()
+        .set(anstyle::Effects::ITALIC, category.italic.unwrap_or(false))
+        .set(anstyle::Effects::BLINK, category.blink.unwrap_or(false))
+        .set(anstyle::Effects::INVERT, category.reversed.unwrap_or(false))
+        .set(anstyle::Effects::HIDDEN, category.hidden.unwrap_or(false))
+        .set(
+            anstyle::Effects::STRIKETHROUGH,
+            category.strikethrough.unwrap_or(false),
+        )
+        .set(anstyle::Effects::BOLD, is_bold(category.intensity))
+        .set(anstyle::Effects::DIMMED, is_faint(category.intensity))
 }
 
-fn is_faint(intensity: Option<cansi::Intensity>) -> bool {
-    matches!(intensity, Some(cansi::Intensity::Faint))
+fn is_bold(intensity: Option<Intensity>) -> bool {
+    matches!(intensity, Some(Intensity::Bold))
+}
+
+fn is_faint(intensity: Option<Intensity>) -> bool {
+    matches!(intensity, Some(Intensity::Faint))
 }
 
 impl StyledStr<'_> {
@@ -84,38 +88,24 @@ impl<'a> DerefMut for StyledStream<'a> {
     }
 }
 
-fn cansi_to_anstyle_color(color: Option<cansi::Color>) -> Option<anstyle::Color> {
+fn cansi_to_anstyle_color(color: Option<Color>) -> Option<anstyle::Color> {
     match color {
-        Some(cansi::Color::Black) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Black)),
-        Some(cansi::Color::Red) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Red)),
-        Some(cansi::Color::Green) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Green)),
-        Some(cansi::Color::Yellow) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Yellow)),
-        Some(cansi::Color::Blue) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Blue)),
-        Some(cansi::Color::Magenta) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Magenta)),
-        Some(cansi::Color::Cyan) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Cyan)),
-        Some(cansi::Color::White) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::White)),
-        Some(cansi::Color::BrightBlack) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlack))
-        }
-        Some(cansi::Color::BrightRed) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightRed)),
-        Some(cansi::Color::BrightGreen) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightGreen))
-        }
-        Some(cansi::Color::BrightYellow) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightYellow))
-        }
-        Some(cansi::Color::BrightBlue) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlue))
-        }
-        Some(cansi::Color::BrightMagenta) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightMagenta))
-        }
-        Some(cansi::Color::BrightCyan) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightCyan))
-        }
-        Some(cansi::Color::BrightWhite) => {
-            Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightWhite))
-        }
+        Some(Color::Black) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Black)),
+        Some(Color::Red) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Red)),
+        Some(Color::Green) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Green)),
+        Some(Color::Yellow) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Yellow)),
+        Some(Color::Blue) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Blue)),
+        Some(Color::Magenta) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Magenta)),
+        Some(Color::Cyan) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::Cyan)),
+        Some(Color::White) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::White)),
+        Some(Color::BrightBlack) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlack)),
+        Some(Color::BrightRed) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightRed)),
+        Some(Color::BrightGreen) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightGreen)),
+        Some(Color::BrightYellow) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightYellow)),
+        Some(Color::BrightBlue) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightBlue)),
+        Some(Color::BrightMagenta) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightMagenta)),
+        Some(Color::BrightCyan) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightCyan)),
+        Some(Color::BrightWhite) => Some(anstyle::Color::Ansi(anstyle::AnsiColor::BrightWhite)),
         None => None,
     }
 }
