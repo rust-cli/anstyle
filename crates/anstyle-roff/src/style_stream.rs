@@ -9,8 +9,8 @@ pub(crate) struct StyledStream<'text> {
 
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct StyledStr<'text> {
-    text: &'text str,
-    style: Style,
+    pub text: &'text str,
+    pub style: Style,
 }
 
 impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
@@ -56,15 +56,6 @@ fn is_faint(intensity: Option<Intensity>) -> bool {
     matches!(intensity, Some(Intensity::Faint))
 }
 
-impl StyledStr<'_> {
-    pub(crate) fn text(&self) -> &str {
-        self.text
-    }
-
-    pub(crate) fn style(&self) -> &Style {
-        &self.style
-    }
-}
 
 impl<'a> IntoIterator for StyledStream<'a> {
     type Item = StyledStr<'a>;

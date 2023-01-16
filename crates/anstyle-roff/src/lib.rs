@@ -98,13 +98,13 @@ pub fn to_roff(styled_text: &str) -> Roff {
 
     let mut roff_docs = vec![];
     for style_str in stream {
-        let style = style_str.style();
+        let style = style_str.style;
         let fg = ansi_color_to_roff(style.get_fg_color());
         let bg = ansi_color_to_roff(style.get_bg_color());
         let effect = style.get_effects();
         let mut roff_style = RoffStyle::new();
         roff_style.fg(fg).bg(bg).effects(effect);
-        roff_style.text(style_str.text().to_string());
+        roff_style.text(style_str.text.to_string());
         roff_docs.push(roff_style.as_roff())
     }
 
