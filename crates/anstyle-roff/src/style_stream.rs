@@ -20,10 +20,6 @@ impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
             .fg_color(cansi_to_anstyle_color(category.fg))
             .bg_color(cansi_to_anstyle_color(category.bg));
 
-        if let Some(true) = category.underline {
-            style = style.underline();
-        }
-
         let effects = create_effects(&category);
         style = style.effects(effects);
 
@@ -44,6 +40,7 @@ fn create_effects(category: &CategorisedSlice) -> Effects {
             Effects::STRIKETHROUGH,
             category.strikethrough.unwrap_or(false),
         )
+        .set(Effects::UNDERLINE, category.underline.unwrap_or(false))
         .set(Effects::BOLD, is_bold(category.intensity))
         .set(Effects::DIMMED, is_faint(category.intensity))
 }
@@ -108,5 +105,39 @@ impl<'text> StyledStream<'text> {
         Self {
             inner: categorized.into_iter().map(|x| dbg!(x.into())).collect(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn from_categorized_to_styled_str() {
+        let categorised = CategorisedSlice {
+            text: "Hello",
+            start: 0,
+            end: 5,
+            fg: None,
+            bg: None,
+            intensity: Some(Intensity::Normal),
+            italic: Some(false),
+            underline: Some(true),
+            blink: None,
+            reversed: None,
+            strikethrough: None,
+            hidden: None,
+        };
+        let styled_str: StyledStr = categorised.into();
+        assert_eq!(styled_str.style.get_fg_color(), None);
+        assert_eq!(styled_str.style.get_bg_color(), None);
+        assert!(!styled_str.style.get_effects().contains(Effects::DIMMED));
+        assert!(!styled_str.style.get_effects().contains(Effects::BOLD));
+        assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
+        assert!(!styled_str.style.get_effects().contains(Effects::BLINK));
+        assert!(!styled_str.style.get_effects().contains(Effects::INVERT));
+        assert!(!styled_str.style.get_effects().contains(Effects::HIDDEN));
+        assert!(!styled_str.style.get_effects().contains(Effects::STRIKETHROUGH));
     }
 }
