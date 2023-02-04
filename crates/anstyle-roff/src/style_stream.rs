@@ -102,7 +102,7 @@ impl<'text> StyledStream<'text> {
     pub(crate) fn new(s: &'text str) -> Self {
         let categorized = cansi::v3::categorise_text(s);
         Self {
-            inner: categorized.into_iter().map(|x| dbg!(x.into())).collect(),
+            inner: categorized.into_iter().map(|x| x.into()).collect(),
         }
     }
 }
