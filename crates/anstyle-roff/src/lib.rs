@@ -23,7 +23,6 @@ use style_stream::StyledStr;
 /// assert_eq!(roff_doc.to_roff(), expected);
 /// ```
 pub fn to_roff(styled_text: &str) -> Roff {
-
     let mut roff_docs = vec![];
     for styled_str in style_stream::styled_stream(styled_text) {
         roff_docs.push(as_roff(&styled_str))
@@ -54,18 +53,22 @@ fn set_effects(styled: &StyledStr) -> Roff {
     // perhaps by spinning off some of this code
     let effects = styled.style.get_effects();
     let mut doc = Roff::new();
+
     if effects.contains(anstyle::Effects::BOLD) {
         doc.text(vec![bold(styled.text)]);
         return doc;
     }
+
     if effects.contains(anstyle::Effects::ITALIC) {
         doc.text(vec![italic(styled.text)]);
         return doc;
     }
+
     if effects.is_plain() {
         doc.text(vec![roff::roman(styled.text)]);
         return doc;
     }
+
     doc
 }
 
