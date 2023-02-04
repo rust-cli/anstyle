@@ -85,7 +85,7 @@ fn set_color(colors: (&Option<Color>, &Option<Color>)) -> Roff {
 fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
     match color {
         Some(Color::Rgb(c)) => {
-            let name = format!("hex_{}", as_hex(c).as_str());
+            let name = rgb_name(c);
             doc.control(
                 control_requests::CREATE_COLOR,
                 vec![name.as_str(), "rgb", as_hex(c).as_str()],
@@ -101,6 +101,15 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             doc.control(control_request, vec!["default"]);
         }
     }
+}
+
+fn rgb_name(c: &RgbColor) -> String {
+    format!("hex_{}", as_hex(c).as_str())
+}
+
+fn as_hex(rgb: &RgbColor) -> String {
+    let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
+    format!("#{:06x}", val)
 }
 
 fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
@@ -125,11 +134,6 @@ mod control_requests {
     pub const BACKGROUND: &'static str = "fcolor";
     /// Roff control request to set foreground color (glyph color)
     pub const FOREGROUND: &'static str = "gcolor";
-}
-
-pub(crate) fn as_hex(rgb: &RgbColor) -> String {
-    let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
-    format!("#{:06x}", val)
 }
 
 /// Default AsciiColors supported by roff

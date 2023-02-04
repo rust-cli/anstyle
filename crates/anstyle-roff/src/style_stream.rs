@@ -6,7 +6,6 @@ pub(crate) fn styled_stream<'txt>(text: &'txt str) -> impl Iterator<Item = Style
     categorized.into_iter().map(|x| x.into())
 }
 
-
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct StyledStr<'text> {
     pub text: &'text str,
@@ -74,7 +73,6 @@ fn cansi_to_anstyle_color(color: Option<Color>) -> Option<AColor> {
         None => None,
     }
 }
-
 
 #[cfg(test)]
 mod tests {
