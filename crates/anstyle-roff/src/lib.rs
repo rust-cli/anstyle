@@ -23,11 +23,10 @@ use style_stream::StyledStr;
 /// assert_eq!(roff_doc.to_roff(), expected);
 /// ```
 pub fn to_roff(styled_text: &str) -> Roff {
-    let stream = style_stream::StyledStream::new(styled_text);
 
     let mut roff_docs = vec![];
-    for style_str in stream {
-        roff_docs.push(as_roff(&style_str))
+    for styled_str in style_stream::styled_stream(styled_text) {
+        roff_docs.push(as_roff(&styled_str))
     }
 
     let mut doc = Roff::new();
@@ -47,9 +46,9 @@ fn as_roff(styled: &StyledStr) -> Roff {
 
 fn set_effects(styled: &StyledStr) -> Roff {
     // Roff (the crate) only supports these inline commands
-    // Bold
-    // Italic
-    // Roman (plain text)
+    //  - Bold
+    //  - Italic
+    //  - Roman (plain text)
     // If we want more support, or even support combined formats, we will need
     // to push improvements to roff upstream or implement a more thorough roff crate
     // perhaps by spinning off some of this code
@@ -92,7 +91,7 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
         }
 
         Some(Color::Ansi(c)) => {
-            doc.control(control_request, vec![ansi_color(c)]);
+            doc.control(control_request, vec![ansi_color_to_roff(c)]);
         }
         _ => {
             // TODO: get rid of "default" hardcoded str?
@@ -101,7 +100,7 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
     }
 }
 
-fn ansi_color(color: &anstyle::AnsiColor) -> &'static str {
+fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
     match color {
         anstyle::AnsiColor::Black => "black",
         anstyle::AnsiColor::Red => "red",
