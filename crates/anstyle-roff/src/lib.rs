@@ -2,10 +2,10 @@
 //! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
 //! roff output.
 
-mod style_stream;
+mod styled_str;
 use anstyle::{Color, RgbColor};
 use roff::{bold, italic, Roff};
-use style_stream::StyledStr;
+use styled_str::StyledStr;
 
 /// Generate A RoffStyle from Style
 ///
@@ -24,8 +24,8 @@ use style_stream::StyledStr;
 /// ```
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut roff_docs = vec![];
-    for styled_str in style_stream::styled_stream(styled_text) {
-        roff_docs.push(as_roff(&styled_str))
+    for styled in styled_str::styled_stream(styled_text) {
+        roff_docs.push(as_roff(&styled))
     }
 
     let mut doc = Roff::new();
