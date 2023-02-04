@@ -79,8 +79,16 @@ mod tests {
 
     use super::*;
 
+    /// Creates a CategorisedSlice for Testing
+    ///
+    /// styled_str!( Text, [Color:COLOR_SET] [Intensity:INTENSITY_SET] [Effects:EFFECTS_SET])
+    ///
+    /// Where:
+    ///     COLOR_SET={fg|bg}:<cansi::Color>
+    ///     INTENSITY_SET=<cansi::Intensity>
+    ///     EFFECTS_SET = {"underline"|"italic"|"blink"|"reversed"|"strikethrough"|"hidden"};+
     macro_rules! styled_str {
-        ($text: literal, $(Color:$color_key:literal:$color_val:expr;)* $(Intensity:$intensity:expr;)? $(Effects:$key:literal:$value:expr;)* ) => {
+        ($text: literal, $(Color:$color_key:literal:$color_val:expr;)* $(Intensity:$intensity:expr;)? $(Effects:$($key:literal;)+)? ) => {
             {
             let mut cat_text = CategorisedSlice {
                 text: $text,
@@ -99,53 +107,62 @@ mod tests {
 
             $(
             match $color_key {
-                "fg" => cat_text.fg = $color_val,
-                "bg" => cat_text.bg = $color_val,
+                "fg" => cat_text.fg = Some($color_val),
+                "bg" => cat_text.bg = Some($color_val),
                 _ => panic!("Not A Valid key for color")
             };
             )*
             $(
-                cat_text.intensity = $intensity;
+                cat_text.intensity = Some($intensity);
             )?
-            $(
+            $($(
             match $key {
-                "underline" => cat_text.underline = $value,
-                "italic" => cat_text.italic= $value,
-                "blink" => cat_text.blink= $value,
-                "reversed" => cat_text.reversed = $value,
-                "strikethrough" => cat_text.strikethrough= $value,
-                "hidden" => cat_text.hidden= $value,
+                "underline" => cat_text.underline = Some(true),
+                "italic" => cat_text.italic= Some(true),
+                "blink" => cat_text.blink= Some(true),
+                "reversed" => cat_text.reversed = Some(true),
+                "strikethrough" => cat_text.strikethrough= Some(true),
+                "hidden" => cat_text.hidden= Some(true),
                 _ => panic!("Not A Valid key for effects")
             };
-            )*
+            )+)?
             cat_text
         }}
     }
 
     #[test]
     fn from_categorized_underlined() {
-        let categorised = styled_str!("Hello", Effects:"underline":Some(true););
+        let categorised = styled_str!("Hello", Effects:"underline";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
     }
 
+
+    #[test]
+    fn from_categorized_underlined_striketrhough() {
+        let categorised = styled_str!("Hello", Effects:"underline";"strikethrough";);
+        let styled_str: StyledStr = categorised.into();
+        assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
+        assert!(styled_str.style.get_effects().contains(Effects::STRIKETHROUGH));
+    }
+
     #[test]
     fn from_categorized_blink() {
-        let categorised = styled_str!("Hello", Effects:"blink":Some(true););
+        let categorised = styled_str!("Hello", Effects:"blink";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::BLINK));
     }
 
     #[test]
     fn from_categorized_reversed() {
-        let categorised = styled_str!("Hello", Effects:"reversed":Some(true););
+        let categorised = styled_str!("Hello", Effects:"reversed";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::INVERT));
     }
 
     #[test]
     fn from_categorized_strikthrough() {
-        let categorised = styled_str!("Hello", Effects:"strikethrough":Some(true););
+        let categorised = styled_str!("Hello", Effects:"strikethrough";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str
             .style
@@ -155,14 +172,14 @@ mod tests {
 
     #[test]
     fn from_categorized_hidden() {
-        let categorised = styled_str!("Hello", Effects:"hidden":Some(true););
+        let categorised = styled_str!("Hello", Effects:"hidden";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::HIDDEN));
     }
 
     #[test]
     fn from_categorized_bg() {
-        let categorised = styled_str!("Hello", Color:"bg":Some(Color::Blue););
+        let categorised = styled_str!("Hello", Color:"bg":Color::Blue;);
         let styled_str: StyledStr = categorised.into();
         assert!(matches!(
             styled_str.style.get_bg_color(),
@@ -172,7 +189,7 @@ mod tests {
 
     #[test]
     fn from_categorized_fg() {
-        let categorised = styled_str!("Hello", Color:"fg":Some(Color::Blue););
+        let categorised = styled_str!("Hello", Color:"fg":Color::Blue;);
         let styled_str: StyledStr = categorised.into();
         assert!(matches!(
             styled_str.style.get_fg_color(),
@@ -182,14 +199,14 @@ mod tests {
 
     #[test]
     fn from_categorized_bold() {
-        let categorised = styled_str!("Hello", Intensity:Some(Intensity::Bold););
+        let categorised = styled_str!("Hello", Intensity:Intensity::Bold;);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::BOLD));
     }
 
     #[test]
     fn from_categorized_faint() {
-        let categorised = styled_str!("Hello", Intensity:Some(Intensity::Faint););
+        let categorised = styled_str!("Hello", Intensity:Intensity::Faint;);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::DIMMED));
     }
