@@ -5,78 +5,7 @@
 mod style_stream;
 use anstyle::{Color, RgbColor};
 use roff::{bold, italic, Roff};
-
-#[derive(Debug, Default, Clone)]
-pub(crate) struct RoffStyle {
-    fg: Option<Color>,
-    bg: Option<Color>,
-    effects: anstyle::Effects,
-    text: Option<String>,
-}
-
-impl RoffStyle {
-    pub fn new() -> Self {
-        Self {
-            fg: None,
-            bg: None,
-            effects: anstyle::Effects::default(),
-            text: None,
-        }
-    }
-
-    /// Add text to be styled
-    pub fn text(&mut self, txt: String) -> &mut Self {
-        self.text = Some(txt);
-        self
-    }
-
-    fn fg(&mut self, fg: Option<Color>) -> &mut Self {
-        self.fg = fg;
-        self
-    }
-    fn bg(&mut self, bg: Option<Color>) -> &mut Self {
-        self.bg = bg;
-        self
-    }
-
-    fn effects(&mut self, effects: anstyle::Effects) -> &mut Self {
-        self.effects = effects;
-        self
-    }
-
-    /// Get the style out as a Roff type
-    pub(crate) fn as_roff(&self) -> Roff {
-        let mut doc = Roff::new();
-        doc.extend([set_color((&self.fg, &self.bg)), self.set_effects()]);
-        doc
-    }
-
-    fn set_effects(&self) -> Roff {
-        // Roff (the crate) only supports these inline commands
-        // Bold
-        // Italic
-        // Roman (plain text)
-        // If we want more support, or even support combined formats, we will need
-        // to push improvements to roff upstream or implement a more thorough roff crate
-        // perhaps by spinning off some of this code
-        let mut doc = Roff::new();
-        if let Some(ref txt) = self.text {
-            if self.effects.contains(anstyle::Effects::BOLD) {
-                doc.text(vec![bold(txt)]);
-                return doc;
-            }
-            if self.effects.contains(anstyle::Effects::ITALIC) {
-                doc.text(vec![italic(txt)]);
-                return doc;
-            }
-            if self.effects.is_plain() {
-                doc.text(vec![roff::roman(txt)]);
-                return doc;
-            }
-        }
-        doc
-    }
-}
+use style_stream::StyledStr;
 
 /// Generate A RoffStyle from Style
 ///
@@ -98,14 +27,7 @@ pub fn to_roff(styled_text: &str) -> Roff {
 
     let mut roff_docs = vec![];
     for style_str in stream {
-        let style = style_str.style;
-        let fg = style.get_fg_color();
-        let bg = style.get_bg_color();
-        let effect = style.get_effects();
-        let mut roff_style = RoffStyle::new();
-        roff_style.fg(fg).bg(bg).effects(effect);
-        roff_style.text(style_str.text.to_string());
-        roff_docs.push(roff_style.as_roff())
+        roff_docs.push(as_roff(&style_str))
     }
 
     let mut doc = Roff::new();
@@ -113,18 +35,39 @@ pub fn to_roff(styled_text: &str) -> Roff {
     doc
 }
 
-fn ansi_color(color: &anstyle::AnsiColor) -> &'static str {
-    match color {
-        anstyle::AnsiColor::Black => "black",
-        anstyle::AnsiColor::Red => "red",
-        anstyle::AnsiColor::Green => "green",
-        anstyle::AnsiColor::Yellow => "yellow",
-        anstyle::AnsiColor::Blue => "blue",
-        anstyle::AnsiColor::Magenta => "magenta",
-        anstyle::AnsiColor::Cyan => "cyan",
-        anstyle::AnsiColor::White => "white",
-        _ => "default",
+fn as_roff(styled: &StyledStr) -> Roff {
+    let style = styled.style;
+    let mut doc = Roff::new();
+    doc.extend([
+        set_color((&style.get_fg_color(), &style.get_bg_color())),
+        set_effects(styled),
+    ]);
+    doc
+}
+
+fn set_effects(styled: &StyledStr) -> Roff {
+    // Roff (the crate) only supports these inline commands
+    // Bold
+    // Italic
+    // Roman (plain text)
+    // If we want more support, or even support combined formats, we will need
+    // to push improvements to roff upstream or implement a more thorough roff crate
+    // perhaps by spinning off some of this code
+    let effects = styled.style.get_effects();
+    let mut doc = Roff::new();
+    if effects.contains(anstyle::Effects::BOLD) {
+        doc.text(vec![bold(styled.text)]);
+        return doc;
     }
+    if effects.contains(anstyle::Effects::ITALIC) {
+        doc.text(vec![italic(styled.text)]);
+        return doc;
+    }
+    if effects.is_plain() {
+        doc.text(vec![roff::roman(styled.text)]);
+        return doc;
+    }
+    doc
 }
 
 /// Set the foreground, background color
@@ -155,6 +98,20 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             // TODO: get rid of "default" hardcoded str?
             doc.control(control_request, vec!["default"]);
         }
+    }
+}
+
+fn ansi_color(color: &anstyle::AnsiColor) -> &'static str {
+    match color {
+        anstyle::AnsiColor::Black => "black",
+        anstyle::AnsiColor::Red => "red",
+        anstyle::AnsiColor::Green => "green",
+        anstyle::AnsiColor::Yellow => "yellow",
+        anstyle::AnsiColor::Blue => "blue",
+        anstyle::AnsiColor::Magenta => "magenta",
+        anstyle::AnsiColor::Cyan => "cyan",
+        anstyle::AnsiColor::White => "white",
+        _ => "default",
     }
 }
 
