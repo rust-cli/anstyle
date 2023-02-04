@@ -2,14 +2,14 @@
 //! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
 //! roff output.
 
-mod roff_styles;
 mod style_stream;
+use anstyle::{Color, RgbColor};
 use roff::{bold, italic, Roff};
 
 #[derive(Debug, Default, Clone)]
 pub(crate) struct RoffStyle {
-    fg: Option<roff_styles::Color>,
-    bg: Option<roff_styles::Color>,
+    fg: Option<Color>,
+    bg: Option<Color>,
     effects: anstyle::Effects,
     text: Option<String>,
 }
@@ -30,11 +30,11 @@ impl RoffStyle {
         self
     }
 
-    fn fg(&mut self, fg: Option<roff_styles::Color>) -> &mut Self {
+    fn fg(&mut self, fg: Option<Color>) -> &mut Self {
         self.fg = fg;
         self
     }
-    fn bg(&mut self, bg: Option<roff_styles::Color>) -> &mut Self {
+    fn bg(&mut self, bg: Option<Color>) -> &mut Self {
         self.bg = bg;
         self
     }
@@ -99,8 +99,8 @@ pub fn to_roff(styled_text: &str) -> Roff {
     let mut roff_docs = vec![];
     for style_str in stream {
         let style = style_str.style;
-        let fg = ansi_color_to_roff(style.get_fg_color());
-        let bg = ansi_color_to_roff(style.get_bg_color());
+        let fg = style.get_fg_color();
+        let bg = style.get_bg_color();
         let effect = style.get_effects();
         let mut roff_style = RoffStyle::new();
         roff_style.fg(fg).bg(bg).effects(effect);
@@ -113,22 +113,7 @@ pub fn to_roff(styled_text: &str) -> Roff {
     doc
 }
 
-fn ansi_color_to_roff(color: Option<anstyle::Color>) -> Option<roff_styles::Color> {
-    match color {
-        Some(anstyle::Color::Rgb(rgb)) => Some(roff_styles::Color::Rgb(roff_styles::RgbColor(
-            rgb.0, rgb.1, rgb.2,
-        ))),
-        Some(anstyle::Color::Ansi(color)) => {
-            Some(roff_styles::Color::AnsiColor(ansi_color(color).to_string()))
-        }
-        Some(anstyle::Color::XTerm(color)) => color
-            .into_ansi()
-            .map(|c| roff_styles::Color::AnsiColor(ansi_color(c).to_string())),
-        _ => None,
-    }
-}
-
-fn ansi_color(color: anstyle::AnsiColor) -> &'static str {
+fn ansi_color(color: &anstyle::AnsiColor) -> &'static str {
     match color {
         anstyle::AnsiColor::Black => "black",
         anstyle::AnsiColor::Red => "red",
@@ -143,31 +128,62 @@ fn ansi_color(color: anstyle::AnsiColor) -> &'static str {
 }
 
 /// Set the foreground, background color
-fn set_color(colors: (&Option<roff_styles::Color>, &Option<roff_styles::Color>)) -> Roff {
+fn set_color(colors: (&Option<Color>, &Option<Color>)) -> Roff {
     let mut doc = Roff::new();
     // Set foreground
-    add_color_to_roff(&mut doc, roff_styles::ControlRequests::FOREGROUND, colors.0);
+    add_color_to_roff(&mut doc, control_requests::FOREGROUND, colors.0);
     // Set background
-    add_color_to_roff(&mut doc, roff_styles::ControlRequests::BACKGROUND, colors.1);
+    add_color_to_roff(&mut doc, control_requests::BACKGROUND, colors.1);
     doc
 }
 
-fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<roff_styles::Color>) {
+fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
     match color {
-        Some(roff_styles::Color::Rgb(c)) => {
-            let name = format!("hex_{}", c.as_hex().as_str());
+        Some(Color::Rgb(c)) => {
+            let name = format!("hex_{}", as_hex(c).as_str());
             doc.control(
-                roff_styles::ControlRequests::CREATE_COLOR,
-                vec![name.as_str(), "rgb", c.as_hex().as_str()],
+                control_requests::CREATE_COLOR,
+                vec![name.as_str(), "rgb", as_hex(c).as_str()],
             )
             .control(control_request, vec![name.as_str()]);
         }
 
-        Some(roff_styles::Color::AnsiColor(c)) => {
-            doc.control(control_request, vec![c.as_str()]);
+        Some(Color::Ansi(c)) => {
+            doc.control(control_request, vec![ansi_color(c)]);
         }
-        None => {
-            doc.control(control_request, vec![roff_styles::RgbColor::DEFAULT]);
+        _ => {
+            // TODO: get rid of "default" hardcoded str?
+            doc.control(control_request, vec!["default"]);
         }
+    }
+}
+
+/// Static Strings defining ROFF Control Requests
+mod control_requests {
+    /// Control to Create a Color definition
+    pub const CREATE_COLOR: &'static str = "defcolor";
+    /// Roff control request to set background color (fill color)
+    pub const BACKGROUND: &'static str = "fcolor";
+    /// Roff control request to set foreground color (glyph color)
+    pub const FOREGROUND: &'static str = "gcolor";
+}
+
+pub(crate) fn as_hex(rgb: &RgbColor) -> String {
+    let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
+    format!("#{:06x}", val)
+}
+
+/// Default AsciiColors supported by roff
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use anstyle::RgbColor;
+
+    #[test]
+    fn to_hex() {
+        assert_eq!(as_hex(&RgbColor(0, 0, 0)).as_str(), "#000000");
+        assert_eq!(as_hex(&RgbColor(255, 0, 0)).as_str(), "#ff0000");
+        assert_eq!(as_hex(&RgbColor(0, 255, 0)).as_str(), "#00ff00");
+        assert_eq!(as_hex(&RgbColor(0, 0, 255)).as_str(), "#0000ff");
     }
 }

@@ -4,7 +4,7 @@ use std::ops::{Deref, DerefMut};
 
 #[derive(Debug, Default, Clone)]
 pub(crate) struct StyledStream<'text> {
-    stream: Vec<StyledStr<'text>>,
+    inner: Vec<StyledStr<'text>>,
 }
 
 #[derive(Debug, Default, Clone, Copy)]
@@ -58,7 +58,7 @@ impl<'a> IntoIterator for StyledStream<'a> {
     type IntoIter = <Vec<StyledStr<'a>> as IntoIterator>::IntoIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        self.stream.into_iter()
+        self.inner.into_iter()
     }
 }
 
@@ -66,13 +66,13 @@ impl<'a> Deref for StyledStream<'a> {
     type Target = [StyledStr<'a>];
 
     fn deref(&self) -> &Self::Target {
-        &self.stream[..]
+        &self.inner[..]
     }
 }
 
 impl<'a> DerefMut for StyledStream<'a> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.stream[..]
+        &mut self.inner[..]
     }
 }
 
@@ -102,7 +102,7 @@ impl<'text> StyledStream<'text> {
     pub(crate) fn new(s: &'text str) -> Self {
         let categorized = cansi::v3::categorise_text(s);
         Self {
-            stream: categorized.into_iter().map(|x| dbg!(x.into())).collect(),
+            inner: categorized.into_iter().map(|x| dbg!(x.into())).collect(),
         }
     }
 }
