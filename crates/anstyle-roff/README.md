@@ -1,6 +1,6 @@
 # anstyle-roff
 
-> Convert from styling types to [roff](https://manpages.debian.org/bullseye/groff/groff.7.en.html) styles
+> Convert from ANSI styling escape codes to [roff](https://manpages.debian.org/bullseye/groff/groff.7.en.html) document.
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-roff.svg)
