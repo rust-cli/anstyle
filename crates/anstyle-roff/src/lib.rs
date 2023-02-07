@@ -25,8 +25,8 @@ use styled_str::StyledStr;
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
     for styled in styled_str::styled_stream(styled_text) {
+        set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color()), &mut doc);
         doc.extend([
-            set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color())),
             set_effects(&styled),
         ]);
     }
@@ -66,13 +66,9 @@ fn set_effects(styled: &StyledStr) -> Roff {
 type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
 
 /// Set the foreground, background color
-fn set_color(colors: ColorSet) -> Roff {
-    let mut doc = Roff::new();
-    // Set foreground
-    add_color_to_roff(&mut doc, control_requests::FOREGROUND, colors.0);
-    // Set background
-    add_color_to_roff(&mut doc, control_requests::BACKGROUND, colors.1);
-    doc
+fn set_color(colors: ColorSet, doc: &mut Roff) {
+    add_color_to_roff(doc, control_requests::FOREGROUND, colors.0);
+    add_color_to_roff(doc, control_requests::BACKGROUND, colors.1);
 }
 
 fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
