@@ -63,8 +63,10 @@ fn set_effects(styled: &StyledStr) -> Roff {
     doc
 }
 
+type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
+
 /// Set the foreground, background color
-fn set_color(colors: (&Option<Color>, &Option<Color>)) -> Roff {
+fn set_color(colors: ColorSet) -> Roff {
     let mut doc = Roff::new();
     // Set foreground
     add_color_to_roff(&mut doc, control_requests::FOREGROUND, colors.0);
