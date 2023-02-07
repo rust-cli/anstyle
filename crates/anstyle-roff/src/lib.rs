@@ -3,11 +3,10 @@
 //! roff output.
 
 mod styled_str;
-use anstyle::{Color, RgbColor};
+use anstyle::{AnsiColor, Color, RgbColor};
 use anstyle_lossy::palette::Palette;
 use roff::{bold, italic, Roff};
 use styled_str::StyledStr;
-
 
 /// Generate A RoffStyle from Style
 ///
@@ -27,12 +26,14 @@ use styled_str::StyledStr;
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
     for styled in styled_str::styled_stream(styled_text) {
-        set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color()), &mut doc);
+        set_color(
+            (&styled.style.get_fg_color(), &styled.style.get_bg_color()),
+            &mut doc,
+        );
         set_effects_and_text(&styled, &mut doc);
     }
     doc
 }
-
 
 fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     // Roff (the crate) only supports these inline commands
@@ -43,14 +44,32 @@ fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     // to push improvements to roff upstream or implement a more thorough roff crate
     // perhaps by spinning off some of this code
     let effects = styled.style.get_effects();
-    if effects.contains(anstyle::Effects::BOLD) {
+    // FIXME: YUCK ugly condition right there
+    if effects.contains(anstyle::Effects::BOLD) | styled.style.get_fg_color().as_ref().map(is_bright).unwrap_or(false) {
         doc.text(vec![bold(styled.text)]);
-    }
-    else if effects.contains(anstyle::Effects::ITALIC) {
+    } else if effects.contains(anstyle::Effects::ITALIC) {
         doc.text(vec![italic(styled.text)]);
-    }
-    else {
+    } else {
         doc.text(vec![roff::roman(styled.text)]);
+    }
+}
+
+/// Check if Color is an AnsiColor::Bright* variant
+fn is_bright(fg_color: &Color) -> bool {
+    if let Color::Ansi(color) = fg_color {
+        matches!(
+            color,
+            AnsiColor::BrightRed
+            | AnsiColor::BrightBlue
+            | AnsiColor::BrightBlack
+            | AnsiColor::BrightCyan
+            | AnsiColor::BrightGreen
+            | AnsiColor::BrightWhite
+            | AnsiColor::BrightYellow
+            | AnsiColor::BrightMagenta
+        )
+    } else {
+        false
     }
 }
 
@@ -96,17 +115,18 @@ fn as_hex(rgb: &RgbColor) -> String {
     format!("#{:06x}", val)
 }
 
+
+/// Map Color and Bright Variants to Roff Color styles
 fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
     match color {
-        anstyle::AnsiColor::Black => "black",
-        anstyle::AnsiColor::Red => "red",
-        anstyle::AnsiColor::Green => "green",
-        anstyle::AnsiColor::Yellow => "yellow",
-        anstyle::AnsiColor::Blue => "blue",
-        anstyle::AnsiColor::Magenta => "magenta",
-        anstyle::AnsiColor::Cyan => "cyan",
-        anstyle::AnsiColor::White => "white",
-        _ => "default",
+        AnsiColor::Black | AnsiColor::BrightBlack => "black",
+        AnsiColor::Red | AnsiColor::BrightRed => "red",
+        AnsiColor::Green | AnsiColor::BrightGreen => "green",
+        AnsiColor::Yellow | AnsiColor::BrightYellow => "yellow",
+        AnsiColor::Blue | AnsiColor::BrightBlue => "blue",
+        AnsiColor::Magenta | AnsiColor::BrightMagenta => "magenta",
+        AnsiColor::Cyan | AnsiColor::BrightCyan => "cyan",
+        AnsiColor::White | AnsiColor::BrightWhite => "white",
     }
 }
 
