@@ -4,8 +4,10 @@
 
 mod styled_str;
 use anstyle::{Color, RgbColor};
+use anstyle_lossy::palette::Palette;
 use roff::{bold, italic, Roff};
 use styled_str::StyledStr;
+
 
 /// Generate A RoffStyle from Style
 ///
@@ -44,12 +46,10 @@ fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     if effects.contains(anstyle::Effects::BOLD) {
         doc.text(vec![bold(styled.text)]);
     }
-
-    if effects.contains(anstyle::Effects::ITALIC) {
+    else if effects.contains(anstyle::Effects::ITALIC) {
         doc.text(vec![italic(styled.text)]);
     }
-
-    if effects.is_plain() {
+    else {
         doc.text(vec![roff::roman(styled.text)]);
     }
 }
@@ -76,7 +76,11 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
         Some(Color::Ansi(c)) => {
             doc.control(control_request, vec![ansi_color_to_roff(c)]);
         }
-        _ => {
+        Some(Color::XTerm(c)) => {
+            let ansi_color = anstyle_lossy::xterm_to_ansi(*c, Palette::default());
+            doc.control(control_request, vec![ansi_color_to_roff(&ansi_color)]);
+        }
+        None => {
             // TODO: get rid of "default" hardcoded str?
             doc.control(control_request, vec!["default"]);
         }

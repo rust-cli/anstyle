@@ -20,6 +20,7 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "0.2.5", path = "../anstyle" }
+anstyle-lossy = { version = "0.1.1", path = "../anstyle-lossy" }
 roff = "0.2.1"
 cansi = "2.2.1"
 
