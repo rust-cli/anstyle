@@ -23,24 +23,19 @@ use styled_str::StyledStr;
 /// assert_eq!(roff_doc.to_roff(), expected);
 /// ```
 pub fn to_roff(styled_text: &str) -> Roff {
-    let mut roff_docs = vec![];
-    for styled in styled_str::styled_stream(styled_text) {
-        roff_docs.push(as_roff(&styled))
-    }
-
     let mut doc = Roff::new();
-    doc.extend(roff_docs);
+    for styled in styled_str::styled_stream(styled_text) {
+        into_roff(&styled, &mut doc);
+    }
     doc
 }
 
-fn as_roff(styled: &StyledStr) -> Roff {
+fn into_roff(styled: &StyledStr, doc: &mut Roff) {
     let style = styled.style;
-    let mut doc = Roff::new();
     doc.extend([
         set_color((&style.get_fg_color(), &style.get_bg_color())),
         set_effects(styled),
     ]);
-    doc
 }
 
 fn set_effects(styled: &StyledStr) -> Roff {
