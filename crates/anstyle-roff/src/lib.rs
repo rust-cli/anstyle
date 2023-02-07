@@ -25,18 +25,14 @@ use styled_str::StyledStr;
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
     for styled in styled_str::styled_stream(styled_text) {
-        into_roff(&styled, &mut doc);
+        doc.extend([
+            set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color())),
+            set_effects(&styled),
+        ]);
     }
     doc
 }
 
-fn into_roff(styled: &StyledStr, doc: &mut Roff) {
-    let style = styled.style;
-    doc.extend([
-        set_color((&style.get_fg_color(), &style.get_bg_color())),
-        set_effects(styled),
-    ]);
-}
 
 fn set_effects(styled: &StyledStr) -> Roff {
     // Roff (the crate) only supports these inline commands
