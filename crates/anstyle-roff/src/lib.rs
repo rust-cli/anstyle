@@ -27,14 +27,14 @@ pub fn to_roff(styled_text: &str) -> Roff {
     for styled in styled_str::styled_stream(styled_text) {
         set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color()), &mut doc);
         doc.extend([
-            set_effects(&styled),
+            set_effects_and_text(&styled),
         ]);
     }
     doc
 }
 
 
-fn set_effects(styled: &StyledStr) -> Roff {
+fn set_effects_and_text(styled: &StyledStr) -> Roff {
     // Roff (the crate) only supports these inline commands
     //  - Bold
     //  - Italic
