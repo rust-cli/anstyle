@@ -26,15 +26,13 @@ pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
     for styled in styled_str::styled_stream(styled_text) {
         set_color((&styled.style.get_fg_color(), &styled.style.get_bg_color()), &mut doc);
-        doc.extend([
-            set_effects_and_text(&styled),
-        ]);
+        set_effects_and_text(&styled, &mut doc);
     }
     doc
 }
 
 
-fn set_effects_and_text(styled: &StyledStr) -> Roff {
+fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     // Roff (the crate) only supports these inline commands
     //  - Bold
     //  - Italic
@@ -43,24 +41,17 @@ fn set_effects_and_text(styled: &StyledStr) -> Roff {
     // to push improvements to roff upstream or implement a more thorough roff crate
     // perhaps by spinning off some of this code
     let effects = styled.style.get_effects();
-    let mut doc = Roff::new();
-
     if effects.contains(anstyle::Effects::BOLD) {
         doc.text(vec![bold(styled.text)]);
-        return doc;
     }
 
     if effects.contains(anstyle::Effects::ITALIC) {
         doc.text(vec![italic(styled.text)]);
-        return doc;
     }
 
     if effects.is_plain() {
         doc.text(vec![roff::roman(styled.text)]);
-        return doc;
     }
-
-    doc
 }
 
 type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
