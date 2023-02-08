@@ -8,6 +8,16 @@ use anstyle_lossy::palette::Palette;
 use roff::{bold, italic, Roff};
 use styled_str::StyledStr;
 
+/// Static Strings defining ROFF Control Requests
+mod control_requests {
+    /// Control to Create a Color definition
+    pub const CREATE_COLOR: &'static str = "defcolor";
+    /// Roff control request to set background color (fill color)
+    pub const BACKGROUND: &'static str = "fcolor";
+    /// Roff control request to set foreground color (glyph color)
+    pub const FOREGROUND: &'static str = "gcolor";
+}
+
 /// Generate A RoffStyle from Style
 ///
 /// ```rust
@@ -82,7 +92,6 @@ fn is_bright(fg_color: &Color) -> bool {
 
 type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
 
-/// Set the foreground, background color
 fn set_color(colors: ColorSet, doc: &mut Roff) {
     add_color_to_roff(doc, control_requests::FOREGROUND, colors.0);
     add_color_to_roff(doc, control_requests::BACKGROUND, colors.1);
@@ -142,17 +151,6 @@ fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
     }
 }
 
-/// Static Strings defining ROFF Control Requests
-mod control_requests {
-    /// Control to Create a Color definition
-    pub const CREATE_COLOR: &'static str = "defcolor";
-    /// Roff control request to set background color (fill color)
-    pub const BACKGROUND: &'static str = "fcolor";
-    /// Roff control request to set foreground color (glyph color)
-    pub const FOREGROUND: &'static str = "gcolor";
-}
-
-/// Default AsciiColors supported by roff
 #[cfg(test)]
 mod tests {
     use super::*;
