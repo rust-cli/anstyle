@@ -26,4 +26,4 @@ cansi = "2.2.1"
 
 [dev-dependencies]
 snapbox = "0.4.4"
-colored = "2.0.0"
+owo-colors="3.5.0"

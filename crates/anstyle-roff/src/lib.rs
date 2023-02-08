@@ -84,6 +84,9 @@ fn set_color(colors: ColorSet, doc: &mut Roff) {
 fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
     match color {
         Some(Color::Rgb(c)) => {
+            // Adding Support for RGB colors, however cansi does not support
+            // RGB Colors, so this is not executed. If we switch to a provider
+            // That has RGB support we will also get it for Roff
             let name = rgb_name(c);
             doc.control(
                 control_requests::CREATE_COLOR,
@@ -96,6 +99,9 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             doc.control(control_request, vec![ansi_color_to_roff(c)]);
         }
         Some(Color::XTerm(c)) => {
+            // Adding Support for XTerm colors, however cansi does not support
+            // XTerm Colors, so this is not executed. If we switch to a provider
+            // That has Xterm support we will also get it for Roff
             let ansi_color = anstyle_lossy::xterm_to_ansi(*c, Palette::default());
             doc.control(control_request, vec![ansi_color_to_roff(&ansi_color)]);
         }
