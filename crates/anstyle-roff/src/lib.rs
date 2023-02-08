@@ -3,7 +3,7 @@
 //! roff output.
 
 mod styled_str;
-use anstyle::{AnsiColor, Color, RgbColor};
+use anstyle::{AnsiColor, Color, RgbColor, Style};
 use anstyle_lossy::palette::Palette;
 use roff::{bold, italic, Roff};
 use styled_str::StyledStr;
@@ -44,8 +44,7 @@ fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     // to push improvements to roff upstream or implement a more thorough roff crate
     // perhaps by spinning off some of this code
     let effects = styled.style.get_effects();
-    // FIXME: YUCK ugly condition right there
-    if effects.contains(anstyle::Effects::BOLD) | styled.style.get_fg_color().as_ref().map(is_bright).unwrap_or(false) {
+    if effects.contains(anstyle::Effects::BOLD) | has_bright_fg(&styled.style) {
         doc.text(vec![bold(styled.text)]);
     } else if effects.contains(anstyle::Effects::ITALIC) {
         doc.text(vec![italic(styled.text)]);
@@ -54,19 +53,27 @@ fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
     }
 }
 
+fn has_bright_fg(style: &Style) -> bool {
+    style
+        .get_fg_color()
+        .as_ref()
+        .map(is_bright)
+        .unwrap_or(false)
+}
+
 /// Check if Color is an AnsiColor::Bright* variant
 fn is_bright(fg_color: &Color) -> bool {
     if let Color::Ansi(color) = fg_color {
         matches!(
             color,
             AnsiColor::BrightRed
-            | AnsiColor::BrightBlue
-            | AnsiColor::BrightBlack
-            | AnsiColor::BrightCyan
-            | AnsiColor::BrightGreen
-            | AnsiColor::BrightWhite
-            | AnsiColor::BrightYellow
-            | AnsiColor::BrightMagenta
+                | AnsiColor::BrightBlue
+                | AnsiColor::BrightBlack
+                | AnsiColor::BrightCyan
+                | AnsiColor::BrightGreen
+                | AnsiColor::BrightWhite
+                | AnsiColor::BrightYellow
+                | AnsiColor::BrightMagenta
         )
     } else {
         false
@@ -120,7 +127,6 @@ fn as_hex(rgb: &RgbColor) -> String {
     let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
     format!("#{:06x}", val)
 }
-
 
 /// Map Color and Bright Variants to Roff Color styles
 fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
