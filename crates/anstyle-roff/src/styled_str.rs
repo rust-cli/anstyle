@@ -137,13 +137,15 @@ mod tests {
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
     }
 
-
     #[test]
     fn from_categorized_underlined_striketrhough() {
         let categorised = styled_str!("Hello", Effects:"underline";"strikethrough";);
         let styled_str: StyledStr = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
-        assert!(styled_str.style.get_effects().contains(Effects::STRIKETHROUGH));
+        assert!(styled_str
+            .style
+            .get_effects()
+            .contains(Effects::STRIKETHROUGH));
     }
 
     #[test]
