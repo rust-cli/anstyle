@@ -69,7 +69,6 @@ dependencies = [
  "cansi",
  "roff",
  "snapbox",
- "snapbox-macros",
 ]
 
 [[package]]

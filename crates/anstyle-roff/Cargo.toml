@@ -2,12 +2,12 @@
 name = "anstyle-roff"
 version = "0.1.0"
 description = "Adapt between anstyle and roff"
-license = "MIT OR Apache-2.0"
-repository = "https://github.com/rust-cli/anstyle.git"
-homepage = "https://github.com/rust-cli/anstyle"
-categories = ["command-line-interface"]
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+categories.workspace = true
 keywords = ["ansi", "terminal", "roff"]
-edition = "2021"
+edition.workspace = true
 
 [package.metadata.release]
 pre-release-replacements = [
@@ -26,4 +26,3 @@ cansi = "2.2.1"
 
 [dev-dependencies]
 snapbox = "0.3.3"
-snapbox-macros = "0.3.0"
