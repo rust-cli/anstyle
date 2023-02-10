@@ -26,3 +26,4 @@ cansi = "2.2.1"
 
 [dev-dependencies]
 snapbox = "0.3.3"
+snapbox-macros = "0.3.0"
