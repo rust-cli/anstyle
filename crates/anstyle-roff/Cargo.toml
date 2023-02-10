@@ -2,12 +2,14 @@
 name = "anstyle-roff"
 version = "0.1.0"
 description = "Adapt between anstyle and roff"
-license.workspace = true
-repository.workspace = true
-homepage.workspace = true
+repository = "https://github.com/rust-cli/anstyle.git"
+homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "roff"]
+license.workspace = true
 edition.workspace = true
+rust-version.workspace = true
+include.workspace = true
 
 [package.metadata.release]
 pre-release-replacements = [
