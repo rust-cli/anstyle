@@ -4,8 +4,22 @@ resolver = "2"
 
 [workspace.package]
 license = "MIT OR Apache-2.0"
+<<<<<<< HEAD
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal"]
 edition = "2021"
+=======
+edition = "2021"
+rust-version = "1.56.0"  # MSRV
+include = [
+  "build.rs",
+  "src/**/*",
+  "Cargo.toml",
+  "LICENSE*",
+  "README.md",
+  "benches/**/*",
+  "examples/**/*"
+]
+>>>>>>> f10fd24... chore: Use workspace inheritance
