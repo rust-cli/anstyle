@@ -3,7 +3,7 @@
 //! roff output.
 
 mod styled_str;
-use anstyle::{AnsiColor, Color, RgbColor, Style};
+use anstyle::{AnsiColor, Color, RgbColor, Style, XTermColor};
 use anstyle_lossy::palette::Palette;
 use roff::{bold, italic, Roff};
 use styled_str::StyledStr;
@@ -118,13 +118,20 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             // Adding Support for XTerm colors, however cansi does not support
             // XTerm Colors, so this is not executed. If we switch to a provider
             // That has Xterm support we will also get it for Roff
-            let ansi_color = anstyle_lossy::xterm_to_ansi(*c, Palette::default());
-            doc.control(control_request, vec![ansi_color_to_roff(&ansi_color)]);
+            add_color_to_roff(doc, control_request, &Some(xterm_to_ansi_or_rgb(*c)))
         }
         None => {
             // TODO: get rid of "default" hardcoded str?
             doc.control(control_request, vec!["default"]);
         }
+    }
+}
+
+/// Non Lossy Conversion of Xterm color to one that Roff can handle
+fn xterm_to_ansi_or_rgb(color: XTermColor) -> Color {
+    match color.into_ansi() {
+        Some(ansi_color) => Color::Ansi(ansi_color),
+        None => Color::Rgb(anstyle_lossy::xterm_to_rgb(color, Palette::default())),
     }
 }
 
