@@ -5,7 +5,7 @@ description = "Adapt between anstyle and roff"
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
-categories.workspace = true
+categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "roff"]
 edition.workspace = true
 
