@@ -4,7 +4,7 @@ use anstyle::{AnsiColor, Color as AColor, Effects, Style};
 use cansi::{v3::CategorisedSlice, Color, Intensity};
 
 /// Produce a stream of StyledStr from text that contains ansi escape sequences
-pub(crate) fn styled_stream<'txt>(text: &'txt str) -> impl Iterator<Item = StyledStr> {
+pub(crate) fn styled_stream(text: &str) -> impl Iterator<Item = StyledStr> {
     let categorized = cansi::v3::categorise_text(text);
     categorized.into_iter().map(|x| x.into())
 }

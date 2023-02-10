@@ -11,11 +11,11 @@ use styled_str::StyledStr;
 /// Static Strings defining ROFF Control Requests
 mod control_requests {
     /// Control to Create a Color definition
-    pub const CREATE_COLOR: &'static str = "defcolor";
+    pub const CREATE_COLOR: &str = "defcolor";
     /// Roff control request to set background color (fill color)
-    pub const BACKGROUND: &'static str = "fcolor";
+    pub const BACKGROUND: &str = "fcolor";
     /// Roff control request to set foreground color (glyph color)
-    pub const FOREGROUND: &'static str = "gcolor";
+    pub const FOREGROUND: &str = "gcolor";
 }
 
 /// Generate A RoffStyle from Style
@@ -106,7 +106,7 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             let name = rgb_name(c);
             doc.control(
                 control_requests::CREATE_COLOR,
-                vec![name.as_str(), "rgb", as_hex(c).as_str()],
+                vec![name.as_str(), "rgb", to_hex(c).as_str()],
             )
             .control(control_request, vec![name.as_str()]);
         }
@@ -136,10 +136,10 @@ fn xterm_to_ansi_or_rgb(color: XTermColor) -> Color {
 }
 
 fn rgb_name(c: &RgbColor) -> String {
-    format!("hex_{}", as_hex(c).as_str())
+    format!("hex_{}", to_hex(c).as_str())
 }
 
-fn as_hex(rgb: &RgbColor) -> String {
+fn to_hex(rgb: &RgbColor) -> String {
     let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
     format!("#{:06x}", val)
 }
@@ -164,10 +164,10 @@ mod tests {
     use anstyle::RgbColor;
 
     #[test]
-    fn to_hex() {
-        assert_eq!(as_hex(&RgbColor(0, 0, 0)).as_str(), "#000000");
-        assert_eq!(as_hex(&RgbColor(255, 0, 0)).as_str(), "#ff0000");
-        assert_eq!(as_hex(&RgbColor(0, 255, 0)).as_str(), "#00ff00");
-        assert_eq!(as_hex(&RgbColor(0, 0, 255)).as_str(), "#0000ff");
+    fn test_to_hex() {
+        assert_eq!(to_hex(&RgbColor(0, 0, 0)).as_str(), "#000000");
+        assert_eq!(to_hex(&RgbColor(255, 0, 0)).as_str(), "#ff0000");
+        assert_eq!(to_hex(&RgbColor(0, 255, 0)).as_str(), "#00ff00");
+        assert_eq!(to_hex(&RgbColor(0, 0, 255)).as_str(), "#0000ff");
     }
 }
