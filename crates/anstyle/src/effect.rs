@@ -15,7 +15,7 @@ impl Effects {
     pub const DIMMED: Self = Effects(1 << 1);
     /// Not widely supported. Sometimes treated as inverse or blink
     pub const ITALIC: Self = Effects(1 << 2);
-    /// Style extensions exist for Kitty, VTE, mintty and iTerm2.[
+    /// Style extensions exist for Kitty, VTE, mintty and iTerm2.
     pub const UNDERLINE: Self = Effects(1 << 3);
     pub const BLINK: Self = Effects(1 << 4);
     /// Swap foreground and background colors; inconsistent emulation
