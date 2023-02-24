@@ -374,7 +374,10 @@ impl core::fmt::Display for StyleDisplay {
 
         for index in self.0.effects.index_iter() {
             separator(f, &mut first)?;
-            write!(f, "{}", crate::effect::METADATA[index].code)?;
+            write!(f, "{}", crate::effect::METADATA[index].primary)?;
+            if let Some(secondary) = crate::effect::METADATA[index].secondary {
+                write!(f, ":{}", secondary)?;
+            }
         }
 
         if let Some(fg) = self.0.fg {

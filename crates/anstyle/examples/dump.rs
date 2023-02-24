@@ -67,11 +67,15 @@ impl Args {
                     })?;
                 }
                 Long("effect") => {
-                    const EFFECTS: [(&str, anstyle::Effects); 8] = [
+                    const EFFECTS: [(&str, anstyle::Effects); 12] = [
                         ("bold", anstyle::Effects::BOLD),
                         ("dimmed", anstyle::Effects::DIMMED),
                         ("italic", anstyle::Effects::ITALIC),
                         ("underline", anstyle::Effects::UNDERLINE),
+                        ("double_underline", anstyle::Effects::UNDERLINE),
+                        ("curly_underline", anstyle::Effects::CURLY_UNDERLINE),
+                        ("dotted_underline", anstyle::Effects::DOTTED_UNDERLINE),
+                        ("dashed_underline", anstyle::Effects::DASHED_UNDERLINE),
                         ("blink", anstyle::Effects::BLINK),
                         ("invert", anstyle::Effects::INVERT),
                         ("hidden", anstyle::Effects::HIDDEN),
