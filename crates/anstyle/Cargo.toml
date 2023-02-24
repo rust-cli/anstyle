@@ -26,3 +26,6 @@ default = ["std"]
 std = []
 
 [dependencies]
+
+[dev-dependencies]
+lexopt = "0.3.0"
