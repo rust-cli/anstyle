@@ -77,9 +77,9 @@ impl From<(u8, u8, u8)> for Color {
 /// # Examples
 ///
 /// ```rust
-/// let black = anstyle::Color::from((0, 0, 0));
-/// let white = anstyle::Color::from((0xff, 0xff, 0xff));
-/// let style = black | white;
+/// let fg = anstyle::Color::from((0, 0, 0));
+/// let bg = anstyle::Color::from((0xff, 0xff, 0xff));
+/// let style = fg | bg;
 /// ```
 impl<C: Into<Color>> core::ops::BitOr<C> for Color {
     type Output = crate::Style;
@@ -97,8 +97,8 @@ impl<C: Into<Color>> core::ops::BitOr<C> for Color {
 /// # Examples
 ///
 /// ```rust
-/// let color = anstyle::Color::from((0, 0, 0));
-/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// let fg = anstyle::Color::from((0, 0, 0));
+/// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
 impl core::ops::BitOr<crate::Effects> for Color {
     type Output = crate::Style;
@@ -239,9 +239,9 @@ impl AnsiColorFmt for AnsiColor {
 /// # Examples
 ///
 /// ```rust
-/// let black = anstyle::AnsiColor::Black;
-/// let white = anstyle::AnsiColor::White;
-/// let style = black | white;
+/// let fg = anstyle::AnsiColor::Black;
+/// let bg = anstyle::AnsiColor::White;
+/// let style = fg | bg;
 /// ```
 impl<C: Into<Color>> core::ops::BitOr<C> for AnsiColor {
     type Output = crate::Style;
@@ -259,8 +259,8 @@ impl<C: Into<Color>> core::ops::BitOr<C> for AnsiColor {
 /// # Examples
 ///
 /// ```rust
-/// let color = anstyle::AnsiColor::Black;
-/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// let fg = anstyle::AnsiColor::Black;
+/// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
 impl core::ops::BitOr<crate::Effects> for AnsiColor {
     type Output = crate::Style;
@@ -375,9 +375,9 @@ impl From<AnsiColor> for XTermColor {
 /// # Examples
 ///
 /// ```rust
-/// let black = anstyle::XTermColor(16);
-/// let white = anstyle::XTermColor(231);
-/// let style = black | white;
+/// let fg = anstyle::XTermColor(16);
+/// let bg = anstyle::XTermColor(231);
+/// let style = fg | bg;
 /// ```
 impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
     type Output = crate::Style;
@@ -395,8 +395,8 @@ impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
 /// # Examples
 ///
 /// ```rust
-/// let color = anstyle::XTermColor(0);
-/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// let fg = anstyle::XTermColor(0);
+/// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
 impl core::ops::BitOr<crate::Effects> for XTermColor {
     type Output = crate::Style;
@@ -470,9 +470,9 @@ impl From<(u8, u8, u8)> for RgbColor {
 /// # Examples
 ///
 /// ```rust
-/// let black = anstyle::RgbColor(0, 0, 0);
-/// let white = anstyle::RgbColor(0xff, 0xff, 0xff);
-/// let style = black | white;
+/// let fg = anstyle::RgbColor(0, 0, 0);
+/// let bg = anstyle::RgbColor(0xff, 0xff, 0xff);
+/// let style = fg | bg;
 /// ```
 impl<C: Into<Color>> core::ops::BitOr<C> for RgbColor {
     type Output = crate::Style;
@@ -490,8 +490,8 @@ impl<C: Into<Color>> core::ops::BitOr<C> for RgbColor {
 /// # Examples
 ///
 /// ```rust
-/// let color = anstyle::RgbColor(0, 0, 0);
-/// let style = color | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
+/// let fg = anstyle::RgbColor(0, 0, 0);
+/// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
 impl core::ops::BitOr<crate::Effects> for RgbColor {
     type Output = crate::Style;

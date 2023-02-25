@@ -6,7 +6,7 @@
 /// let effects = anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
 #[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Effects(u8);
+pub struct Effects(u16);
 
 impl Effects {
     const PLAIN: Self = Effects(0);
@@ -15,14 +15,18 @@ impl Effects {
     pub const DIMMED: Self = Effects(1 << 1);
     /// Not widely supported. Sometimes treated as inverse or blink
     pub const ITALIC: Self = Effects(1 << 2);
-    /// Style extensions exist for Kitty, VTE, mintty and iTerm2.[
+    /// Style extensions exist for Kitty, VTE, mintty and iTerm2.
     pub const UNDERLINE: Self = Effects(1 << 3);
-    pub const BLINK: Self = Effects(1 << 4);
+    pub const DOUBLE_UNDERLINE: Self = Effects(1 << 4);
+    pub const CURLY_UNDERLINE: Self = Effects(1 << 5);
+    pub const DOTTED_UNDERLINE: Self = Effects(1 << 6);
+    pub const DASHED_UNDERLINE: Self = Effects(1 << 7);
+    pub const BLINK: Self = Effects(1 << 8);
     /// Swap foreground and background colors; inconsistent emulation
-    pub const INVERT: Self = Effects(1 << 5);
-    pub const HIDDEN: Self = Effects(1 << 6);
+    pub const INVERT: Self = Effects(1 << 9);
+    pub const HIDDEN: Self = Effects(1 << 10);
     ///  Characters legible but marked as if for deletion. Not supported in Terminal.app
-    pub const STRIKETHROUGH: Self = Effects(1 << 7);
+    pub const STRIKETHROUGH: Self = Effects(1 << 11);
 
     /// No effects enabled
     ///
@@ -235,41 +239,70 @@ impl core::ops::SubAssign for Effects {
 
 pub(crate) struct Metadata {
     pub(crate) name: &'static str,
-    pub(crate) code: usize,
+    pub(crate) primary: usize,
+    pub(crate) secondary: Option<usize>,
 }
 
-pub(crate) const METADATA: [Metadata; 8] = [
+pub(crate) const METADATA: [Metadata; 12] = [
     Metadata {
         name: "BOLD",
-        code: 1,
+        primary: 1,
+        secondary: None,
     },
     Metadata {
         name: "DIMMED",
-        code: 2,
+        primary: 2,
+        secondary: None,
     },
     Metadata {
         name: "ITALIC",
-        code: 3,
+        primary: 3,
+        secondary: None,
     },
     Metadata {
         name: "UNDERLINE",
-        code: 4,
+        primary: 4,
+        secondary: None,
+    },
+    Metadata {
+        name: "DOUBLE_UNDERLINE",
+        primary: 4,
+        secondary: Some(2),
+    },
+    Metadata {
+        name: "CURLY_UNDERLINE",
+        primary: 4,
+        secondary: Some(3),
+    },
+    Metadata {
+        name: "DOTTED_UNDERLINE",
+        primary: 4,
+        secondary: Some(4),
+    },
+    Metadata {
+        name: "DASHED_UNDERLINE",
+        primary: 4,
+        secondary: Some(5),
     },
     Metadata {
         name: "BLINK",
-        code: 5,
+        primary: 5,
+        secondary: None,
     },
     Metadata {
         name: "INVERT",
-        code: 7,
+        primary: 7,
+        secondary: None,
     },
     Metadata {
         name: "HIDDEN",
-        code: 8,
+        primary: 8,
+        secondary: None,
     },
     Metadata {
         name: "STRIKETHROUGH",
-        code: 9,
+        primary: 9,
+        secondary: None,
     },
 ];
 
@@ -286,7 +319,10 @@ impl core::fmt::Display for EffectsDisplay {
             if i != 0 {
                 write!(f, ";")?;
             }
-            write!(f, "{}", METADATA[index].code)?;
+            write!(f, "{}", METADATA[index].primary)?;
+            if let Some(secondary) = METADATA[index].secondary {
+                write!(f, ":{}", secondary)?;
+            }
         }
         write!(f, "m")?;
         Ok(())
