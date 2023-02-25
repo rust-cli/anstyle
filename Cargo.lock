@@ -91,6 +91,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-wincon"
+version = "0.1.0"
+dependencies = [
+ "anstyle",
+]
+
+[[package]]
 name = "anstyle-yansi"
 version = "0.2.2"
 dependencies = [

@@ -9,3 +9,4 @@ This repo contains:
   - [`anstyle-termcolor`](./crates/anstyle-termcolor) for adapting `anstyle` to `termcolor`
   - [`anstyle-yansi`](./crates/anstyle-yansi) for adapting `anstyle` to `yansi`
   - [`anstyle-roff`](./crates/anstyle-roff) for converting ANSI codes to `ROFF`
+  - [`anstyle-wincon`](./crates/anstyle-wincon) for styling legacy Microsoft terminals
