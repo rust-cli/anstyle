@@ -31,7 +31,10 @@ impl Perform for Log {
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        println!("[osc_dispatch] params={:?} bell_terminated={}", params, bell_terminated);
+        println!(
+            "[osc_dispatch] params={:?} bell_terminated={}",
+            params, bell_terminated
+        );
     }
 
     fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
@@ -65,11 +68,11 @@ fn main() {
                 for byte in &buf[..n] {
                     statemachine.advance(&mut performer, *byte);
                 }
-            },
+            }
             Err(err) => {
                 println!("err: {}", err);
                 break;
-            },
+            }
         }
     }
 }
