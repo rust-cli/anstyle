@@ -64,6 +64,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-parse"
+version = "0.1.0"
+
+[[package]]
 name = "anstyle-roff"
 version = "0.1.0"
 dependencies = [
