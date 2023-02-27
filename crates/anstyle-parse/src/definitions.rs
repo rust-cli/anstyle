@@ -30,7 +30,7 @@ impl Default for State {
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy)]
 pub enum Action {
-    None = 0,
+    Nop = 0,
     Clear = 1,
     Collect = 2,
     CsiDispatch = 3,
@@ -84,7 +84,7 @@ mod tests {
         }
 
         match unpack(0x0f) {
-            (State::Utf8, Action::None) => (),
+            (State::Utf8, Action::Nop) => (),
             _ => panic!("unpack failed"),
         }
 
@@ -102,7 +102,7 @@ mod tests {
         }
 
         match unpack(0x0f) {
-            (State::Utf8, Action::None) => (),
+            (State::Utf8, Action::Nop) => (),
             _ => panic!("unpack failed"),
         }
 

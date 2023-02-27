@@ -147,7 +147,7 @@ impl Parser {
         macro_rules! maybe_action {
             ($action:expr, $arg:expr) => {
                 match $action {
-                    Action::None => (),
+                    Action::Nop => (),
                     action => {
                         self.perform_action(performer, action, $arg);
                     }
@@ -349,7 +349,7 @@ impl Parser {
             }
             Action::BeginUtf8 => self.process_utf8(performer, byte),
             Action::Ignore => (),
-            Action::None => (),
+            Action::Nop => (),
         }
     }
 }

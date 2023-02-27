@@ -10,7 +10,7 @@ generate_state_changes!(state_changes, {
     Anywhere {
         0x18 => (Ground, Execute),
         0x1a => (Ground, Execute),
-        0x1b => (Escape, None),
+        0x1b => (Escape, Nop),
     },
 
     Ground {
@@ -41,12 +41,12 @@ generate_state_changes!(state_changes, {
         0x5a        => (Ground, EscDispatch),
         0x5c        => (Ground, EscDispatch),
         0x60..=0x7e => (Ground, EscDispatch),
-        0x5b        => (CsiEntry, None),
-        0x5d        => (OscString, None),
-        0x50        => (DcsEntry, None),
-        0x58        => (SosPmApcString, None),
-        0x5e        => (SosPmApcString, None),
-        0x5f        => (SosPmApcString, None),
+        0x5b        => (CsiEntry, Nop),
+        0x5d        => (OscString, Nop),
+        0x50        => (DcsEntry, Nop),
+        0x58        => (SosPmApcString, Nop),
+        0x5e        => (SosPmApcString, Nop),
+        0x5f        => (SosPmApcString, Nop),
     },
 
     EscapeIntermediate {
@@ -76,7 +76,7 @@ generate_state_changes!(state_changes, {
         0x1c..=0x1f => (Anywhere, Execute),
         0x20..=0x3f => (Anywhere, Ignore),
         0x7f        => (Anywhere, Ignore),
-        0x40..=0x7e => (Ground, None),
+        0x40..=0x7e => (Ground, Nop),
     },
 
     CsiParam {
@@ -86,7 +86,7 @@ generate_state_changes!(state_changes, {
         0x30..=0x39 => (Anywhere, Param),
         0x3a..=0x3b => (Anywhere, Param),
         0x7f        => (Anywhere, Ignore),
-        0x3c..=0x3f => (CsiIgnore, None),
+        0x3c..=0x3f => (CsiIgnore, Nop),
         0x20..=0x2f => (CsiIntermediate, Collect),
         0x40..=0x7e => (Ground, CsiDispatch),
     },
@@ -97,7 +97,7 @@ generate_state_changes!(state_changes, {
         0x1c..=0x1f => (Anywhere, Execute),
         0x20..=0x2f => (Anywhere, Collect),
         0x7f        => (Anywhere, Ignore),
-        0x30..=0x3f => (CsiIgnore, None),
+        0x30..=0x3f => (CsiIgnore, Nop),
         0x40..=0x7e => (Ground, CsiDispatch),
     },
 
@@ -110,7 +110,7 @@ generate_state_changes!(state_changes, {
         0x30..=0x39 => (DcsParam, Param),
         0x3a..=0x3b => (DcsParam, Param),
         0x3c..=0x3f => (DcsParam, Collect),
-        0x40..=0x7e => (DcsPassthrough, None),
+        0x40..=0x7e => (DcsPassthrough, Nop),
     },
 
     DcsIntermediate {
@@ -119,8 +119,8 @@ generate_state_changes!(state_changes, {
         0x1c..=0x1f => (Anywhere, Ignore),
         0x20..=0x2f => (Anywhere, Collect),
         0x7f        => (Anywhere, Ignore),
-        0x30..=0x3f => (DcsIgnore, None),
-        0x40..=0x7e => (DcsPassthrough, None),
+        0x30..=0x3f => (DcsIgnore, Nop),
+        0x40..=0x7e => (DcsPassthrough, Nop),
     },
 
     DcsIgnore {
@@ -128,7 +128,7 @@ generate_state_changes!(state_changes, {
         0x19        => (Anywhere, Ignore),
         0x1c..=0x1f => (Anywhere, Ignore),
         0x20..=0x7f => (Anywhere, Ignore),
-        0x9c        => (Ground, None),
+        0x9c        => (Ground, Nop),
     },
 
     DcsParam {
@@ -138,9 +138,9 @@ generate_state_changes!(state_changes, {
         0x30..=0x39 => (Anywhere, Param),
         0x3a..=0x3b => (Anywhere, Param),
         0x7f        => (Anywhere, Ignore),
-        0x3c..=0x3f => (DcsIgnore, None),
+        0x3c..=0x3f => (DcsIgnore, Nop),
         0x20..=0x2f => (DcsIntermediate, Collect),
-        0x40..=0x7e => (DcsPassthrough, None),
+        0x40..=0x7e => (DcsPassthrough, Nop),
     },
 
     DcsPassthrough {
@@ -149,7 +149,7 @@ generate_state_changes!(state_changes, {
         0x1c..=0x1f => (Anywhere, Put),
         0x20..=0x7e => (Anywhere, Put),
         0x7f        => (Anywhere, Ignore),
-        0x9c        => (Ground, None),
+        0x9c        => (Ground, Nop),
     },
 
     SosPmApcString {
@@ -157,12 +157,12 @@ generate_state_changes!(state_changes, {
         0x19        => (Anywhere, Ignore),
         0x1c..=0x1f => (Anywhere, Ignore),
         0x20..=0x7f => (Anywhere, Ignore),
-        0x9c        => (Ground, None),
+        0x9c        => (Ground, Nop),
     },
 
     OscString {
         0x00..=0x06 => (Anywhere, Ignore),
-        0x07        => (Ground, None),
+        0x07        => (Ground, Nop),
         0x08..=0x17 => (Anywhere, Ignore),
         0x19        => (Anywhere, Ignore),
         0x1c..=0x1f => (Anywhere, Ignore),
