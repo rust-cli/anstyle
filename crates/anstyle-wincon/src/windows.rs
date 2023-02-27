@@ -65,24 +65,32 @@ pub fn set_colors(fg: anstyle::AnsiColor, bg: anstyle::AnsiColor) -> CONSOLE_CHA
 }
 
 fn from_nibble(color: CONSOLE_CHARACTER_ATTRIBUTES) -> anstyle::AnsiColor {
-    if color & FOREGROUND_RED != 0 {
-        anstyle::AnsiColor::Red
-    } else if color & FOREGROUND_GREEN != 0 {
-        anstyle::AnsiColor::Green
-    } else if color & FOREGROUND_YELLOW != 0 {
-        anstyle::AnsiColor::Yellow
-    } else if color & FOREGROUND_BLUE != 0 {
-        anstyle::AnsiColor::Blue
-    } else if color & FOREGROUND_MAGENTA != 0 {
-        anstyle::AnsiColor::Magenta
-    } else if color & FOREGROUND_CYAN != 0 {
-        anstyle::AnsiColor::Cyan
-    } else if color & FOREGROUND_WHITE != 0 {
+    if color & FOREGROUND_WHITE == FOREGROUND_WHITE {
+        // 3 bits high
         anstyle::AnsiColor::White
+    } else if color & FOREGROUND_CYAN == FOREGROUND_CYAN {
+        // 2 bits high
+        anstyle::AnsiColor::Cyan
+    } else if color & FOREGROUND_YELLOW == FOREGROUND_YELLOW {
+        // 2 bits high
+        anstyle::AnsiColor::Yellow
+    } else if color & FOREGROUND_MAGENTA == FOREGROUND_MAGENTA {
+        // 2 bits high
+        anstyle::AnsiColor::Magenta
+    } else if color & FOREGROUND_RED == FOREGROUND_RED {
+        // 1 bit high
+        anstyle::AnsiColor::Red
+    } else if color & FOREGROUND_GREEN == FOREGROUND_GREEN {
+        // 1 bit high
+        anstyle::AnsiColor::Green
+    } else if color & FOREGROUND_BLUE == FOREGROUND_BLUE {
+        // 1 bit high
+        anstyle::AnsiColor::Blue
     } else {
+        // 0 bits high
         anstyle::AnsiColor::Black
     }
-    .bright(color & FOREGROUND_INTENSITY != 0)
+    .bright(color & FOREGROUND_INTENSITY == FOREGROUND_INTENSITY)
 }
 
 fn to_nibble(color: anstyle::AnsiColor) -> CONSOLE_CHARACTER_ATTRIBUTES {
@@ -109,4 +117,31 @@ fn to_nibble(color: anstyle::AnsiColor) -> CONSOLE_CHARACTER_ATTRIBUTES {
         attributes |= FOREGROUND_INTENSITY;
     }
     attributes
+}
+
+#[test]
+fn to_from_nibble() {
+    const COLORS: [anstyle::AnsiColor; 16] = [
+        anstyle::AnsiColor::Black,
+        anstyle::AnsiColor::Red,
+        anstyle::AnsiColor::Green,
+        anstyle::AnsiColor::Yellow,
+        anstyle::AnsiColor::Blue,
+        anstyle::AnsiColor::Magenta,
+        anstyle::AnsiColor::Cyan,
+        anstyle::AnsiColor::White,
+        anstyle::AnsiColor::BrightBlack,
+        anstyle::AnsiColor::BrightRed,
+        anstyle::AnsiColor::BrightGreen,
+        anstyle::AnsiColor::BrightYellow,
+        anstyle::AnsiColor::BrightBlue,
+        anstyle::AnsiColor::BrightMagenta,
+        anstyle::AnsiColor::BrightCyan,
+        anstyle::AnsiColor::BrightWhite,
+    ];
+    for expected in COLORS {
+        let nibble = to_nibble(expected);
+        let actual = from_nibble(nibble);
+        assert_eq!(expected, actual, "Intermediate: {}", nibble);
+    }
 }
