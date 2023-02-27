@@ -1,33 +1,39 @@
-use std::io::Write;
+#![cfg_attr(not(windows), allow(dead_code))]
 
+#[cfg(not(windows))]
+fn main() {
+    panic!("unsupported");
+}
+
+#[cfg(windows)]
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = stdout.lock();
+    let mut stdout = anstyle_wincon::Console::new(stdout.lock()).unwrap();
 
     for fixed in 0..16 {
         let style = style(fixed, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
         if fixed == 7 || fixed == 15 {
-            let _ = writeln!(&mut stdout);
+            let _ = stdout.write(None, None, &b"\n"[..]);
         }
     }
 
     for r in 0..6 {
-        let _ = writeln!(stdout);
+        let _ = stdout.write(None, None, &b"\n"[..]);
         for g in 0..6 {
             for b in 0..6 {
                 let fixed = r * 36 + g * 6 + b + 16;
                 let style = style(fixed, args.layer, args.effects);
                 let _ = print_number(&mut stdout, fixed, style);
             }
-            let _ = writeln!(stdout);
+            let _ = stdout.write(None, None, &b"\n"[..]);
         }
     }
 
     for c in 0..24 {
         if 0 == c % 8 {
-            let _ = writeln!(stdout);
+            let _ = stdout.write(None, None, &b"\n"[..]);
         }
         let fixed = 232 + c;
         let style = style(fixed, args.layer, args.effects);
@@ -46,18 +52,24 @@ fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
     }) | effects
 }
 
+#[cfg(windows)]
 fn print_number(
-    stdout: &mut std::io::StdoutLock<'_>,
+    stdout: &mut anstyle_wincon::Console<std::io::StdoutLock<'_>>,
     fixed: u8,
     style: anstyle::Style,
-) -> std::io::Result<()> {
-    write!(
-        stdout,
-        "{}{:>4}{}",
-        style.render(),
-        fixed,
-        anstyle::Reset.render()
-    )
+) {
+    let fg = style.get_fg_color().and_then(|c| match c {
+        anstyle::Color::Ansi(c) => Some(c),
+        anstyle::Color::XTerm(c) => c.into_ansi(),
+        anstyle::Color::Rgb(_) => None,
+    });
+    let bg = style.get_bg_color().and_then(|c| match c {
+        anstyle::Color::Ansi(c) => Some(c),
+        anstyle::Color::XTerm(c) => c.into_ansi(),
+        anstyle::Color::Rgb(_) => None,
+    });
+
+    stdout.write(fg, bg, fixed.to_string().as_bytes()).unwrap();
 }
 
 #[derive(Default)]

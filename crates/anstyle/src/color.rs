@@ -178,7 +178,51 @@ impl AnsiColor {
         }
     }
 
-    fn is_bright(self) -> bool {
+    /// Change the color to/from bright
+    pub fn bright(self, yes: bool) -> Self {
+        if yes {
+            match self {
+                Self::Black => Self::BrightBlack,
+                Self::Red => Self::BrightRed,
+                Self::Green => Self::BrightGreen,
+                Self::Yellow => Self::BrightYellow,
+                Self::Blue => Self::BrightBlue,
+                Self::Magenta => Self::BrightMagenta,
+                Self::Cyan => Self::BrightCyan,
+                Self::White => Self::BrightWhite,
+                Self::BrightBlack => self,
+                Self::BrightRed => self,
+                Self::BrightGreen => self,
+                Self::BrightYellow => self,
+                Self::BrightBlue => self,
+                Self::BrightMagenta => self,
+                Self::BrightCyan => self,
+                Self::BrightWhite => self,
+            }
+        } else {
+            match self {
+                Self::Black => self,
+                Self::Red => self,
+                Self::Green => self,
+                Self::Yellow => self,
+                Self::Blue => self,
+                Self::Magenta => self,
+                Self::Cyan => self,
+                Self::White => self,
+                Self::BrightBlack => Self::Black,
+                Self::BrightRed => Self::Red,
+                Self::BrightGreen => Self::Green,
+                Self::BrightYellow => Self::Yellow,
+                Self::BrightBlue => Self::Blue,
+                Self::BrightMagenta => Self::Magenta,
+                Self::BrightCyan => Self::Cyan,
+                Self::BrightWhite => Self::White,
+            }
+        }
+    }
+
+    /// Report whether the color is bright
+    pub fn is_bright(self) -> bool {
         match self {
             Self::Black => false,
             Self::Red => false,
