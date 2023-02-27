@@ -69,7 +69,9 @@ fn print_number(
         anstyle::Color::Rgb(_) => None,
     });
 
-    stdout.write(fg, bg, fixed.to_string().as_bytes()).unwrap();
+    stdout
+        .write(fg, bg, format!("{:>4}", fixed).as_bytes())
+        .unwrap();
 }
 
 #[derive(Default)]
