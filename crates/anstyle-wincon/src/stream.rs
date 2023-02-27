@@ -14,6 +14,8 @@ pub trait WinconStream {
     /// stdout before setting new text attributes.
     fn set_colors(&mut self, fg: anstyle::AnsiColor, bg: anstyle::AnsiColor)
         -> std::io::Result<()>;
+
+    /// Get the current foreground/background colors
     fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)>;
 }
 
