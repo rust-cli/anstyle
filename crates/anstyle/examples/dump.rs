@@ -1,33 +1,63 @@
+use std::io::Write;
+
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
+    let stdout = std::io::stdout();
+    let mut stdout = stdout.lock();
 
     for fixed in 0..16 {
-        print_number(fixed, args.layer, args.effects);
+        let style = style(fixed, args.layer, args.effects);
+        let _ = print_number(&mut stdout, fixed, style);
         if fixed == 7 || fixed == 15 {
-            println!();
+            let _ = writeln!(&mut stdout);
         }
     }
 
     for r in 0..6 {
-        println!();
+        let _ = writeln!(stdout);
         for g in 0..6 {
             for b in 0..6 {
                 let fixed = r * 36 + g * 6 + b + 16;
-                print_number(fixed, args.layer, args.effects);
+                let style = style(fixed, args.layer, args.effects);
+                let _ = print_number(&mut stdout, fixed, style);
             }
-            println!();
+            let _ = writeln!(stdout);
         }
     }
 
     for c in 0..24 {
         if 0 == c % 8 {
-            println!();
+            let _ = writeln!(stdout);
         }
         let fixed = 232 + c;
-        print_number(fixed, args.layer, args.effects);
+        let style = style(fixed, args.layer, args.effects);
+        let _ = print_number(&mut stdout, fixed, style);
     }
 
     Ok(())
+}
+
+fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
+    let color = anstyle::XTermColor(fixed).into();
+    (match layer {
+        Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
+        Layer::Bg => anstyle::Style::new().bg_color(Some(color)),
+        Layer::Underline => anstyle::Style::new().underline_color(Some(color)),
+    }) | effects
+}
+
+fn print_number(
+    stdout: &mut std::io::StdoutLock<'_>,
+    fixed: u8,
+    style: anstyle::Style,
+) -> std::io::Result<()> {
+    write!(
+        stdout,
+        "{}{:>4}{}",
+        style.render(),
+        fixed,
+        anstyle::Reset.render()
+    )
 }
 
 #[derive(Default)]
@@ -104,14 +134,4 @@ impl Args {
         }
         Ok(res)
     }
-}
-
-fn print_number(fixed: u8, layer: Layer, effects: anstyle::Effects) {
-    let color = anstyle::XTermColor(fixed).into();
-    let style = match layer {
-        Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
-        Layer::Bg => anstyle::Style::new().bg_color(Some(color)),
-        Layer::Underline => anstyle::Style::new().underline_color(Some(color)),
-    } | effects;
-    print!("{}{:>4}{}", style.render(), fixed, anstyle::Reset.render());
 }
