@@ -57,7 +57,7 @@ fn print_number(
     stdout: &mut anstyle_wincon::Console<std::io::StdoutLock<'_>>,
     fixed: u8,
     style: anstyle::Style,
-) {
+) -> std::io::Result<()> {
     let fg = style.get_fg_color().and_then(|c| match c {
         anstyle::Color::Ansi(c) => Some(c),
         anstyle::Color::XTerm(c) => c.into_ansi(),
@@ -71,7 +71,7 @@ fn print_number(
 
     stdout
         .write(fg, bg, format!("{:>4}", fixed).as_bytes())
-        .unwrap();
+        .map(|_| ())
 }
 
 #[derive(Default)]
