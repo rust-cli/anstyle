@@ -27,7 +27,7 @@ utf8parse = { version = "0.2.0" }
 
 [features]
 default = ["no_std"]
-no_std = ["arrayvec"]
+no_std = ["dep:arrayvec"]
 
 [dev-dependencies]
 criterion = "0.4.0"
