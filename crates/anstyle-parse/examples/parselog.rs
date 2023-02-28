@@ -15,7 +15,7 @@ impl Perform for Log {
         println!("[execute] {:02x}", byte);
     }
 
-    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         println!(
             "[hook] params={:?}, intermediates={:?}, ignore={:?}, char={:?}",
             params, intermediates, ignore, c

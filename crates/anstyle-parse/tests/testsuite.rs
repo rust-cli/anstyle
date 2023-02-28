@@ -23,7 +23,7 @@ enum Sequence {
     Osc(Vec<Vec<u8>>, bool),
     Csi(Vec<Vec<u16>>, Vec<u8>, bool, char),
     Esc(Vec<u8>, bool, u8),
-    DcsHook(Vec<Vec<u16>>, Vec<u8>, bool, char),
+    DcsHook(Vec<Vec<u16>>, Vec<u8>, bool, u8),
     DcsPut(u8),
     DcsUnhook,
 }
@@ -47,7 +47,7 @@ impl Perform for Dispatcher {
             .push(Sequence::Esc(intermediates, ignore, byte));
     }
 
-    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         let params = params.iter().map(|subparam| subparam.to_vec()).collect();
         let intermediates = intermediates.to_vec();
         self.dispatched
@@ -439,7 +439,7 @@ fn parse_dcs() {
     match &dispatcher.dispatched[0] {
         Sequence::DcsHook(params, _, _, c) => {
             assert_eq!(params, &[[0], [1]]);
-            assert_eq!(c, &'|');
+            assert_eq!(c, &b'|');
         }
         _ => panic!("expected dcs sequence"),
     }
