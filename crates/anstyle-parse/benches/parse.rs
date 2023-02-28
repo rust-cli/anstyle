@@ -33,6 +33,25 @@ impl Perform for BenchDispatcher {
     }
 }
 
+#[derive(Default)]
+struct Strip(String);
+impl Strip {
+    fn with_capacity(capacity: usize) -> Self {
+        Self(String::with_capacity(capacity))
+    }
+}
+impl Perform for Strip {
+    fn print(&mut self, c: char) {
+        self.0.push(c);
+    }
+
+    fn execute(&mut self, byte: u8) {
+        if byte == b'\n' {
+            self.0.push(byte as char);
+        }
+    }
+}
+
 fn parse(c: &mut Criterion) {
     for (name, content) in [
         #[cfg(feature = "utf8")]
@@ -53,6 +72,18 @@ fn parse(c: &mut Criterion) {
                 for byte in content {
                     parser.advance(&mut dispatcher, *byte);
                 }
+            })
+        });
+        group.bench_function("advance_strip", |b| {
+            b.iter(|| {
+                let mut stripped = Strip::with_capacity(content.len());
+                let mut parser = Parser::<DefaultCharAccumulator>::new();
+
+                for byte in content {
+                    parser.advance(&mut stripped, *byte);
+                }
+
+                black_box(stripped.0)
             })
         });
     }
