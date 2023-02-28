@@ -41,14 +41,11 @@ impl Strip {
     }
 }
 impl Perform for Strip {
+    fn print_control(byte: u8) -> bool {
+        byte == b'\n'
+    }
     fn print(&mut self, c: char) {
         self.0.push(c);
-    }
-
-    fn execute(&mut self, byte: u8) {
-        if byte == b'\n' {
-            self.0.push(byte as char);
-        }
     }
 }
 
