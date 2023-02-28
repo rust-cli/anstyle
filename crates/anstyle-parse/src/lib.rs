@@ -32,6 +32,9 @@
 //! [Paul Williams' ANSI parser state machine]: https://vt100.net/emu/dec_ansi_parser
 #![cfg_attr(feature = "core", no_std)]
 
+#[cfg(not(feature = "core"))]
+extern crate alloc;
+
 use core::mem::MaybeUninit;
 
 #[cfg(feature = "core")]
@@ -78,7 +81,7 @@ pub struct Parser {
     #[cfg(feature = "core")]
     osc_raw: ArrayVec<u8, MAX_OSC_RAW>,
     #[cfg(not(feature = "core"))]
-    osc_raw: Vec<u8>,
+    osc_raw: alloc::vec::Vec<u8>,
     osc_params: [(usize, usize); MAX_OSC_PARAMS],
     osc_num_params: usize,
     ignoring: bool,
