@@ -66,7 +66,7 @@ impl Perform for Dispatcher {
 #[test]
 fn parse_osc() {
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in OSC_BYTES {
         parser.advance(&mut dispatcher, *byte);
@@ -86,7 +86,7 @@ fn parse_osc() {
 #[test]
 fn parse_empty_osc() {
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in &[0x1b, 0x5d, 0x07] {
         parser.advance(&mut dispatcher, *byte);
@@ -104,7 +104,7 @@ fn parse_osc_max_params() {
     let params = ";".repeat(MAX_PARAMS + 1);
     let input = format!("\x1b]{}\x1b", &params[..]).into_bytes();
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in input {
         parser.advance(&mut dispatcher, byte);
@@ -124,7 +124,7 @@ fn parse_osc_max_params() {
 fn osc_bell_terminated() {
     static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x07";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -141,7 +141,7 @@ fn osc_bell_terminated() {
 fn osc_c0_st_terminated() {
     static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x1b\\";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -162,7 +162,7 @@ fn parse_osc_with_utf8_arguments() {
         0x6c, 0x65, 0x65, 0x70, 0x20, 0x31, 0x07,
     ];
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -182,7 +182,7 @@ fn parse_osc_with_utf8_arguments() {
 fn osc_containing_string_terminator() {
     static INPUT: &[u8] = b"\x1b]2;\xe6\x9c\xab\x1b\\";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -204,7 +204,7 @@ fn exceed_max_buffer_size() {
     static INPUT_END: &[u8] = &[b'\x07'];
 
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     // Create valid OSC escape
     for byte in INPUT_START {
@@ -246,7 +246,7 @@ fn parse_csi_max_params() {
     let input = format!("\x1b[{}p", &params[..]).into_bytes();
 
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in input {
         parser.advance(&mut dispatcher, byte);
@@ -271,7 +271,7 @@ fn parse_csi_params_ignore_long_params() {
     let input = format!("\x1b[{}p", &params[..]).into_bytes();
 
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in input {
         parser.advance(&mut dispatcher, byte);
@@ -290,7 +290,7 @@ fn parse_csi_params_ignore_long_params() {
 #[test]
 fn parse_csi_params_trailing_semicolon() {
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in b"\x1b[4;m" {
         parser.advance(&mut dispatcher, *byte);
@@ -307,7 +307,7 @@ fn parse_csi_params_trailing_semicolon() {
 fn parse_csi_params_leading_semicolon() {
     // Create dispatcher and check state
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in b"\x1b[;4m" {
         parser.advance(&mut dispatcher, *byte);
@@ -325,7 +325,7 @@ fn parse_long_csi_param() {
     // The important part is the parameter, which is (i64::MAX + 1)
     static INPUT: &[u8] = b"\x1b[9223372036854775808m";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -342,7 +342,7 @@ fn parse_long_csi_param() {
 fn csi_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1b[?1049h";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -363,7 +363,7 @@ fn csi_reset() {
 fn csi_subparameters() {
     static INPUT: &[u8] = b"\x1b[38:2:255:0:255;1m";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -385,7 +385,7 @@ fn parse_dcs_max_params() {
     let params = "1;".repeat(MAX_PARAMS + 1);
     let input = format!("\x1bP{}p", &params[..]).into_bytes();
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in input {
         parser.advance(&mut dispatcher, byte);
@@ -406,7 +406,7 @@ fn parse_dcs_max_params() {
 fn dcs_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1bP1$tx\x9c";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -429,7 +429,7 @@ fn dcs_reset() {
 fn parse_dcs() {
     static INPUT: &[u8] = b"\x1bP0;1|17/ab\x9c";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -453,7 +453,7 @@ fn parse_dcs() {
 fn intermediate_reset_on_dcs_exit() {
     static INPUT: &[u8] = b"\x1bP=1sZZZ\x1b+\x5c";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -470,7 +470,7 @@ fn intermediate_reset_on_dcs_exit() {
 fn esc_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1b(A";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);
@@ -491,7 +491,7 @@ fn esc_reset() {
 fn params_buffer_filled_with_subparam() {
     static INPUT: &[u8] = b"\x1b[::::::::::::::::::::::::::::::::x\x1b";
     let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::new();
+    let mut parser = Parser::<DefaultCharAccumulator>::new();
 
     for byte in INPUT {
         parser.advance(&mut dispatcher, *byte);

@@ -39,7 +39,7 @@ fn testfile(c: &mut Criterion) {
     c.bench_function("testfile", |b| {
         b.iter(|| {
             let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::new();
+            let mut parser = Parser::<DefaultCharAccumulator>::new();
 
             for byte in VTE_DEMO {
                 parser.advance(&mut dispatcher, *byte);
@@ -53,7 +53,7 @@ fn state_changes(c: &mut Criterion) {
     c.bench_function("state_changes", |b| {
         b.iter(|| {
             let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::new();
+            let mut parser = Parser::<DefaultCharAccumulator>::new();
 
             for _ in 0..1_000 {
                 for byte in input {

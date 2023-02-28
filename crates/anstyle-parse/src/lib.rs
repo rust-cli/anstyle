@@ -60,7 +60,7 @@ const MAX_OSC_RAW: usize = 1024;
 ///
 /// [`Perform`]: trait.Perform.html
 #[derive(Default)]
-pub struct Parser {
+pub struct Parser<C = DefaultCharAccumulator> {
     state: State,
     intermediates: [u8; MAX_INTERMEDIATES],
     intermediate_idx: usize,
@@ -73,10 +73,13 @@ pub struct Parser {
     osc_params: [(usize, usize); MAX_OSC_PARAMS],
     osc_num_params: usize,
     ignoring: bool,
-    utf8_parser: Utf8Parser,
+    utf8_parser: C,
 }
 
-impl Parser {
+impl<C> Parser<C>
+where
+    C: CharAccumulator,
+{
     /// Create a new Parser
     pub fn new() -> Parser {
         Parser::default()
@@ -124,7 +127,7 @@ impl Parser {
     where
         P: Perform,
     {
-        if let Some(c) = self.utf8_parser.parse(byte) {
+        if let Some(c) = self.utf8_parser.add(byte) {
             performer.print(c);
             self.state = State::Ground;
         }
@@ -334,13 +337,23 @@ impl Parser {
     }
 }
 
+/// Build a `char` out of bytes
+pub trait CharAccumulator: Default {
+    /// Build a `char` out of bytes
+    ///
+    /// Return `None` when more data is needed
+    fn add(&mut self, byte: u8) -> Option<char>;
+}
+
+pub type DefaultCharAccumulator = Utf8Parser;
+
 #[derive(Default)]
-struct Utf8Parser {
+pub struct Utf8Parser {
     utf8_parser: utf8::Parser,
 }
 
-impl Utf8Parser {
-    fn parse(&mut self, byte: u8) -> Option<char> {
+impl CharAccumulator for Utf8Parser {
+    fn add(&mut self, byte: u8) -> Option<char> {
         let mut c = None;
         let mut receiver = VtUtf8Receiver(&mut c);
         self.utf8_parser.advance(&mut receiver, byte);
