@@ -333,7 +333,7 @@ fn parse_long_csi_param() {
 
     assert_eq!(dispatcher.dispatched.len(), 1);
     match &dispatcher.dispatched[0] {
-        Sequence::Csi(params, ..) => assert_eq!(params, &[[std::u16::MAX as u16]]),
+        Sequence::Csi(params, ..) => assert_eq!(params, &[[std::u16::MAX]]),
         _ => panic!("expected csi sequence"),
     }
 }
