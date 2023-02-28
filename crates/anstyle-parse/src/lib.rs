@@ -30,7 +30,6 @@
 //! [`Parser`]: struct.Parser.html
 //! [`Perform`]: trait.Perform.html
 //! [Paul Williams' ANSI parser state machine]: https://vt100.net/emu/dec_ansi_parser
-#![deny(clippy::all, clippy::if_not_else, clippy::enum_glob_use)]
 #![cfg_attr(feature = "no_std", no_std)]
 
 use core::mem::MaybeUninit;
