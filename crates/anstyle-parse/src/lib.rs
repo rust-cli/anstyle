@@ -148,17 +148,6 @@ impl Parser {
     where
         P: Perform,
     {
-        macro_rules! maybe_action {
-            ($action:expr, $arg:expr) => {
-                match $action {
-                    Action::Nop => (),
-                    action => {
-                        self.perform_action(performer, action, $arg);
-                    }
-                }
-            };
-        }
-
         match state {
             State::Anywhere => {
                 // Just run the action
@@ -175,7 +164,12 @@ impl Parser {
                     _ => (),
                 }
 
-                maybe_action!(action, byte);
+                match action {
+                    Action::Nop => (),
+                    action => {
+                        self.perform_action(performer, action, byte);
+                    }
+                }
 
                 match state {
                     State::CsiEntry | State::DcsEntry | State::Escape => {
