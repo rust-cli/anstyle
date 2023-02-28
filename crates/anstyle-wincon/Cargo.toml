@@ -28,7 +28,9 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "0.2.5", path = "../anstyle" }
-windows-sys = { version = "0.45.0", features = ["Win32_System_Console", "Win32_Foundation"] }
 
 [dev-dependencies]
 lexopt = "0.3.0"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.45.0", features = ["Win32_System_Console", "Win32_Foundation"] }

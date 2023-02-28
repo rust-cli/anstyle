@@ -1,3 +1,4 @@
+/// Write colored text to the screen
 pub struct Console<S>
 where
     S: crate::WinconStream + std::io::Write,
@@ -28,6 +29,7 @@ where
         })
     }
 
+    /// Write colored text to the screen
     pub fn write(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
@@ -39,10 +41,12 @@ where
         Ok(written)
     }
 
+    /// Change the terminal back to the initial colors
     pub fn reset(&mut self) -> std::io::Result<()> {
         self.apply(self.initial_fg, self.initial_bg)
     }
 
+    /// Close the stream, reporting any errors
     pub fn close(mut self) -> std::io::Result<()> {
         self.reset()
     }
