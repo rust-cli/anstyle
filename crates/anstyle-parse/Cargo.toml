@@ -29,3 +29,10 @@ utf8parse = { version = "0.2.0" }
 default = ["no_std"]
 no_std = ["arrayvec"]
 nightly = ["utf8parse/nightly"]
+
+[dev-dependencies]
+criterion = "0.4.0"
+
+[[bench]]
+name = "parse"
+harness = false
