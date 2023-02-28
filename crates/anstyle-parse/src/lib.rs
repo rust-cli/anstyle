@@ -41,6 +41,8 @@ use core::mem::MaybeUninit;
 use arrayvec::ArrayVec;
 use utf8parse as utf8;
 
+#[cfg(all(test, not(feature = "core")))]
+mod codegen;
 mod definitions;
 mod params;
 mod table;
@@ -119,10 +121,10 @@ impl Parser {
 
         // Handle state changes in the anywhere state before evaluating changes
         // for current state.
-        let mut change = table::STATE_CHANGES[State::Anywhere as usize][byte as usize];
+        let mut change = table::state_change(State::Anywhere, byte);
 
         if change == 0 {
-            change = table::STATE_CHANGES[self.state as usize][byte as usize];
+            change = table::state_change(self.state, byte);
         }
 
         // Unpack into a state and action
