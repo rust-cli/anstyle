@@ -26,7 +26,7 @@ arrayvec = { version = "0.7.2", default-features = false, optional = true }
 utf8parse = { version = "0.2.0" }
 
 [features]
-default = ["core"]
+default = []
 core = ["dep:arrayvec"]
 
 [dev-dependencies]
