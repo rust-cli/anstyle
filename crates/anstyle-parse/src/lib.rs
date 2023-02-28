@@ -96,6 +96,65 @@ where
     ///
     /// Requires a [`Perform`] in case `byte` triggers an action
     #[inline]
+    pub fn advance_str<'i, P>(&mut self, performer: &mut P, bytes: &'i str)
+    where
+        P: Perform<&'i str>,
+    {
+        let mut bytes = bytes.as_bytes();
+        'empty: while !bytes.is_empty() {
+            while !matches!(self.state, State::Ground) {
+                if !self.next_byte(performer, &mut bytes) {
+                    break 'empty;
+                }
+            }
+            let offset = bytes.iter().copied().position(|b| {
+                let change = table::state_change(State::Ground, b);
+                let (_state, action) = unpack(change);
+                let printable = action == Action::Print
+                    || action == Action::BeginUtf8
+                    // since we know the input is valid UTF-8, the only thing  we can do with
+                    // continuations is to print them
+                    || is_utf8_continuation(b)
+                    || (action == Action::Execute && P::print_control(b));
+                !printable
+            });
+            if let Some(offset) = offset {
+                if offset != 0 {
+                    let (printable, next) = bytes.split_at(offset);
+                    let printable = core::str::from_utf8(printable).unwrap();
+                    performer.print(printable);
+                    bytes = next;
+                }
+                self.next_byte(performer, &mut bytes);
+            } else {
+                let (printable, next) = (bytes, b"");
+                let printable = core::str::from_utf8(printable).unwrap();
+                performer.print(printable);
+                bytes = next;
+            }
+        }
+    }
+
+    #[inline]
+    fn next_byte<'i, P, O>(&mut self, performer: &mut P, bytes: &mut &'i [u8]) -> bool
+    where
+        P: Perform<O>,
+    {
+        if let Some((byte, next)) = bytes.split_first() {
+            self.advance(&mut Forward::new(performer), *byte);
+            *bytes = next;
+            true
+        } else {
+            false
+        }
+    }
+
+    /// Advance the parser state
+    ///
+    /// Requires a [`Perform`] in case `byte` triggers an action
+    ///
+    /// [`Perform`]: trait.Perform.html
+    #[inline]
     pub fn advance<P>(&mut self, performer: &mut P, byte: u8)
     where
         P: Perform<char>,
@@ -457,4 +516,69 @@ pub trait Perform<P> {
     /// The `ignore` flag indicates that more than two intermediates arrived and
     /// subsequent characters were ignored.
     fn esc_dispatch(&mut self, _intermediates: &[u8], _ignore: bool, _byte: u8) {}
+}
+
+struct Forward<'p, P, O> {
+    inner: &'p mut P,
+    o: core::marker::PhantomData<O>,
+}
+
+impl<'p, P, O> Forward<'p, P, O>
+where
+    P: Perform<O>,
+{
+    fn new(inner: &'p mut P) -> Self {
+        Self {
+            inner,
+            o: Default::default(),
+        }
+    }
+}
+
+impl<'p, P, O> Perform<char> for Forward<'p, P, O>
+where
+    P: Perform<O>,
+{
+    fn print_control(_byte: u8) -> bool {
+        false
+    }
+
+    fn print(&mut self, _c: char) {
+        #[cfg(debug_assertions)]
+        panic!("should not be printing {:?}", _c);
+    }
+
+    fn execute(&mut self, byte: u8) {
+        self.inner.execute(byte)
+    }
+
+    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, action: u8) {
+        self.inner.hook(params, intermediates, ignore, action)
+    }
+
+    fn put(&mut self, byte: u8) {
+        self.inner.put(byte)
+    }
+
+    fn unhook(&mut self) {
+        self.inner.unhook()
+    }
+
+    fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
+        self.inner.osc_dispatch(params, bell_terminated)
+    }
+
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, action: u8) {
+        self.inner
+            .csi_dispatch(params, intermediates, ignore, action)
+    }
+
+    fn esc_dispatch(&mut self, intermediates: &[u8], ignore: bool, byte: u8) {
+        self.inner.esc_dispatch(intermediates, ignore, byte)
+    }
+}
+
+#[inline]
+fn is_utf8_continuation(b: u8) -> bool {
+    matches!(b, 0x80..=0xbf)
 }
