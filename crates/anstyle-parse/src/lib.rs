@@ -39,6 +39,7 @@ use core::mem::MaybeUninit;
 
 #[cfg(feature = "core")]
 use arrayvec::ArrayVec;
+#[cfg(feature = "utf8")]
 use utf8parse as utf8;
 
 #[cfg(all(test, not(feature = "core")))]
@@ -345,13 +346,27 @@ pub trait CharAccumulator: Default {
     fn add(&mut self, byte: u8) -> Option<char>;
 }
 
+#[cfg(feature = "utf8")]
 pub type DefaultCharAccumulator = Utf8Parser;
+#[cfg(not(feature = "utf8"))]
+pub type DefaultCharAccumulator = UnreachableCharAccumulator;
 
 #[derive(Default)]
+pub struct UnreachableCharAccumulator;
+
+impl CharAccumulator for UnreachableCharAccumulator {
+    fn add(&mut self, _byte: u8) -> Option<char> {
+        unreachable!("multi-byte UTF8 characters are unsupported")
+    }
+}
+
+#[derive(Default)]
+#[cfg(feature = "utf8")]
 pub struct Utf8Parser {
     utf8_parser: utf8::Parser,
 }
 
+#[cfg(feature = "utf8")]
 impl CharAccumulator for Utf8Parser {
     fn add(&mut self, byte: u8) -> Option<char> {
         let mut c = None;
@@ -361,8 +376,10 @@ impl CharAccumulator for Utf8Parser {
     }
 }
 
+#[cfg(feature = "utf8")]
 struct VtUtf8Receiver<'a>(&'a mut Option<char>);
 
+#[cfg(feature = "utf8")]
 impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
     fn codepoint(&mut self, c: char) {
         *self.0 = Some(c);

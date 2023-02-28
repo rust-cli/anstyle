@@ -22,11 +22,12 @@ pre-release-replacements = [
 
 [dependencies]
 arrayvec = { version = "0.7.2", default-features = false, optional = true }
-utf8parse = { version = "0.2.0" }
+utf8parse = { version = "0.2.0", optional = true }
 
 [features]
-default = []
+default = ["utf8"]
 core = ["dep:arrayvec"]
+utf8 = ["dep:utf8parse"]
 
 [dev-dependencies]
 codegenrs = { version = "2.0.0", default-features = false }
