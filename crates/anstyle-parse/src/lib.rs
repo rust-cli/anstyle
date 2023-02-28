@@ -56,20 +56,6 @@ const MAX_OSC_PARAMS: usize = 16;
 #[cfg(feature = "core")]
 const MAX_OSC_RAW: usize = 1024;
 
-struct VtUtf8Receiver<'a, P: Perform>(&'a mut P, &'a mut State);
-
-impl<'a, P: Perform> utf8::Receiver for VtUtf8Receiver<'a, P> {
-    fn codepoint(&mut self, c: char) {
-        self.0.print(c);
-        *self.1 = State::Ground;
-    }
-
-    fn invalid_sequence(&mut self) {
-        self.0.print('�');
-        *self.1 = State::Ground;
-    }
-}
-
 /// Parser for raw _VTE_ protocol which delegates actions to a [`Perform`]
 ///
 /// [`Perform`]: trait.Perform.html
@@ -87,7 +73,7 @@ pub struct Parser {
     osc_params: [(usize, usize); MAX_OSC_PARAMS],
     osc_num_params: usize,
     ignoring: bool,
-    utf8_parser: utf8::Parser,
+    utf8_parser: Utf8Parser,
 }
 
 impl Parser {
@@ -138,9 +124,10 @@ impl Parser {
     where
         P: Perform,
     {
-        let mut receiver = VtUtf8Receiver(performer, &mut self.state);
-        let utf8_parser = &mut self.utf8_parser;
-        utf8_parser.advance(&mut receiver, byte);
+        if let Some(c) = self.utf8_parser.parse(byte) {
+            performer.print(c);
+            self.state = State::Ground;
+        }
     }
 
     #[inline]
@@ -344,6 +331,32 @@ impl Parser {
             Action::Ignore => (),
             Action::Nop => (),
         }
+    }
+}
+
+#[derive(Default)]
+struct Utf8Parser {
+    utf8_parser: utf8::Parser,
+}
+
+impl Utf8Parser {
+    fn parse(&mut self, byte: u8) -> Option<char> {
+        let mut c = None;
+        let mut receiver = VtUtf8Receiver(&mut c);
+        self.utf8_parser.advance(&mut receiver, byte);
+        c
+    }
+}
+
+struct VtUtf8Receiver<'a>(&'a mut Option<char>);
+
+impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
+    fn codepoint(&mut self, c: char) {
+        *self.0 = Some(c);
+    }
+
+    fn invalid_sequence(&mut self) {
+        *self.0 = Some('�');
     }
 }
 
