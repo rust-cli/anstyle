@@ -343,17 +343,19 @@ pub trait CharAccumulator: Default {
 #[cfg(feature = "utf8")]
 pub type DefaultCharAccumulator = Utf8Parser;
 #[cfg(not(feature = "utf8"))]
-pub type DefaultCharAccumulator = UnreachableCharAccumulator;
+pub type DefaultCharAccumulator = AsciiParser;
 
+/// Only allow parsing 7-bit ASCII
 #[derive(Default)]
-pub struct UnreachableCharAccumulator;
+pub struct AsciiParser;
 
-impl CharAccumulator for UnreachableCharAccumulator {
+impl CharAccumulator for AsciiParser {
     fn add(&mut self, _byte: u8) -> Option<char> {
         unreachable!("multi-byte UTF8 characters are unsupported")
     }
 }
 
+/// Allow parsing UTF-8
 #[derive(Default)]
 #[cfg(feature = "utf8")]
 pub struct Utf8Parser {
