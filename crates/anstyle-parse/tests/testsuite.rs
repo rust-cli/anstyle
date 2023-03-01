@@ -137,9 +137,25 @@ impl From<char> for Sequence {
     }
 }
 
-#[test]
-fn parse_osc() {
-    let input = OSC_BYTES;
+macro_rules! advance {
+    ($name: ident, $gen: ident) => {
+        #[test]
+        fn $name() {
+            let (input, expected) = $gen();
+            let mut dispatcher = Dispatcher::default();
+            let mut parser = Parser::<DefaultCharAccumulator>::new();
+
+            for byte in &input {
+                parser.advance(&mut dispatcher, *byte);
+            }
+
+            assert_eq!(expected, dispatcher);
+        }
+    };
+}
+
+fn gen_osc() -> (Vec<u8>, Dispatcher) {
+    let input = OSC_BYTES.to_vec();
     let expected = start()
         + Sequence::Osc(
             vec![
@@ -148,160 +164,102 @@ fn parse_osc() {
             ],
             true,
         );
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_empty_osc() {
-    let input = &[0x1b, 0x5d, 0x07];
+advance!(advance_osc, gen_osc);
+
+fn gen_empty_osc() -> (Vec<u8>, Dispatcher) {
+    let input = [0x1b, 0x5d, 0x07].into();
     let expected = start() + Sequence::Osc(vec![vec![]], true);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_osc_max_params() {
+advance!(advance_empty_osc, gen_empty_osc);
+
+fn gen_osc_max_params() -> (Vec<u8>, Dispatcher) {
     let params = ";".repeat(MAX_PARAMS + 1);
     let input = format!("\x1b]{}\x1b", &params[..]).into_bytes();
     let expected = start() + Sequence::Osc(vec![vec![]; MAX_OSC_PARAMS], false);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_osc_bell_terminated() {
-    static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x07";
+advance!(advance_osc_max_params, gen_osc_max_params);
+
+fn gen_osc_bell_terminated() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b]11;ff/00/ff\x07".to_vec();
     let expected = start()
         + Sequence::Osc(
-            vec![INPUT[2..4].to_vec(), INPUT[5..(INPUT.len() - 1)].to_vec()],
+            vec![input[2..4].to_vec(), input[5..(input.len() - 1)].to_vec()],
             true,
         );
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_osc_c0_st_terminated() {
-    static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x1b\\";
+advance!(advance_osc_bell_terminated, gen_osc_bell_terminated);
+
+fn gen_osc_c0_st_terminated() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b]11;ff/00/ff\x1b\\".to_vec();
     let expected = start()
         + Sequence::Osc(
-            vec![INPUT[2..4].to_vec(), INPUT[5..(INPUT.len() - 2)].to_vec()],
+            vec![input[2..4].to_vec(), input[5..(input.len() - 2)].to_vec()],
             false,
         )
         + Sequence::Esc(vec![], false, 92);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_osc_with_utf8_arguments() {
-    static INPUT: &[u8] = &[
+advance!(advance_osc_c0_st_terminated, gen_osc_c0_st_terminated);
+
+fn gen_osc_with_utf8_arguments() -> (Vec<u8>, Dispatcher) {
+    let input = [
         0x0d, 0x1b, 0x5d, 0x32, 0x3b, 0x65, 0x63, 0x68, 0x6f, 0x20, 0x27, 0xc2, 0xaf, 0x5c, 0x5f,
         0x28, 0xe3, 0x83, 0x84, 0x29, 0x5f, 0x2f, 0xc2, 0xaf, 0x27, 0x20, 0x26, 0x26, 0x20, 0x73,
         0x6c, 0x65, 0x65, 0x70, 0x20, 0x31, 0x07,
-    ];
+    ]
+    .to_vec();
     let expected =
-        start() + Sequence::Osc(vec![vec![b'2'], INPUT[5..(INPUT.len() - 1)].to_vec()], true);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+        start() + Sequence::Osc(vec![vec![b'2'], input[5..(input.len() - 1)].to_vec()], true);
+    (input, expected)
 }
 
-#[test]
-fn parse_osc_containing_string_terminator() {
-    static INPUT: &[u8] = b"\x1b]2;\xe6\x9c\xab\x1b\\";
+advance!(advance_osc_with_utf8_arguments, gen_osc_with_utf8_arguments);
+
+fn gen_osc_containing_string_terminator() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b]2;\xe6\x9c\xab\x1b\\".to_vec();
     let expected = start()
         + Sequence::Osc(
-            vec![vec![b'2'], INPUT[4..(INPUT.len() - 2)].to_vec()],
+            vec![vec![b'2'], input[4..(input.len() - 2)].to_vec()],
             false,
         )
         + Sequence::Esc(vec![], false, 92);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_exceed_max_buffer_size() {
+advance!(
+    advance_osc_containing_string_terminator,
+    gen_osc_containing_string_terminator
+);
+
+fn gen_exceed_max_buffer_size() -> (Vec<u8>, Dispatcher) {
     static NUM_BYTES: usize = MAX_OSC_RAW + 100;
     static INPUT_START: &[u8] = &[0x1b, b']', b'5', b'2', b';', b's'];
     static INPUT_END: &[u8] = &[b'\x07'];
+    let mut input = INPUT_START.to_vec();
+    input.resize(INPUT_START.len() + NUM_BYTES, b'a');
+    input.extend(INPUT_END);
     let mut param = vec![115];
     #[cfg(not(feature = "core"))]
     param.extend(vec![97; NUM_BYTES + INPUT_END.len() - 1]);
     #[cfg(feature = "core")]
     param.extend(vec![97; MAX_OSC_RAW - INPUT_END.len() - 2]);
     let expected = start() + Sequence::Osc(vec![b"52".to_vec(), param], true);
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    // Create valid OSC escape
-    for byte in INPUT_START {
-        parser.advance(&mut dispatcher, *byte);
-    }
-    // Exceed max buffer size
-    for _ in 0..NUM_BYTES {
-        parser.advance(&mut dispatcher, b'a');
-    }
-    // Terminate escape for dispatch
-    for byte in INPUT_END {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_max_params() {
+advance!(advance_exceed_max_buffer_size, gen_exceed_max_buffer_size);
+
+fn gen_csi_max_params() -> (Vec<u8>, Dispatcher) {
     // This will build a list of repeating '1;'s
     // The length is MAX_PARAMS - 1 because the last semicolon is interpreted
     // as an implicit zero, making the total number of parameters MAX_PARAMS
@@ -310,19 +268,12 @@ fn parse_csi_max_params() {
     let mut params = vec![vec![1]; MAX_PARAMS - 1];
     params.push(vec![0]);
     let expected = start() + Sequence::Csi(params, vec![], false, b'p');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_params_ignore_long_params() {
+advance!(advance_csi_max_params, gen_csi_max_params);
+
+fn gen_csi_params_ignore_long_params() -> (Vec<u8>, Dispatcher) {
     // This will build a list of repeating '1;'s
     // The length is MAX_PARAMS because the last semicolon is interpreted
     // as an implicit zero, making the total number of parameters MAX_PARAMS + 1
@@ -330,141 +281,84 @@ fn parse_csi_params_ignore_long_params() {
     let input = format!("\x1b[{}p", &params[..]).into_bytes();
     let params = vec![vec![1]; MAX_PARAMS];
     let expected = start() + Sequence::Csi(params, vec![], true, b'p');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_params_trailing_semicolon() {
-    let input = b"\x1b[4;m";
+advance!(
+    advance_csi_params_ignore_long_params,
+    gen_csi_params_ignore_long_params
+);
+
+fn gen_csi_params_trailing_semicolon() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[4;m".to_vec();
     let expected = start() + Sequence::Csi(vec![vec![4], vec![0]], vec![], false, b'm');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_params_leading_semicolon() {
-    let input = b"\x1b[;4m";
+advance!(
+    advance_csi_params_trailing_semicolon,
+    gen_csi_params_trailing_semicolon
+);
+
+fn gen_csi_params_leading_semicolon() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[;4m".to_vec();
     let expected = start() + Sequence::Csi(vec![vec![0], vec![4]], vec![], false, b'm');
-
-    // Create dispatcher and check state
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_long_csi_param() {
+advance!(
+    advance_csi_params_leading_semicolon,
+    gen_csi_params_leading_semicolon
+);
+
+fn gen_csi_long_param() -> (Vec<u8>, Dispatcher) {
     // The important part is the parameter, which is (i64::MAX + 1)
-    static INPUT: &[u8] = b"\x1b[9223372036854775808m";
+    let input = b"\x1b[9223372036854775808m".to_vec();
     let expected = start() + Sequence::Csi(vec![vec![u16::MAX]], vec![], false, b'm');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_reset() {
-    static INPUT: &[u8] = b"\x1b[3;1\x1b[?1049h";
+advance!(advance_csi_long_param, gen_csi_long_param);
+
+fn gen_csi_reset() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[3;1\x1b[?1049h".to_vec();
     let expected = start() + Sequence::Csi(vec![vec![1049]], vec![b'?'], false, b'h');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_csi_subparameters() {
-    static INPUT: &[u8] = b"\x1b[38:2:255:0:255;1m";
+advance!(advance_csi_reset, gen_csi_reset);
+
+fn gen_csi_subparameters() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[38:2:255:0:255;1m".to_vec();
     let expected =
         start() + Sequence::Csi(vec![vec![38, 2, 255, 0, 255], vec![1]], vec![], false, b'm');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_dcs_max_params() {
+advance!(advance_csi_subparameters, gen_csi_subparameters);
+
+fn gen_dcs_max_params() -> (Vec<u8>, Dispatcher) {
     let params = "1;".repeat(MAX_PARAMS + 1);
     let input = format!("\x1bP{}p", &params[..]).into_bytes();
     let expected = start() + Sequence::DcsHook(vec![vec![1]; MAX_PARAMS], vec![], true, b'p');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in input {
-        parser.advance(&mut dispatcher, byte);
-    }
-
-    assert_eq!(dispatcher.dispatched.len(), 1);
-    match &dispatcher.dispatched[0] {
-        Sequence::DcsHook(params, _, ignore, _) => {
-            assert_eq!(params.len(), MAX_PARAMS);
-            assert!(params.iter().all(|param| param == &[1]));
-            assert!(ignore);
-        }
-        _ => panic!("expected dcs sequence"),
-    }
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_dcs_reset() {
-    static INPUT: &[u8] = b"\x1b[3;1\x1bP1$tx\x9c";
+advance!(advance_dcs_max_params, gen_dcs_max_params);
+
+fn gen_dcs_reset() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[3;1\x1bP1$tx\x9c".to_vec();
     let expected = start()
         + Sequence::DcsHook(vec![vec![1]], vec![36], false, b't')
         + Sequence::DcsPut(b'x')
         + Sequence::DcsUnhook;
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_dcs() {
-    static INPUT: &[u8] = b"\x1bP0;1|17/ab\x9c";
+advance!(advance_dcs_reset, gen_dcs_reset);
+
+fn gen_dcs() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1bP0;1|17/ab\x9c".to_vec();
     let expected = start()
         + Sequence::DcsHook(vec![vec![0], vec![1]], vec![], false, b'|')
         + Sequence::DcsPut(b'1')
@@ -473,20 +367,13 @@ fn parse_dcs() {
         + Sequence::DcsPut(b'a')
         + Sequence::DcsPut(b'b')
         + Sequence::DcsUnhook;
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_intermediate_reset_on_dcs_exit() {
-    static INPUT: &[u8] = b"\x1bP=1sZZZ\x1b+\x5c";
+advance!(advance_dcs, gen_dcs);
+
+fn gen_intermediate_reset_on_dcs_exit() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1bP=1sZZZ\x1b+\x5c".to_vec();
     let expected = start()
         + Sequence::DcsHook(vec![vec![1]], vec![61], false, b's')
         + Sequence::DcsPut(b'Z')
@@ -494,52 +381,38 @@ fn parse_intermediate_reset_on_dcs_exit() {
         + Sequence::DcsPut(b'Z')
         + Sequence::DcsUnhook
         + Sequence::Esc(vec![b'+'], false, b'\\');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_esc_reset() {
-    static INPUT: &[u8] = b"\x1b[3;1\x1b(A";
+advance!(
+    advance_intermediate_reset_on_dcs_exit,
+    gen_intermediate_reset_on_dcs_exit
+);
+
+fn gen_esc_reset() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[3;1\x1b(A".to_vec();
     let expected = start() + Sequence::Esc(vec![b'('], false, b'A');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
 
-#[test]
-fn parse_params_buffer_filled_with_subparam() {
-    static INPUT: &[u8] = b"\x1b[::::::::::::::::::::::::::::::::x\x1b";
+advance!(advance_esc_reset, gen_esc_reset);
+
+fn gen_params_buffer_filled_with_subparam() -> (Vec<u8>, Dispatcher) {
+    let input = b"\x1b[::::::::::::::::::::::::::::::::x\x1b".to_vec();
     let expected = start() + Sequence::Csi(vec![vec![0; 32]], vec![], true, b'x');
-
-    let mut dispatcher = Dispatcher::default();
-    let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-    for byte in INPUT {
-        parser.advance(&mut dispatcher, *byte);
-    }
-
-    assert_eq!(expected, dispatcher);
+    (input, expected)
 }
+
+advance!(
+    advance_params_buffer_filled_with_subparam,
+    gen_params_buffer_filled_with_subparam
+);
 
 proptest! {
     #[test]
     #[cfg(feature = "utf8")]
     #[cfg_attr(any(miri, not(feature = "utf8")), ignore)]
-    fn parse_utf8(input in "\\PC*") {
+    fn advance_utf8(input in "\\PC*") {
         let expected = Dispatcher::from(input.as_str());
 
         let mut dispatcher = Dispatcher::default();
