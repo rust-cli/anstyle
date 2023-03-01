@@ -281,12 +281,7 @@ where
                     self.params.push(self.param);
                 }
 
-                performer.csi_dispatch(
-                    self.params(),
-                    self.intermediates(),
-                    self.ignoring,
-                    byte as char,
-                );
+                performer.csi_dispatch(self.params(), self.intermediates(), self.ignoring, byte);
             }
             Action::EscDispatch => {
                 performer.esc_dispatch(self.intermediates(), self.ignoring, byte);
@@ -437,7 +432,7 @@ pub trait Perform {
         _params: &Params,
         _intermediates: &[u8],
         _ignore: bool,
-        _action: char,
+        _action: u8,
     ) {
     }
 

@@ -34,7 +34,7 @@ impl Perform for Dispatcher {
         self.dispatched.push(Sequence::Osc(params, bell_terminated));
     }
 
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         let params = params.iter().map(|subparam| subparam.to_vec()).collect();
         let intermediates = intermediates.to_vec();
         self.dispatched
@@ -124,7 +124,7 @@ impl From<char> for Dispatcher {
 enum Sequence {
     Print(char),
     Osc(Vec<Vec<u8>>, bool),
-    Csi(Vec<Vec<u16>>, Vec<u8>, bool, char),
+    Csi(Vec<Vec<u16>>, Vec<u8>, bool, u8),
     Esc(Vec<u8>, bool, u8),
     DcsHook(Vec<Vec<u16>>, Vec<u8>, bool, u8),
     DcsPut(u8),
@@ -309,7 +309,7 @@ fn parse_csi_max_params() {
     let input = format!("\x1b[{}p", &params[..]).into_bytes();
     let mut params = vec![vec![1]; MAX_PARAMS - 1];
     params.push(vec![0]);
-    let expected = start() + Sequence::Csi(params, vec![], false, 'p');
+    let expected = start() + Sequence::Csi(params, vec![], false, b'p');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -329,7 +329,7 @@ fn parse_csi_params_ignore_long_params() {
     let params = "1;".repeat(MAX_PARAMS);
     let input = format!("\x1b[{}p", &params[..]).into_bytes();
     let params = vec![vec![1]; MAX_PARAMS];
-    let expected = start() + Sequence::Csi(params, vec![], true, 'p');
+    let expected = start() + Sequence::Csi(params, vec![], true, b'p');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -344,7 +344,7 @@ fn parse_csi_params_ignore_long_params() {
 #[test]
 fn parse_csi_params_trailing_semicolon() {
     let input = b"\x1b[4;m";
-    let expected = start() + Sequence::Csi(vec![vec![4], vec![0]], vec![], false, 'm');
+    let expected = start() + Sequence::Csi(vec![vec![4], vec![0]], vec![], false, b'm');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -359,7 +359,7 @@ fn parse_csi_params_trailing_semicolon() {
 #[test]
 fn parse_csi_params_leading_semicolon() {
     let input = b"\x1b[;4m";
-    let expected = start() + Sequence::Csi(vec![vec![0], vec![4]], vec![], false, 'm');
+    let expected = start() + Sequence::Csi(vec![vec![0], vec![4]], vec![], false, b'm');
 
     // Create dispatcher and check state
     let mut dispatcher = Dispatcher::default();
@@ -376,7 +376,7 @@ fn parse_csi_params_leading_semicolon() {
 fn parse_long_csi_param() {
     // The important part is the parameter, which is (i64::MAX + 1)
     static INPUT: &[u8] = b"\x1b[9223372036854775808m";
-    let expected = start() + Sequence::Csi(vec![vec![u16::MAX]], vec![], false, 'm');
+    let expected = start() + Sequence::Csi(vec![vec![u16::MAX]], vec![], false, b'm');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -391,7 +391,7 @@ fn parse_long_csi_param() {
 #[test]
 fn parse_csi_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1b[?1049h";
-    let expected = start() + Sequence::Csi(vec![vec![1049]], vec![b'?'], false, 'h');
+    let expected = start() + Sequence::Csi(vec![vec![1049]], vec![b'?'], false, b'h');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -407,7 +407,7 @@ fn parse_csi_reset() {
 fn parse_csi_subparameters() {
     static INPUT: &[u8] = b"\x1b[38:2:255:0:255;1m";
     let expected =
-        start() + Sequence::Csi(vec![vec![38, 2, 255, 0, 255], vec![1]], vec![], false, 'm');
+        start() + Sequence::Csi(vec![vec![38, 2, 255, 0, 255], vec![1]], vec![], false, b'm');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
@@ -416,15 +416,6 @@ fn parse_csi_subparameters() {
         parser.advance(&mut dispatcher, *byte);
     }
 
-    assert_eq!(dispatcher.dispatched.len(), 1);
-    match &dispatcher.dispatched[0] {
-        Sequence::Csi(params, intermediates, ignore, _) => {
-            assert_eq!(params, &[vec![38, 2, 255, 0, 255], vec![1]]);
-            assert_eq!(intermediates, &[]);
-            assert!(!ignore);
-        }
-        _ => panic!("expected csi sequence"),
-    }
     assert_eq!(expected, dispatcher);
 }
 
@@ -532,7 +523,7 @@ fn parse_esc_reset() {
 #[test]
 fn parse_params_buffer_filled_with_subparam() {
     static INPUT: &[u8] = b"\x1b[::::::::::::::::::::::::::::::::x\x1b";
-    let expected = start() + Sequence::Csi(vec![vec![0; 32]], vec![], true, 'x');
+    let expected = start() + Sequence::Csi(vec![vec![0; 32]], vec![], true, b'x');
 
     let mut dispatcher = Dispatcher::default();
     let mut parser = Parser::<DefaultCharAccumulator>::new();
