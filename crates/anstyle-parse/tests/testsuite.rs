@@ -1,6 +1,8 @@
-use anstyle_parse::*;
-
 use std::vec::Vec;
+
+use proptest::prelude::*;
+
+use anstyle_parse::*;
 
 const MAX_PARAMS: usize = 32;
 const MAX_OSC_RAW: usize = 1024;
@@ -540,4 +542,22 @@ fn params_buffer_filled_with_subparam() {
     }
 
     assert_eq!(expected, dispatcher);
+}
+
+proptest! {
+    #[test]
+    #[cfg(feature = "utf8")]
+    #[cfg_attr(any(miri, not(feature = "utf8")), ignore)]
+    fn parse_utf8(input in "\\PC*") {
+        let expected = Dispatcher::from(input.as_str());
+
+        let mut dispatcher = Dispatcher::default();
+        let mut parser = Parser::<Utf8Parser>::new();
+
+        for byte in input.as_bytes() {
+            parser.advance(&mut dispatcher, *byte);
+        }
+
+        assert_eq!(expected, dispatcher);
+    }
 }
