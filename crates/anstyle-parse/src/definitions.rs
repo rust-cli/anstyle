@@ -28,6 +28,34 @@ impl Default for State {
     }
 }
 
+impl TryFrom<u8> for State {
+    type Error = u8;
+
+    #[inline(always)]
+    fn try_from(raw: u8) -> Result<Self, Self::Error> {
+        STATES.get(raw as usize).ok_or(raw).copied()
+    }
+}
+
+const STATES: [State; 16] = [
+    State::Anywhere,
+    State::CsiEntry,
+    State::CsiIgnore,
+    State::CsiIntermediate,
+    State::CsiParam,
+    State::DcsEntry,
+    State::DcsIgnore,
+    State::DcsIntermediate,
+    State::DcsParam,
+    State::DcsPassthrough,
+    State::Escape,
+    State::EscapeIntermediate,
+    State::Ground,
+    State::OscString,
+    State::SosPmApcString,
+    State::Utf8,
+];
+
 #[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
@@ -55,6 +83,34 @@ impl Default for Action {
         Action::Nop
     }
 }
+
+impl TryFrom<u8> for Action {
+    type Error = u8;
+
+    #[inline(always)]
+    fn try_from(raw: u8) -> Result<Self, Self::Error> {
+        ACTIONS.get(raw as usize).ok_or(raw).copied()
+    }
+}
+
+const ACTIONS: [Action; 16] = [
+    Action::Nop,
+    Action::Clear,
+    Action::Collect,
+    Action::CsiDispatch,
+    Action::EscDispatch,
+    Action::Execute,
+    Action::Hook,
+    Action::Ignore,
+    Action::OscEnd,
+    Action::OscPut,
+    Action::OscStart,
+    Action::Param,
+    Action::Print,
+    Action::Put,
+    Action::Unhook,
+    Action::BeginUtf8,
+];
 
 /// Unpack a u8 into a State and Action
 ///
