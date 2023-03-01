@@ -191,7 +191,7 @@ fn parse_osc_max_params() {
 }
 
 #[test]
-fn osc_bell_terminated() {
+fn parse_osc_bell_terminated() {
     static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x07";
     let expected = start()
         + Sequence::Osc(
@@ -210,7 +210,7 @@ fn osc_bell_terminated() {
 }
 
 #[test]
-fn osc_c0_st_terminated() {
+fn parse_osc_c0_st_terminated() {
     static INPUT: &[u8] = b"\x1b]11;ff/00/ff\x1b\\";
     let expected = start()
         + Sequence::Osc(
@@ -250,7 +250,7 @@ fn parse_osc_with_utf8_arguments() {
 }
 
 #[test]
-fn osc_containing_string_terminator() {
+fn parse_osc_containing_string_terminator() {
     static INPUT: &[u8] = b"\x1b]2;\xe6\x9c\xab\x1b\\";
     let expected = start()
         + Sequence::Osc(
@@ -270,7 +270,7 @@ fn osc_containing_string_terminator() {
 }
 
 #[test]
-fn exceed_max_buffer_size() {
+fn parse_exceed_max_buffer_size() {
     static NUM_BYTES: usize = MAX_OSC_RAW + 100;
     static INPUT_START: &[u8] = &[0x1b, b']', b'5', b'2', b';', b's'];
     static INPUT_END: &[u8] = &[b'\x07'];
@@ -389,7 +389,7 @@ fn parse_long_csi_param() {
 }
 
 #[test]
-fn csi_reset() {
+fn parse_csi_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1b[?1049h";
     let expected = start() + Sequence::Csi(vec![vec![1049]], vec![b'?'], false, 'h');
 
@@ -404,7 +404,7 @@ fn csi_reset() {
 }
 
 #[test]
-fn csi_subparameters() {
+fn parse_csi_subparameters() {
     static INPUT: &[u8] = b"\x1b[38:2:255:0:255;1m";
     let expected =
         start() + Sequence::Csi(vec![vec![38, 2, 255, 0, 255], vec![1]], vec![], false, 'm');
@@ -454,7 +454,7 @@ fn parse_dcs_max_params() {
 }
 
 #[test]
-fn dcs_reset() {
+fn parse_dcs_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1bP1$tx\x9c";
     let expected = start()
         + Sequence::DcsHook(vec![vec![1]], vec![36], false, b't')
@@ -494,7 +494,7 @@ fn parse_dcs() {
 }
 
 #[test]
-fn intermediate_reset_on_dcs_exit() {
+fn parse_intermediate_reset_on_dcs_exit() {
     static INPUT: &[u8] = b"\x1bP=1sZZZ\x1b+\x5c";
     let expected = start()
         + Sequence::DcsHook(vec![vec![1]], vec![61], false, b's')
@@ -515,7 +515,7 @@ fn intermediate_reset_on_dcs_exit() {
 }
 
 #[test]
-fn esc_reset() {
+fn parse_esc_reset() {
     static INPUT: &[u8] = b"\x1b[3;1\x1b(A";
     let expected = start() + Sequence::Esc(vec![b'('], false, b'A');
 
@@ -530,7 +530,7 @@ fn esc_reset() {
 }
 
 #[test]
-fn params_buffer_filled_with_subparam() {
+fn parse_params_buffer_filled_with_subparam() {
     static INPUT: &[u8] = b"\x1b[::::::::::::::::::::::::::::::::x\x1b";
     let expected = start() + Sequence::Csi(vec![vec![0; 32]], vec![], true, 'x');
 
