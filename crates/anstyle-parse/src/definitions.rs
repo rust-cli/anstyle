@@ -1,7 +1,7 @@
 use core::mem;
 
 #[allow(dead_code)]
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum State {
     Anywhere = 0,
     CsiEntry = 1,
@@ -28,9 +28,9 @@ impl Default for State {
 }
 
 #[allow(dead_code)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Action {
-    None = 0,
+    Nop = 0,
     Clear = 1,
     Collect = 2,
     CsiDispatch = 3,
@@ -46,6 +46,12 @@ pub enum Action {
     Put = 13,
     Unhook = 14,
     BeginUtf8 = 15,
+}
+
+impl Default for Action {
+    fn default() -> Action {
+        Action::Nop
+    }
 }
 
 /// Unpack a u8 into a State and Action
@@ -68,6 +74,7 @@ pub fn unpack(delta: u8) -> (State, Action) {
 }
 
 #[inline(always)]
+#[cfg(all(test, not(feature = "core")))]
 pub const fn pack(state: State, action: Action) -> u8 {
     (action as u8) << 4 | state as u8
 }
@@ -84,7 +91,7 @@ mod tests {
         }
 
         match unpack(0x0f) {
-            (State::Utf8, Action::None) => (),
+            (State::Utf8, Action::Nop) => (),
             _ => panic!("unpack failed"),
         }
 
@@ -102,7 +109,7 @@ mod tests {
         }
 
         match unpack(0x0f) {
-            (State::Utf8, Action::None) => (),
+            (State::Utf8, Action::Nop) => (),
             _ => panic!("unpack failed"),
         }
 

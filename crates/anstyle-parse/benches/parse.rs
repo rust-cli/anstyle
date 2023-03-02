@@ -14,7 +14,7 @@ impl Perform for BenchDispatcher {
         black_box(byte);
     }
 
-    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         black_box((params, intermediates, ignore, c));
     }
 
