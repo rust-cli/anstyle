@@ -1,7 +1,7 @@
 //! Parse input from stdin and log actions on stdout
 use std::io::{self, Read};
 
-use anstyle_parse::{Params, Parser, Perform};
+use anstyle_parse::{DefaultCharAccumulator, Params, Parser, Perform};
 
 /// A type implementing Perform that just logs actions
 struct Log;
@@ -56,7 +56,7 @@ fn main() {
     let input = io::stdin();
     let mut handle = input.lock();
 
-    let mut statemachine = Parser::new();
+    let mut statemachine = Parser::<DefaultCharAccumulator>::new();
     let mut performer = Log;
 
     let mut buf = [0; 2048];

@@ -2,8 +2,6 @@ use criterion::{black_box, Criterion};
 
 use anstyle_parse::*;
 
-static VTE_DEMO: &[u8] = include_bytes!("../tests/demo.vte");
-
 struct BenchDispatcher;
 impl Perform for BenchDispatcher {
     fn print(&mut self, c: char) {
@@ -35,13 +33,16 @@ impl Perform for BenchDispatcher {
     }
 }
 
-fn testfile(c: &mut Criterion) {
-    c.bench_function("testfile", |b| {
+fn testfile(_c: &mut Criterion) {
+    static _VTE_DEMO: &[u8] = include_bytes!("../tests/demo.vte");
+
+    #[cfg(feature = "utf8")]
+    _c.bench_function("testfile", |b| {
         b.iter(|| {
             let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::new();
+            let mut parser = Parser::<DefaultCharAccumulator>::new();
 
-            for byte in VTE_DEMO {
+            for byte in _VTE_DEMO {
                 parser.advance(&mut dispatcher, *byte);
             }
         })
@@ -53,7 +54,7 @@ fn state_changes(c: &mut Criterion) {
     c.bench_function("state_changes", |b| {
         b.iter(|| {
             let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::new();
+            let mut parser = Parser::<DefaultCharAccumulator>::new();
 
             for _ in 0..1_000 {
                 for byte in input {

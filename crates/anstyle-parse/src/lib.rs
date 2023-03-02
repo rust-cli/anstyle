@@ -39,6 +39,7 @@ use core::mem::MaybeUninit;
 
 #[cfg(feature = "core")]
 use arrayvec::ArrayVec;
+#[cfg(feature = "utf8")]
 use utf8parse as utf8;
 
 #[cfg(all(test, not(feature = "core")))]
@@ -56,25 +57,11 @@ const MAX_OSC_PARAMS: usize = 16;
 #[cfg(feature = "core")]
 const MAX_OSC_RAW: usize = 1024;
 
-struct VtUtf8Receiver<'a, P: Perform>(&'a mut P, &'a mut State);
-
-impl<'a, P: Perform> utf8::Receiver for VtUtf8Receiver<'a, P> {
-    fn codepoint(&mut self, c: char) {
-        self.0.print(c);
-        *self.1 = State::Ground;
-    }
-
-    fn invalid_sequence(&mut self) {
-        self.0.print('�');
-        *self.1 = State::Ground;
-    }
-}
-
 /// Parser for raw _VTE_ protocol which delegates actions to a [`Perform`]
 ///
 /// [`Perform`]: trait.Perform.html
 #[derive(Default)]
-pub struct Parser {
+pub struct Parser<C = DefaultCharAccumulator> {
     state: State,
     intermediates: [u8; MAX_INTERMEDIATES],
     intermediate_idx: usize,
@@ -87,10 +74,13 @@ pub struct Parser {
     osc_params: [(usize, usize); MAX_OSC_PARAMS],
     osc_num_params: usize,
     ignoring: bool,
-    utf8_parser: utf8::Parser,
+    utf8_parser: C,
 }
 
-impl Parser {
+impl<C> Parser<C>
+where
+    C: CharAccumulator,
+{
     /// Create a new Parser
     pub fn new() -> Parser {
         Parser::default()
@@ -138,9 +128,10 @@ impl Parser {
     where
         P: Perform,
     {
-        let mut receiver = VtUtf8Receiver(performer, &mut self.state);
-        let utf8_parser = &mut self.utf8_parser;
-        utf8_parser.advance(&mut receiver, byte);
+        if let Some(c) = self.utf8_parser.add(byte) {
+            performer.print(c);
+            self.state = State::Ground;
+        }
     }
 
     #[inline]
@@ -344,6 +335,58 @@ impl Parser {
             Action::Ignore => (),
             Action::Nop => (),
         }
+    }
+}
+
+/// Build a `char` out of bytes
+pub trait CharAccumulator: Default {
+    /// Build a `char` out of bytes
+    ///
+    /// Return `None` when more data is needed
+    fn add(&mut self, byte: u8) -> Option<char>;
+}
+
+#[cfg(feature = "utf8")]
+pub type DefaultCharAccumulator = Utf8Parser;
+#[cfg(not(feature = "utf8"))]
+pub type DefaultCharAccumulator = UnreachableCharAccumulator;
+
+#[derive(Default)]
+pub struct UnreachableCharAccumulator;
+
+impl CharAccumulator for UnreachableCharAccumulator {
+    fn add(&mut self, _byte: u8) -> Option<char> {
+        unreachable!("multi-byte UTF8 characters are unsupported")
+    }
+}
+
+#[derive(Default)]
+#[cfg(feature = "utf8")]
+pub struct Utf8Parser {
+    utf8_parser: utf8::Parser,
+}
+
+#[cfg(feature = "utf8")]
+impl CharAccumulator for Utf8Parser {
+    fn add(&mut self, byte: u8) -> Option<char> {
+        let mut c = None;
+        let mut receiver = VtUtf8Receiver(&mut c);
+        self.utf8_parser.advance(&mut receiver, byte);
+        c
+    }
+}
+
+#[cfg(feature = "utf8")]
+struct VtUtf8Receiver<'a>(&'a mut Option<char>);
+
+#[cfg(feature = "utf8")]
+impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
+    fn codepoint(&mut self, c: char) {
+        *self.0 = Some(c);
+    }
+
+    fn invalid_sequence(&mut self) {
+        *self.0 = Some('�');
     }
 }
 
