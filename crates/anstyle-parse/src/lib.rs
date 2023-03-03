@@ -27,8 +27,6 @@
 //! * Only supports 7-bit codes. Some 8-bit codes are still supported, but they no longer work in
 //!   all states.
 //!
-//! [`Parser`]: struct.Parser.html
-//! [`Perform`]: trait.Perform.html
 //! [Paul Williams' ANSI parser state machine]: https://vt100.net/emu/dec_ansi_parser
 #![cfg_attr(feature = "core", no_std)]
 
@@ -58,8 +56,6 @@ const MAX_OSC_PARAMS: usize = 16;
 const MAX_OSC_RAW: usize = 1024;
 
 /// Parser for raw _VTE_ protocol which delegates actions to a [`Perform`]
-///
-/// [`Perform`]: trait.Perform.html
 #[derive(Default)]
 pub struct Parser<C = DefaultCharAccumulator> {
     state: State,
@@ -99,8 +95,6 @@ where
     /// Advance the parser state
     ///
     /// Requires a [`Perform`] in case `byte` triggers an action
-    ///
-    /// [`Perform`]: trait.Perform.html
     #[inline]
     pub fn advance<P: Perform>(&mut self, performer: &mut P, byte: u8) {
         // Utf8 characters are handled out-of-band.
@@ -390,7 +384,7 @@ impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
     }
 }
 
-/// Performs actions requested by the Parser
+/// Performs actions requested by the [`Parser`]
 ///
 /// Actions in this case mean, for example, handling a CSI escape sequence describing cursor
 /// movement, or simply printing characters to the screen.
