@@ -3,8 +3,37 @@ use criterion::{black_box, Criterion};
 use anstyle_parse::*;
 
 struct BenchDispatcher;
-impl Perform for BenchDispatcher {
+impl Perform<char> for BenchDispatcher {
     fn print(&mut self, c: char) {
+        black_box(c);
+    }
+
+    fn execute(&mut self, byte: u8) {
+        black_box(byte);
+    }
+
+    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
+        black_box((params, intermediates, ignore, c));
+    }
+
+    fn put(&mut self, byte: u8) {
+        black_box(byte);
+    }
+
+    fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
+        black_box((params, bell_terminated));
+    }
+
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
+        black_box((params, intermediates, ignore, c));
+    }
+
+    fn esc_dispatch(&mut self, intermediates: &[u8], ignore: bool, byte: u8) {
+        black_box((intermediates, ignore, byte));
+    }
+}
+impl Perform<&'_ str> for BenchDispatcher {
+    fn print(&mut self, c: &'_ str) {
         black_box(c);
     }
 
@@ -40,12 +69,20 @@ impl Strip {
         Self(String::with_capacity(capacity))
     }
 }
-impl Perform for Strip {
+impl Perform<char> for Strip {
     fn print_control(byte: u8) -> bool {
         byte.is_ascii_whitespace()
     }
     fn print(&mut self, c: char) {
         self.0.push(c);
+    }
+}
+impl Perform<&'_ str> for Strip {
+    fn print_control(byte: u8) -> bool {
+        byte.is_ascii_whitespace()
+    }
+    fn print(&mut self, c: &'_ str) {
+        self.0.push_str(c);
     }
 }
 
@@ -61,28 +98,50 @@ fn parse(c: &mut Criterion) {
         ),
     ] {
         let mut group = c.benchmark_group(name);
-        group.bench_function("advance", |b| {
+        group.bench_function("advance_byte", |b| {
             b.iter(|| {
                 let mut dispatcher = BenchDispatcher;
                 let mut parser = Parser::<DefaultCharAccumulator>::new();
 
                 for byte in content {
-                    parser.advance(&mut dispatcher, *byte);
+                    parser.advance_byte(&mut dispatcher, *byte);
                 }
             })
         });
-        group.bench_function("advance_strip", |b| {
+        if let Ok(content) = std::str::from_utf8(content) {
+            group.bench_function("advance_str", |b| {
+                b.iter(|| {
+                    let mut dispatcher = BenchDispatcher;
+                    let mut parser = Parser::<DefaultCharAccumulator>::new();
+
+                    parser.advance_str(&mut dispatcher, content);
+                })
+            });
+        }
+        group.bench_function("advance_byte(strip)", |b| {
             b.iter(|| {
                 let mut stripped = Strip::with_capacity(content.len());
                 let mut parser = Parser::<DefaultCharAccumulator>::new();
 
                 for byte in content {
-                    parser.advance(&mut stripped, *byte);
+                    parser.advance_byte(&mut stripped, *byte);
                 }
 
                 black_box(stripped.0)
             })
         });
+        if let Ok(content) = std::str::from_utf8(content) {
+            group.bench_function("advance_str(strip)", |b| {
+                b.iter(|| {
+                    let mut stripped = Strip::with_capacity(content.len());
+                    let mut parser = Parser::<DefaultCharAccumulator>::new();
+
+                    parser.advance_str(&mut stripped, content);
+
+                    black_box(stripped.0)
+                })
+            });
+        }
     }
 }
 
