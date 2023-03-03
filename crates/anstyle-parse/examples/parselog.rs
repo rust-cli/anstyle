@@ -37,7 +37,7 @@ impl Perform for Log {
         );
     }
 
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         println!(
             "[csi_dispatch] params={:#?}, intermediates={:?}, ignore={:?}, char={:?}",
             params, intermediates, ignore, c

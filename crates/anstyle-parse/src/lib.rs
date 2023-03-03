@@ -281,12 +281,7 @@ where
                     self.params.push(self.param);
                 }
 
-                performer.csi_dispatch(
-                    self.params(),
-                    self.intermediates(),
-                    self.ignoring,
-                    byte as char,
-                );
+                performer.csi_dispatch(self.params(), self.intermediates(), self.ignoring, byte);
             }
             Action::EscDispatch => {
                 performer.esc_dispatch(self.intermediates(), self.ignoring, byte);
@@ -343,17 +338,19 @@ pub trait CharAccumulator: Default {
 #[cfg(feature = "utf8")]
 pub type DefaultCharAccumulator = Utf8Parser;
 #[cfg(not(feature = "utf8"))]
-pub type DefaultCharAccumulator = UnreachableCharAccumulator;
+pub type DefaultCharAccumulator = AsciiParser;
 
+/// Only allow parsing 7-bit ASCII
 #[derive(Default)]
-pub struct UnreachableCharAccumulator;
+pub struct AsciiParser;
 
-impl CharAccumulator for UnreachableCharAccumulator {
+impl CharAccumulator for AsciiParser {
     fn add(&mut self, _byte: u8) -> Option<char> {
         unreachable!("multi-byte UTF8 characters are unsupported")
     }
 }
 
+/// Allow parsing UTF-8
 #[derive(Default)]
 #[cfg(feature = "utf8")]
 pub struct Utf8Parser {
@@ -435,7 +432,7 @@ pub trait Perform {
         _params: &Params,
         _intermediates: &[u8],
         _ignore: bool,
-        _action: char,
+        _action: u8,
     ) {
     }
 

@@ -1,3 +1,7 @@
+use crate::definitions::{pack, unpack, Action, State};
+
+use vte_generate_state_changes::generate_state_changes;
+
 #[test]
 fn table() {
     let mut content = vec![];
@@ -30,11 +34,24 @@ pub(crate) const fn state_change(state: State, byte: u8) -> u8 {
     )?;
 
     for (state, entries) in STATE_CHANGES.iter().enumerate() {
-        writeln!(file, "        // {:?}", state)?;
-        writeln!(file, "        [")?;
+        writeln!(
+            file,
+            "        // {:?}",
+            State::try_from(state as u8).unwrap()
+        )?;
+        write!(file, "        [")?;
+        let mut last_entry = None;
         for packed in entries {
+            let (next_state, action) = unpack(*packed);
+            if last_entry != Some(packed) {
+                writeln!(file)?;
+                writeln!(file, "            // {:?} {:?}", next_state, action)?;
+                write!(file, "            ")?;
+            }
             write!(file, "0x{:0>2x}, ", packed)?;
+            last_entry = Some(packed);
         }
+        writeln!(file)?;
         writeln!(file, "        ],")?;
     }
 
@@ -52,11 +69,6 @@ pub(crate) const fn state_change(state: State, byte: u8) -> u8 {
 
 /// This is the state change table. It's indexed first by current state and then by the next
 /// character in the pty stream.
-use crate::definitions::{pack, Action, State};
-
-use vte_generate_state_changes::generate_state_changes;
-
-// Generate state changes at compile-time
 pub static STATE_CHANGES: [[u8; 256]; 16] = state_changes();
 generate_state_changes!(state_changes, {
     Anywhere {

@@ -32,6 +32,7 @@ utf8 = ["dep:utf8parse"]
 [dev-dependencies]
 codegenrs = { version = "2.0.0", default-features = false }
 criterion = "0.4.0"
+proptest = "1.1.0"
 snapbox = { version = "0.4.8", features = ["path"] }
 vte_generate_state_changes = { version = "0.1.0" }
 

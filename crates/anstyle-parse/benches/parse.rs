@@ -24,7 +24,7 @@ impl Perform for BenchDispatcher {
         black_box((params, bell_terminated));
     }
 
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: char) {
+    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
         black_box((params, intermediates, ignore, c));
     }
 
