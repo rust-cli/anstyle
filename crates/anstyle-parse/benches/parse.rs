@@ -33,37 +33,61 @@ impl Perform for BenchDispatcher {
     }
 }
 
-fn testfile(_c: &mut Criterion) {
-    static _VTE_DEMO: &[u8] = include_bytes!("../tests/demo.vte");
+#[derive(Default)]
+struct Strip(String);
+impl Strip {
+    fn with_capacity(capacity: usize) -> Self {
+        Self(String::with_capacity(capacity))
+    }
+}
+impl Perform for Strip {
+    fn print(&mut self, c: char) {
+        self.0.push(c);
+    }
 
-    #[cfg(feature = "utf8")]
-    _c.bench_function("testfile", |b| {
-        b.iter(|| {
-            let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-            for byte in _VTE_DEMO {
-                parser.advance(&mut dispatcher, *byte);
-            }
-        })
-    });
+    fn execute(&mut self, byte: u8) {
+        if byte == b'\n' {
+            self.0.push(byte as char);
+        }
+    }
 }
 
-fn state_changes(c: &mut Criterion) {
-    let input = b"\x1b]2;X\x1b\\ \x1b[0m \x1bP0@\x1b\\";
-    c.bench_function("state_changes", |b| {
-        b.iter(|| {
-            let mut dispatcher = BenchDispatcher;
-            let mut parser = Parser::<DefaultCharAccumulator>::new();
+fn parse(c: &mut Criterion) {
+    for (name, content) in [
+        #[cfg(feature = "utf8")]
+        ("demo.vte", &include_bytes!("../tests/demo.vte")[..]),
+        ("rg_help.vte", &include_bytes!("../tests/rg_help.vte")[..]),
+        ("rg_linus.vte", &include_bytes!("../tests/rg_linus.vte")[..]),
+        (
+            "state_changes",
+            &b"\x1b]2;X\x1b\\ \x1b[0m \x1bP0@\x1b\\"[..],
+        ),
+    ] {
+        let mut group = c.benchmark_group(name);
+        group.bench_function("advance", |b| {
+            b.iter(|| {
+                let mut dispatcher = BenchDispatcher;
+                let mut parser = Parser::<DefaultCharAccumulator>::new();
 
-            for _ in 0..1_000 {
-                for byte in input {
+                for byte in content {
                     parser.advance(&mut dispatcher, *byte);
                 }
-            }
-        })
-    });
+            })
+        });
+        group.bench_function("advance_strip", |b| {
+            b.iter(|| {
+                let mut stripped = Strip::with_capacity(content.len());
+                let mut parser = Parser::<DefaultCharAccumulator>::new();
+
+                for byte in content {
+                    parser.advance(&mut stripped, *byte);
+                }
+
+                black_box(stripped.0)
+            })
+        });
+    }
 }
 
-criterion::criterion_group!(benches, testfile, state_changes);
+criterion::criterion_group!(benches, parse);
 criterion::criterion_main!(benches);
