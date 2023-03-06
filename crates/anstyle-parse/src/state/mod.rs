@@ -17,6 +17,8 @@ pub use definitions::State;
 ///   as [`Action::Print`].
 /// - If the data is not validated, then a UTF-8 state machine will need to be implemented on top,
 ///   starting with [`Action::BeginUtf8`].
+///
+/// Note: When [`State::Anywhere`] is returned, revert back to the prior state.
 #[inline]
 pub const fn state_change(state: State, byte: u8) -> (State, Action) {
     // Handle state changes in the anywhere state before evaluating changes
