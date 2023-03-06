@@ -120,7 +120,7 @@ const ACTIONS: [Action; 16] = [
 ///
 /// Bad things will happen if those invariants are violated.
 #[inline(always)]
-pub fn unpack(delta: u8) -> (State, Action) {
+pub const fn unpack(delta: u8) -> (State, Action) {
     unsafe {
         (
             // State is stored in bottom 4 bits

@@ -10,7 +10,20 @@ pub(crate) use definitions::Action;
 pub(crate) use definitions::State;
 
 #[inline]
-pub(crate) const fn state_change(state: State, byte: u8) -> u8 {
+pub(crate) const fn state_change(state: State, byte: u8) -> (State, Action) {
+    // Handle state changes in the anywhere state before evaluating changes
+    // for current state.
+    let mut change = state_change_(State::Anywhere, byte);
+    if change == 0 {
+        change = state_change_(state, byte);
+    }
+
+    // Unpack into a state and action
+    unpack(change)
+}
+
+#[inline]
+const fn state_change_(state: State, byte: u8) -> u8 {
     let state_idx = state as usize;
     let byte_idx = byte as usize;
 

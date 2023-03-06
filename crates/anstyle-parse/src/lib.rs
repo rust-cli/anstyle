@@ -45,7 +45,7 @@ mod state;
 
 pub use params::{Params, ParamsIter};
 
-use state::{state_change, unpack, Action, State};
+use state::{state_change, Action, State};
 
 const MAX_INTERMEDIATES: usize = 2;
 const MAX_OSC_PARAMS: usize = 16;
@@ -100,17 +100,7 @@ where
             return;
         }
 
-        // Handle state changes in the anywhere state before evaluating changes
-        // for current state.
-        let mut change = state_change(State::Anywhere, byte);
-
-        if change == 0 {
-            change = state_change(self.state, byte);
-        }
-
-        // Unpack into a state and action
-        let (state, action) = unpack(change);
-
+        let (state, action) = state_change(self.state, byte);
         self.perform_state_change(performer, state, action, byte);
     }
 
