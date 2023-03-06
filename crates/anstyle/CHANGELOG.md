@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Alternative underline styles
 - `Style::render_reset` for easier use
 
+### Compatibility
+
+MSRV updated to 1.64.0
+
 ## [0.2.5] - 2022-11-09
 
 ### Fixes
