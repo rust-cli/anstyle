@@ -41,7 +41,7 @@ use arrayvec::ArrayVec;
 use utf8parse as utf8;
 
 mod params;
-mod state;
+pub mod state;
 
 pub use params::{Params, ParamsIter};
 

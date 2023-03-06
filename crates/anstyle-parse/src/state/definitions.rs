@@ -1,6 +1,5 @@
 use core::mem;
 
-#[allow(dead_code)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 #[repr(u8)]
 pub enum State {
@@ -56,7 +55,6 @@ const STATES: [State; 16] = [
     State::Utf8,
 ];
 
-#[allow(dead_code)]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Action {
