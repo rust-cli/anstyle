@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.2.6] - 2023-03-06
+
 ### Features
 
 - Alternative underline styles
@@ -53,7 +55,8 @@ MSRV updated to 1.64.0
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.2.6...HEAD
+[0.2.6]: https://github.com/rust-cli/anstyle/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/rust-cli/anstyle/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/rust-cli/anstyle/compare/v0.2.3...v0.2.4
 [0.2.3]: https://github.com/rust-cli/anstyle/compare/v0.2.2...v0.2.3
