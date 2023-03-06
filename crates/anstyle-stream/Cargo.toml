@@ -23,3 +23,14 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "0.2.5", path = "../anstyle" }
+anstyle-parse = { version = "0.1.0", path = "../anstyle-parse", default-features = false }
+
+[dev-dependencies]
+criterion = "0.4.0"
+proptest = "1.1.0"
+strip-ansi-escapes = "0.1.1"
+anstyle-parse = { version = "0.1.0", path = "../anstyle-parse", default-features = false, features = ["utf8"] }
+
+[[bench]]
+name = "strip"
+harness = false
