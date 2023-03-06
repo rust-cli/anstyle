@@ -46,7 +46,7 @@ impl Perform for Strip {
     }
 
     fn execute(&mut self, byte: u8) {
-        if byte == b'\n' {
+        if byte.is_ascii_whitespace() {
             self.0.push(byte as char);
         }
     }
