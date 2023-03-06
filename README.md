@@ -6,6 +6,7 @@ This repo contains:
   - [`anstyle-ansi-term`](./crates/anstyle-ansi-term) for adapting `anstyle` to `ansi_term`
   - [`anstyle-crossterm`](./crates/anstyle-crossterm) for adapting `anstyle` to `crossterm`
   - [`anstyle-owo-colors`](./crates/anstyle-owo-colors) for adapting `anstyle` to `owo-colors`
+  - [`anstyle-parse`](./crates/anstyle-parse) for parsing ANSI Style Escapes
   - [`anstyle-termcolor`](./crates/anstyle-termcolor) for adapting `anstyle` to `termcolor`
   - [`anstyle-yansi`](./crates/anstyle-yansi) for adapting `anstyle` to `yansi`
   - [`anstyle-roff`](./crates/anstyle-roff) for converting ANSI codes to `ROFF`
