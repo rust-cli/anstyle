@@ -83,6 +83,13 @@ impl Style {
     pub fn render(self) -> impl core::fmt::Display {
         StyleDisplay(self)
     }
+
+    /// Renders the relevant [`Reset`][crate::Reset] code
+    ///
+    /// Unlike [`Reset::render`][crate::Reset::render], this will elide the code if there is nothing to reset.
+    pub fn render_reset(self) -> impl core::fmt::Display {
+        ResetDisplay(self != Self::new())
+    }
 }
 
 /// # Convenience
@@ -407,5 +414,17 @@ fn separator(f: &mut core::fmt::Formatter<'_>, first: &mut bool) -> core::fmt::R
         Ok(())
     } else {
         write!(f, ";")
+    }
+}
+
+struct ResetDisplay(bool);
+
+impl core::fmt::Display for ResetDisplay {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        if self.0 {
+            write!(f, "\x1B[0m")
+        } else {
+            Ok(())
+        }
     }
 }
