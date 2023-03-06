@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Alternative underline styles
+- `Style::render_reset` for easier use
+
 ## [0.2.5] - 2022-11-09
 
 ### Fixes
