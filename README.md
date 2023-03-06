@@ -1,13 +1,17 @@
 This repo contains:
-- [`anstyle`](./crates/anstyle) for core style types
+- [`anstyle`](./crates/anstyle) for style definitions
+- User-styling parsers
   - [`anstyle-git`](./crates/anstyle-git) for parsing `git` style descriptions
   - [`anstyle-ls`](./crates/anstyle-ls) for parsing `LS_COLORS` style descriptions
-  - [`anstyle-lossy`](./crates/anstyle-lossy) for converting between color types
+- Convert to other formats
+  - [`anstyle-roff`](./crates/anstyle-roff) for converting ANSI codes to `ROFF`
+- Styling integration
   - [`anstyle-ansi-term`](./crates/anstyle-ansi-term) for adapting `anstyle` to `ansi_term`
   - [`anstyle-crossterm`](./crates/anstyle-crossterm) for adapting `anstyle` to `crossterm`
   - [`anstyle-owo-colors`](./crates/anstyle-owo-colors) for adapting `anstyle` to `owo-colors`
-  - [`anstyle-parse`](./crates/anstyle-parse) for parsing ANSI Style Escapes
   - [`anstyle-termcolor`](./crates/anstyle-termcolor) for adapting `anstyle` to `termcolor`
   - [`anstyle-yansi`](./crates/anstyle-yansi) for adapting `anstyle` to `yansi`
-  - [`anstyle-roff`](./crates/anstyle-roff) for converting ANSI codes to `ROFF`
+- Utilities
+  - [`anstyle-lossy`](./crates/anstyle-lossy) for converting between color types
+  - [`anstyle-parse`](./crates/anstyle-parse) for parsing ANSI Style Escapes
   - [`anstyle-wincon`](./crates/anstyle-wincon) for styling legacy Microsoft terminals
