@@ -94,6 +94,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-stream"
+version = "0.1.0"
+dependencies = [
+ "anstyle",
+]
+
+[[package]]
 name = "anstyle-syntect"
 version = "0.1.2"
 dependencies = [

@@ -117,8 +117,6 @@ fn parse(c: &mut Criterion) {
             for byte in content.as_bytes() {
                 parser.advance(&mut stripped, *byte);
             }
-            std::fs::write(format!("{}.advance", name), &stripped.0).unwrap();
-            std::fs::write(format!("{}.state_change", name), strip_str(content)).unwrap();
             assert_eq!(stripped.0, strip_str(content));
         }
 
