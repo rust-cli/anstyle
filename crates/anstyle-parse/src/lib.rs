@@ -199,7 +199,6 @@ where
     fn perform_action<P: Perform>(&mut self, performer: &mut P, action: Action, byte: u8) {
         match action {
             Action::Print => performer.print(byte as char),
-            Action::Execute if P::print_control(byte) => performer.print(byte as char),
             Action::Execute => performer.execute(byte),
             Action::Hook => {
                 if self.params.is_full() {
@@ -393,12 +392,6 @@ impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
 /// referenced if something isn't clear. If the site disappears at some point in
 /// the future, consider checking archive.org.
 pub trait Perform {
-    /// Whether single-byte control characters should be [`Perform::execute`]d or
-    /// [`Perform::print`]ed.
-    fn print_control(_byte: u8) -> bool {
-        false
-    }
-
     /// Draw a character to the screen and update states.
     fn print(&mut self, _c: char) {}
 
