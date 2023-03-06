@@ -102,7 +102,7 @@ impl Args {
                         ("dimmed", anstyle::Effects::DIMMED),
                         ("italic", anstyle::Effects::ITALIC),
                         ("underline", anstyle::Effects::UNDERLINE),
-                        ("double_underline", anstyle::Effects::UNDERLINE),
+                        ("double_underline", anstyle::Effects::DOUBLE_UNDERLINE),
                         ("curly_underline", anstyle::Effects::CURLY_UNDERLINE),
                         ("dotted_underline", anstyle::Effects::DOTTED_UNDERLINE),
                         ("dashed_underline", anstyle::Effects::DASHED_UNDERLINE),
