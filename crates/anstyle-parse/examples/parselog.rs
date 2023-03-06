@@ -66,7 +66,7 @@ fn main() {
             Ok(0) => break,
             Ok(n) => {
                 for byte in &buf[..n] {
-                    statemachine.advance_byte(&mut performer, *byte);
+                    statemachine.advance(&mut performer, *byte);
                 }
             }
             Err(err) => {

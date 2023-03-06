@@ -98,13 +98,13 @@ fn parse(c: &mut Criterion) {
         ),
     ] {
         let mut group = c.benchmark_group(name);
-        group.bench_function("advance_byte", |b| {
+        group.bench_function("advance", |b| {
             b.iter(|| {
                 let mut dispatcher = BenchDispatcher;
                 let mut parser = Parser::<DefaultCharAccumulator>::new();
 
                 for byte in content {
-                    parser.advance_byte(&mut dispatcher, *byte);
+                    parser.advance(&mut dispatcher, *byte);
                 }
             })
         });
@@ -118,20 +118,20 @@ fn parse(c: &mut Criterion) {
                 })
             });
         }
-        group.bench_function("advance_byte(strip)", |b| {
+        group.bench_function("advance_strip", |b| {
             b.iter(|| {
                 let mut stripped = Strip::with_capacity(content.len());
                 let mut parser = Parser::<DefaultCharAccumulator>::new();
 
                 for byte in content {
-                    parser.advance_byte(&mut stripped, *byte);
+                    parser.advance(&mut stripped, *byte);
                 }
 
                 black_box(stripped.0)
             })
         });
         if let Ok(content) = std::str::from_utf8(content) {
-            group.bench_function("advance_str(strip)", |b| {
+            group.bench_function("advance_str_strip", |b| {
                 b.iter(|| {
                     let mut stripped = Strip::with_capacity(content.len());
                     let mut parser = Parser::<DefaultCharAccumulator>::new();

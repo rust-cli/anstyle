@@ -141,7 +141,7 @@ where
         P: Perform<O>,
     {
         if let Some((byte, next)) = bytes.split_first() {
-            self.advance_byte(&mut Forward::new(performer), *byte);
+            self.advance(&mut Forward::new(performer), *byte);
             *bytes = next;
             true
         } else {
@@ -155,7 +155,7 @@ where
     ///
     /// [`Perform`]: trait.Perform.html
     #[inline]
-    pub fn advance_byte<P>(&mut self, performer: &mut P, byte: u8)
+    pub fn advance<P>(&mut self, performer: &mut P, byte: u8)
     where
         P: Perform<char>,
     {
