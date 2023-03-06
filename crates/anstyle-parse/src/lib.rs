@@ -96,10 +96,7 @@ where
     ///
     /// Requires a [`Perform`] in case `byte` triggers an action
     #[inline]
-    pub fn advance<P>(&mut self, performer: &mut P, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    pub fn advance<P: Perform>(&mut self, performer: &mut P, byte: u8) {
         // Utf8 characters are handled out-of-band.
         if let State::Utf8 = self.state {
             self.process_utf8(performer, byte);
@@ -123,7 +120,7 @@ where
     #[inline]
     fn process_utf8<P>(&mut self, performer: &mut P, byte: u8)
     where
-        P: Perform<char>,
+        P: Perform,
     {
         if let Some(c) = self.utf8_parser.add(byte) {
             performer.print(c);
@@ -134,7 +131,7 @@ where
     #[inline]
     fn perform_state_change<P>(&mut self, performer: &mut P, state: State, action: Action, byte: u8)
     where
-        P: Perform<char>,
+        P: Perform,
     {
         match state {
             State::Anywhere => {
@@ -182,10 +179,7 @@ where
     ///
     /// The aliasing is needed here for multiple slices into self.osc_raw
     #[inline]
-    fn osc_dispatch<P>(&self, performer: &mut P, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    fn osc_dispatch<P: Perform>(&self, performer: &mut P, byte: u8) {
         let mut slices: [MaybeUninit<&[u8]>; MAX_OSC_PARAMS] =
             unsafe { MaybeUninit::uninit().assume_init() };
 
@@ -202,10 +196,7 @@ where
     }
 
     #[inline]
-    fn perform_action<P>(&mut self, performer: &mut P, action: Action, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    fn perform_action<P: Perform>(&mut self, performer: &mut P, action: Action, byte: u8) {
         match action {
             Action::Print => performer.print(byte as char),
             Action::Execute if P::print_control(byte) => performer.print(byte as char),
@@ -401,7 +392,7 @@ impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
 /// a useful way in my own words for completeness, but the site should be
 /// referenced if something isn't clear. If the site disappears at some point in
 /// the future, consider checking archive.org.
-pub trait Perform<P> {
+pub trait Perform {
     /// Whether single-byte control characters should be [`Perform::execute`]d or
     /// [`Perform::print`]ed.
     fn print_control(_byte: u8) -> bool {
@@ -409,7 +400,7 @@ pub trait Perform<P> {
     }
 
     /// Draw a character to the screen and update states.
-    fn print(&mut self, _c: P) {}
+    fn print(&mut self, _c: char) {}
 
     /// Execute a C0 or C1 control function.
     fn execute(&mut self, _byte: u8) {}

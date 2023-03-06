@@ -24,7 +24,7 @@ struct Dispatcher {
     dispatched: Vec<Sequence>,
 }
 
-impl Perform<char> for Dispatcher {
+impl Perform for Dispatcher {
     fn print(&mut self, c: char) {
         self.dispatched.push(Sequence::Print(c));
     }

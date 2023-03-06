@@ -6,7 +6,7 @@ use anstyle_parse::{DefaultCharAccumulator, Params, Parser, Perform};
 /// A type implementing Perform that just logs actions
 struct Log;
 
-impl Perform<char> for Log {
+impl Perform for Log {
     fn print(&mut self, c: char) {
         println!("[print] {:?}", c);
     }

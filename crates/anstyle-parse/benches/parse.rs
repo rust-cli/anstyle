@@ -3,7 +3,7 @@ use criterion::{black_box, Criterion};
 use anstyle_parse::*;
 
 struct BenchDispatcher;
-impl Perform<char> for BenchDispatcher {
+impl Perform for BenchDispatcher {
     fn print(&mut self, c: char) {
         black_box(c);
     }
@@ -40,7 +40,7 @@ impl Strip {
         Self(String::with_capacity(capacity))
     }
 }
-impl Perform<char> for Strip {
+impl Perform for Strip {
     fn print_control(byte: u8) -> bool {
         byte.is_ascii_whitespace()
     }
