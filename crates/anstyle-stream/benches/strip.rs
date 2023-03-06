@@ -41,6 +41,13 @@ fn strip(c: &mut Criterion) {
                 stripped.0,
                 anstyle_stream::adapter::strip_str(content).to_string()
             );
+            assert_eq!(
+                stripped.0,
+                String::from_utf8(
+                    anstyle_stream::adapter::strip_bytes(content.as_bytes()).into_vec()
+                )
+                .unwrap()
+            );
         }
 
         let mut group = c.benchmark_group(name);
@@ -84,6 +91,13 @@ fn strip(c: &mut Criterion) {
                 })
             });
         }
+        group.bench_function("strip_bytes", |b| {
+            b.iter(|| {
+                let stripped = anstyle_stream::adapter::strip_bytes(content).into_vec();
+
+                black_box(stripped)
+            })
+        });
     }
 }
 

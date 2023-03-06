@@ -102,6 +102,7 @@ dependencies = [
  "criterion",
  "proptest",
  "strip-ansi-escapes",
+ "utf8parse",
 ]
 
 [[package]]

@@ -168,6 +168,207 @@ fn is_utf8_continuation(b: u8) -> bool {
     matches!(b, 0x80..=0xbf)
 }
 
+/// Strip ANSI escapes from bytes, returning the printable content
+///
+/// This can be used to take output from a program that includes escape sequences and write it
+/// somewhere that does not easily support them, such as a log file.
+///
+/// # Example
+///
+/// ```rust
+/// use std::io::Write as _;
+///
+/// let styled_text = "\x1b[32mfoo\x1b[m bar";
+/// let plain_str = anstyle_stream::adapter::strip_bytes(styled_text.as_bytes()).into_vec();
+/// assert_eq!(plain_str.as_slice(), &b"foo bar"[..]);
+/// ```
+#[inline]
+pub fn strip_bytes(data: &[u8]) -> StrippedBytes<'_> {
+    StrippedBytes::new(data)
+}
+
+/// See [`strip_bytes`]
+#[derive(Default)]
+pub struct StrippedBytes<'s> {
+    bytes: &'s [u8],
+    state: State,
+    utf8parser: Utf8Parser,
+}
+
+impl<'s> StrippedBytes<'s> {
+    /// See [`strip_bytes`]
+    #[inline]
+    pub fn new(bytes: &'s [u8]) -> Self {
+        Self {
+            bytes,
+            state: State::Ground,
+            utf8parser: Default::default(),
+        }
+    }
+
+    /// Strip the next slice of bytes
+    ///
+    /// Used when the content is in several non-contiguous slices
+    ///
+    /// # Panic
+    ///
+    /// May panic if it is not exhausted / empty
+    #[inline]
+    pub fn extend(&mut self, bytes: &'s [u8]) {
+        debug_assert!(
+            self.is_empty(),
+            "current bytes must be processed to ensure we end at the right state"
+        );
+        self.bytes = bytes;
+    }
+
+    /// Report the bytes has been exhausted
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.bytes.is_empty()
+    }
+
+    /// Create a [`Vec`] of the printable content
+    #[inline]
+    pub fn into_vec(self) -> Vec<u8> {
+        let mut stripped = Vec::with_capacity(self.bytes.len());
+        for printable in self {
+            stripped.extend(printable);
+        }
+        stripped
+    }
+}
+
+impl<'s> Iterator for StrippedBytes<'s> {
+    type Item = &'s [u8];
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        next_bytes(&mut self.bytes, &mut self.state, &mut self.utf8parser)
+    }
+}
+
+/// Incrementally strip non-contiguous data
+#[derive(Default)]
+pub struct StripBytes {
+    state: State,
+    utf8parser: Utf8Parser,
+}
+
+impl StripBytes {
+    /// Initial state
+    pub fn new() -> Self {
+        Default::default()
+    }
+
+    /// Strip the next segment of data
+    pub fn strip_next<'s>(&'s mut self, bytes: &'s [u8]) -> StripBytesIter<'s> {
+        StripBytesIter {
+            bytes,
+            state: &mut self.state,
+            utf8parser: &mut self.utf8parser,
+        }
+    }
+}
+
+/// See [`StripStr`]
+pub struct StripBytesIter<'s> {
+    bytes: &'s [u8],
+    state: &'s mut State,
+    utf8parser: &'s mut Utf8Parser,
+}
+
+impl<'s> Iterator for StripBytesIter<'s> {
+    type Item = &'s [u8];
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        next_bytes(&mut self.bytes, self.state, self.utf8parser)
+    }
+}
+
+#[inline]
+fn next_bytes<'s>(
+    bytes: &mut &'s [u8],
+    state: &mut State,
+    utf8parser: &mut Utf8Parser,
+) -> Option<&'s [u8]> {
+    let offset = bytes.iter().copied().position(|b| {
+        if *state == State::Utf8 {
+            true
+        } else {
+            let (next_state, action) = state_change(*state, b);
+            if next_state != State::Anywhere {
+                *state = next_state;
+            }
+            is_printable_bytes(action, b)
+        }
+    });
+    let (_, next) = bytes.split_at(offset.unwrap_or(bytes.len()));
+    *bytes = next;
+
+    let offset = bytes.iter().copied().position(|b| {
+        if *state == State::Utf8 {
+            if utf8parser.add(b) {
+                *state = State::Ground;
+            }
+            false
+        } else {
+            let (next_state, action) = state_change(State::Ground, b);
+            if next_state != State::Anywhere {
+                *state = next_state;
+            }
+            if *state == State::Utf8 {
+                utf8parser.add(b);
+                false
+            } else {
+                !is_printable_bytes(action, b)
+            }
+        }
+    });
+    let (printable, next) = bytes.split_at(offset.unwrap_or(bytes.len()));
+    *bytes = next;
+    if printable.is_empty() {
+        None
+    } else {
+        Some(printable)
+    }
+}
+
+#[derive(Default)]
+pub struct Utf8Parser {
+    utf8_parser: utf8parse::Parser,
+}
+
+impl Utf8Parser {
+    fn add(&mut self, byte: u8) -> bool {
+        let mut b = false;
+        let mut receiver = VtUtf8Receiver(&mut b);
+        self.utf8_parser.advance(&mut receiver, byte);
+        b
+    }
+}
+
+struct VtUtf8Receiver<'a>(&'a mut bool);
+
+impl<'a> utf8parse::Receiver for VtUtf8Receiver<'a> {
+    fn codepoint(&mut self, _: char) {
+        *self.0 = true;
+    }
+
+    fn invalid_sequence(&mut self) {
+        *self.0 = true;
+    }
+}
+
+#[inline]
+fn is_printable_bytes(action: Action, byte: u8) -> bool {
+    // Continuations aren't included as they may also be control codes, requiring more context
+    action == Action::Print
+        || action == Action::BeginUtf8
+        || (action == Action::Execute && byte.is_ascii_whitespace())
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -203,7 +404,7 @@ mod test {
     }
 
     /// Model verifying incremental parsing
-    fn strip_chars(mut s: &str) -> String {
+    fn strip_char(mut s: &str) -> String {
         let mut result = String::new();
         let mut state = StripStr::new();
         while !s.is_empty() {
@@ -219,6 +420,35 @@ mod test {
         result
     }
 
+    /// Model verifying incremental parsing
+    fn strip_byte(s: &[u8]) -> Vec<u8> {
+        let mut result = Vec::new();
+        let mut state = StripBytes::default();
+        for start in 0..s.len() {
+            let current = &s[start..=start];
+            for printable in state.strip_next(current) {
+                result.extend(printable);
+            }
+        }
+        result
+    }
+
+    #[test]
+    fn test_strip_bytes_multibyte() {
+        let bytes = [240, 145, 141, 139];
+        let expected = parser_strip(&bytes);
+        let actual = String::from_utf8(strip_bytes(&bytes).into_vec()).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_strip_byte_multibyte() {
+        let bytes = [240, 145, 141, 139];
+        let expected = parser_strip(&bytes);
+        let actual = String::from_utf8(strip_byte(&bytes).to_vec()).unwrap();
+        assert_eq!(expected, actual);
+    }
+
     proptest! {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
@@ -230,9 +460,29 @@ mod test {
 
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
-        fn strip_chars_no_escapes(s in "\\PC*") {
+        fn strip_char_no_escapes(s in "\\PC*") {
             let expected = parser_strip(s.as_bytes());
-            let actual = strip_chars(&s);
+            let actual = strip_char(&s);
+            assert_eq!(expected, actual);
+        }
+
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn strip_bytes_no_escapes(s in "\\PC*") {
+            dbg!(&s);
+            dbg!(s.as_bytes());
+            let expected = parser_strip(s.as_bytes());
+            let actual = String::from_utf8(strip_bytes(s.as_bytes()).into_vec()).unwrap();
+            assert_eq!(expected, actual);
+        }
+
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn strip_byte_no_escapes(s in "\\PC*") {
+            dbg!(&s);
+            dbg!(s.as_bytes());
+            let expected = parser_strip(s.as_bytes());
+            let actual = String::from_utf8(strip_byte(s.as_bytes()).to_vec()).unwrap();
             assert_eq!(expected, actual);
         }
     }
