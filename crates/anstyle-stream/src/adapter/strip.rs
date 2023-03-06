@@ -269,6 +269,15 @@ impl StripBytes {
             utf8parser: &mut self.utf8parser,
         }
     }
+
+    /// WARNING: This resets the UTF-8 parser state
+    #[inline]
+    pub(crate) fn clone_hack(&self) -> Self {
+        Self {
+            state: self.state,
+            utf8parser: Utf8Parser::default(),
+        }
+    }
 }
 
 /// See [`StripStr`]
