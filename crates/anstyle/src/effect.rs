@@ -266,8 +266,8 @@ pub(crate) const METADATA: [Metadata; 12] = [
     },
     Metadata {
         name: "DOUBLE_UNDERLINE",
-        primary: 4,
-        secondary: Some(2),
+        primary: 21,
+        secondary: None,
     },
     Metadata {
         name: "CURLY_UNDERLINE",
