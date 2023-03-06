@@ -28,7 +28,7 @@
 //!   all states.
 //!
 //! [Paul Williams' ANSI parser state machine]: https://vt100.net/emu/dec_ansi_parser
-#![cfg_attr(feature = "core", no_std)]
+#![cfg_attr(not(test), no_std)]
 
 #[cfg(not(feature = "core"))]
 extern crate alloc;
@@ -40,7 +40,7 @@ use arrayvec::ArrayVec;
 #[cfg(feature = "utf8")]
 use utf8parse as utf8;
 
-#[cfg(all(test, not(feature = "core")))]
+#[cfg(test)]
 mod codegen;
 mod definitions;
 mod params;
