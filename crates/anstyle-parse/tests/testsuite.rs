@@ -24,48 +24,9 @@ struct Dispatcher {
     dispatched: Vec<Sequence>,
 }
 
-impl Perform<char> for Dispatcher {
+impl Perform for Dispatcher {
     fn print(&mut self, c: char) {
         self.dispatched.push(Sequence::Print(c));
-    }
-
-    fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        let params = params.iter().map(|p| p.to_vec()).collect();
-        self.dispatched.push(Sequence::Osc(params, bell_terminated));
-    }
-
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
-        let params = params.iter().map(|subparam| subparam.to_vec()).collect();
-        let intermediates = intermediates.to_vec();
-        self.dispatched
-            .push(Sequence::Csi(params, intermediates, ignore, c));
-    }
-
-    fn esc_dispatch(&mut self, intermediates: &[u8], ignore: bool, byte: u8) {
-        let intermediates = intermediates.to_vec();
-        self.dispatched
-            .push(Sequence::Esc(intermediates, ignore, byte));
-    }
-
-    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, c: u8) {
-        let params = params.iter().map(|subparam| subparam.to_vec()).collect();
-        let intermediates = intermediates.to_vec();
-        self.dispatched
-            .push(Sequence::DcsHook(params, intermediates, ignore, c));
-    }
-
-    fn put(&mut self, byte: u8) {
-        self.dispatched.push(Sequence::DcsPut(byte));
-    }
-
-    fn unhook(&mut self) {
-        self.dispatched.push(Sequence::DcsUnhook);
-    }
-}
-
-impl Perform<&'_ str> for Dispatcher {
-    fn print(&mut self, c: &'_ str) {
-        self.dispatched.extend(Dispatcher::from(c).dispatched);
     }
 
     fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
@@ -176,7 +137,7 @@ impl From<char> for Sequence {
     }
 }
 
-macro_rules! advance_byte {
+macro_rules! advance {
     ($name: ident, $gen: ident) => {
         #[test]
         fn $name() {
@@ -185,24 +146,8 @@ macro_rules! advance_byte {
             let mut parser = Parser::<DefaultCharAccumulator>::new();
 
             for byte in &input {
-                parser.advance_byte(&mut dispatcher, *byte);
+                parser.advance(&mut dispatcher, *byte);
             }
-
-            assert_eq!(expected, dispatcher);
-        }
-    };
-}
-
-macro_rules! advance_str {
-    ($name: ident, $gen: ident) => {
-        #[test]
-        fn $name() {
-            let (input, expected) = $gen();
-            let input = String::from_utf8(input).unwrap();
-            let mut dispatcher = Dispatcher::default();
-            let mut parser = Parser::<DefaultCharAccumulator>::new();
-
-            parser.advance_str(&mut dispatcher, &input);
 
             assert_eq!(expected, dispatcher);
         }
@@ -222,8 +167,7 @@ fn gen_osc() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_osc, gen_osc);
-advance_str!(advance_str_osc, gen_osc);
+advance!(advance_osc, gen_osc);
 
 fn gen_empty_osc() -> (Vec<u8>, Dispatcher) {
     let input = [0x1b, 0x5d, 0x07].into();
@@ -231,8 +175,7 @@ fn gen_empty_osc() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_empty_osc, gen_empty_osc);
-advance_str!(advance_str_empty_osc, gen_empty_osc);
+advance!(advance_empty_osc, gen_empty_osc);
 
 fn gen_osc_max_params() -> (Vec<u8>, Dispatcher) {
     let params = ";".repeat(MAX_PARAMS + 1);
@@ -241,8 +184,7 @@ fn gen_osc_max_params() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_osc_max_params, gen_osc_max_params);
-advance_str!(advance_str_osc_max_params, gen_osc_max_params);
+advance!(advance_osc_max_params, gen_osc_max_params);
 
 fn gen_osc_bell_terminated() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b]11;ff/00/ff\x07".to_vec();
@@ -254,8 +196,7 @@ fn gen_osc_bell_terminated() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_osc_bell_terminated, gen_osc_bell_terminated);
-advance_str!(advance_str_osc_bell_terminated, gen_osc_bell_terminated);
+advance!(advance_osc_bell_terminated, gen_osc_bell_terminated);
 
 fn gen_osc_c0_st_terminated() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b]11;ff/00/ff\x1b\\".to_vec();
@@ -268,8 +209,7 @@ fn gen_osc_c0_st_terminated() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_osc_c0_st_terminated, gen_osc_c0_st_terminated);
-advance_str!(advance_str_osc_c0_st_terminated, gen_osc_c0_st_terminated);
+advance!(advance_osc_c0_st_terminated, gen_osc_c0_st_terminated);
 
 fn gen_osc_with_utf8_arguments() -> (Vec<u8>, Dispatcher) {
     let input = [
@@ -283,14 +223,7 @@ fn gen_osc_with_utf8_arguments() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_osc_with_utf8_arguments,
-    gen_osc_with_utf8_arguments
-);
-advance_str!(
-    advance_str_osc_with_utf8_arguments,
-    gen_osc_with_utf8_arguments
-);
+advance!(advance_osc_with_utf8_arguments, gen_osc_with_utf8_arguments);
 
 fn gen_osc_containing_string_terminator() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b]2;\xe6\x9c\xab\x1b\\".to_vec();
@@ -303,8 +236,8 @@ fn gen_osc_containing_string_terminator() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_osc_containing_string_terminator,
+advance!(
+    advance_osc_containing_string_terminator,
     gen_osc_containing_string_terminator
 );
 
@@ -324,14 +257,7 @@ fn gen_exceed_max_buffer_size() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_exceed_max_buffer_size,
-    gen_exceed_max_buffer_size
-);
-advance_str!(
-    advance_str_exceed_max_buffer_size,
-    gen_exceed_max_buffer_size
-);
+advance!(advance_exceed_max_buffer_size, gen_exceed_max_buffer_size);
 
 fn gen_csi_max_params() -> (Vec<u8>, Dispatcher) {
     // This will build a list of repeating '1;'s
@@ -345,8 +271,7 @@ fn gen_csi_max_params() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_csi_max_params, gen_csi_max_params);
-advance_str!(advance_str_csi_max_params, gen_csi_max_params);
+advance!(advance_csi_max_params, gen_csi_max_params);
 
 fn gen_csi_params_ignore_long_params() -> (Vec<u8>, Dispatcher) {
     // This will build a list of repeating '1;'s
@@ -359,8 +284,8 @@ fn gen_csi_params_ignore_long_params() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_csi_params_ignore_long_params,
+advance!(
+    advance_csi_params_ignore_long_params,
     gen_csi_params_ignore_long_params
 );
 
@@ -370,8 +295,8 @@ fn gen_csi_params_trailing_semicolon() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_csi_params_trailing_semicolon,
+advance!(
+    advance_csi_params_trailing_semicolon,
     gen_csi_params_trailing_semicolon
 );
 
@@ -381,8 +306,8 @@ fn gen_csi_params_leading_semicolon() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_csi_params_leading_semicolon,
+advance!(
+    advance_csi_params_leading_semicolon,
     gen_csi_params_leading_semicolon
 );
 
@@ -393,8 +318,7 @@ fn gen_csi_long_param() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_csi_long_param, gen_csi_long_param);
-advance_str!(advance_str_csi_long_param, gen_csi_long_param);
+advance!(advance_csi_long_param, gen_csi_long_param);
 
 fn gen_csi_reset() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b[3;1\x1b[?1049h".to_vec();
@@ -402,8 +326,7 @@ fn gen_csi_reset() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_csi_reset, gen_csi_reset);
-advance_str!(advance_str_csi_reset, gen_csi_reset);
+advance!(advance_csi_reset, gen_csi_reset);
 
 fn gen_csi_subparameters() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b[38:2:255:0:255;1m".to_vec();
@@ -412,8 +335,7 @@ fn gen_csi_subparameters() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_csi_subparameters, gen_csi_subparameters);
-advance_str!(advance_str_csi_subparameters, gen_csi_subparameters);
+advance!(advance_csi_subparameters, gen_csi_subparameters);
 
 fn gen_dcs_max_params() -> (Vec<u8>, Dispatcher) {
     let params = "1;".repeat(MAX_PARAMS + 1);
@@ -422,8 +344,7 @@ fn gen_dcs_max_params() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_dcs_max_params, gen_dcs_max_params);
-advance_str!(advance_str_dcs_max_params, gen_dcs_max_params);
+advance!(advance_dcs_max_params, gen_dcs_max_params);
 
 fn gen_dcs_reset() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b[3;1\x1bP1$tx\x9c".to_vec();
@@ -434,8 +355,7 @@ fn gen_dcs_reset() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_dcs_reset, gen_dcs_reset);
-// advance_str!(advance_str_dcs_reset, gen_dcs_reset);  // input isn't UTF-8
+advance!(advance_dcs_reset, gen_dcs_reset);
 
 fn gen_dcs() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1bP0;1|17/ab\x9c".to_vec();
@@ -450,8 +370,7 @@ fn gen_dcs() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_dcs, gen_dcs);
-// advance_str!(advance_str_dcs, gen_dcs); // input isn't UTF-8
+advance!(advance_dcs, gen_dcs);
 
 fn gen_intermediate_reset_on_dcs_exit() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1bP=1sZZZ\x1b+\x5c".to_vec();
@@ -465,8 +384,8 @@ fn gen_intermediate_reset_on_dcs_exit() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_intermediate_reset_on_dcs_exit,
+advance!(
+    advance_intermediate_reset_on_dcs_exit,
     gen_intermediate_reset_on_dcs_exit
 );
 
@@ -476,8 +395,7 @@ fn gen_esc_reset() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(advance_byte_esc_reset, gen_esc_reset);
-advance_str!(advance_str_esc_reset, gen_esc_reset);
+advance!(advance_esc_reset, gen_esc_reset);
 
 fn gen_params_buffer_filled_with_subparam() -> (Vec<u8>, Dispatcher) {
     let input = b"\x1b[::::::::::::::::::::::::::::::::x\x1b".to_vec();
@@ -485,8 +403,8 @@ fn gen_params_buffer_filled_with_subparam() -> (Vec<u8>, Dispatcher) {
     (input, expected)
 }
 
-advance_byte!(
-    advance_byte_params_buffer_filled_with_subparam,
+advance!(
+    advance_params_buffer_filled_with_subparam,
     gen_params_buffer_filled_with_subparam
 );
 
@@ -494,29 +412,15 @@ proptest! {
     #[test]
     #[cfg(feature = "utf8")]
     #[cfg_attr(any(miri, not(feature = "utf8")), ignore)]
-    fn advance_byte_utf8(input in "\\PC*") {
+    fn advance_utf8(input in "\\PC*") {
         let expected = Dispatcher::from(input.as_str());
 
         let mut dispatcher = Dispatcher::default();
         let mut parser = Parser::<Utf8Parser>::new();
 
         for byte in input.as_bytes() {
-            parser.advance_byte(&mut dispatcher, *byte);
+            parser.advance(&mut dispatcher, *byte);
         }
-
-        assert_eq!(expected, dispatcher);
-    }
-
-    #[test]
-    #[cfg(feature = "utf8")]
-    #[cfg_attr(any(miri, not(feature = "utf8")), ignore)]
-    fn advance_str_utf8(input in "\\PC*") {
-        let expected = Dispatcher::from(input.as_str());
-
-        let mut dispatcher = Dispatcher::default();
-        let mut parser = Parser::<Utf8Parser>::new();
-
-        parser.advance_str(&mut dispatcher, &input);
 
         assert_eq!(expected, dispatcher);
     }

@@ -28,7 +28,7 @@
 //!   all states.
 //!
 //! [Paul Williams' ANSI parser state machine]: https://vt100.net/emu/dec_ansi_parser
-#![cfg_attr(feature = "core", no_std)]
+#![cfg_attr(not(test), no_std)]
 
 #[cfg(not(feature = "core"))]
 extern crate alloc;
@@ -40,15 +40,12 @@ use arrayvec::ArrayVec;
 #[cfg(feature = "utf8")]
 use utf8parse as utf8;
 
-#[cfg(all(test, not(feature = "core")))]
-mod codegen;
-mod definitions;
 mod params;
-mod table;
+pub mod state;
 
 pub use params::{Params, ParamsIter};
 
-use definitions::{unpack, Action, State};
+use state::{state_change, Action, State};
 
 const MAX_INTERMEDIATES: usize = 2;
 const MAX_OSC_PARAMS: usize = 16;
@@ -96,93 +93,21 @@ where
     ///
     /// Requires a [`Perform`] in case `byte` triggers an action
     #[inline]
-    pub fn advance_str<'i, P>(&mut self, performer: &mut P, bytes: &'i str)
-    where
-        P: Perform<&'i str>,
-    {
-        let mut bytes = bytes.as_bytes();
-        'empty: while !bytes.is_empty() {
-            while !matches!(self.state, State::Ground) {
-                if !self.next_byte(performer, &mut bytes) {
-                    break 'empty;
-                }
-            }
-            let offset = bytes.iter().copied().position(|b| {
-                let change = table::state_change(State::Ground, b);
-                let (_state, action) = unpack(change);
-                let printable = action == Action::Print
-                    || action == Action::BeginUtf8
-                    // since we know the input is valid UTF-8, the only thing  we can do with
-                    // continuations is to print them
-                    || is_utf8_continuation(b)
-                    || (action == Action::Execute && P::print_control(b));
-                !printable
-            });
-            if let Some(offset) = offset {
-                if offset != 0 {
-                    let (printable, next) = bytes.split_at(offset);
-                    let printable = core::str::from_utf8(printable).unwrap();
-                    performer.print(printable);
-                    bytes = next;
-                }
-                self.next_byte(performer, &mut bytes);
-            } else {
-                let (printable, next) = (bytes, b"");
-                let printable = core::str::from_utf8(printable).unwrap();
-                performer.print(printable);
-                bytes = next;
-            }
-        }
-    }
-
-    #[inline]
-    fn next_byte<'i, P, O>(&mut self, performer: &mut P, bytes: &mut &'i [u8]) -> bool
-    where
-        P: Perform<O>,
-    {
-        if let Some((byte, next)) = bytes.split_first() {
-            self.advance_byte(&mut Forward::new(performer), *byte);
-            *bytes = next;
-            true
-        } else {
-            false
-        }
-    }
-
-    /// Advance the parser state
-    ///
-    /// Requires a [`Perform`] in case `byte` triggers an action
-    ///
-    /// [`Perform`]: trait.Perform.html
-    #[inline]
-    pub fn advance_byte<P>(&mut self, performer: &mut P, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    pub fn advance<P: Perform>(&mut self, performer: &mut P, byte: u8) {
         // Utf8 characters are handled out-of-band.
         if let State::Utf8 = self.state {
             self.process_utf8(performer, byte);
             return;
         }
 
-        // Handle state changes in the anywhere state before evaluating changes
-        // for current state.
-        let mut change = table::state_change(State::Anywhere, byte);
-
-        if change == 0 {
-            change = table::state_change(self.state, byte);
-        }
-
-        // Unpack into a state and action
-        let (state, action) = unpack(change);
-
+        let (state, action) = state_change(self.state, byte);
         self.perform_state_change(performer, state, action, byte);
     }
 
     #[inline]
     fn process_utf8<P>(&mut self, performer: &mut P, byte: u8)
     where
-        P: Perform<char>,
+        P: Perform,
     {
         if let Some(c) = self.utf8_parser.add(byte) {
             performer.print(c);
@@ -193,7 +118,7 @@ where
     #[inline]
     fn perform_state_change<P>(&mut self, performer: &mut P, state: State, action: Action, byte: u8)
     where
-        P: Perform<char>,
+        P: Perform,
     {
         match state {
             State::Anywhere => {
@@ -241,10 +166,7 @@ where
     ///
     /// The aliasing is needed here for multiple slices into self.osc_raw
     #[inline]
-    fn osc_dispatch<P>(&self, performer: &mut P, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    fn osc_dispatch<P: Perform>(&self, performer: &mut P, byte: u8) {
         let mut slices: [MaybeUninit<&[u8]>; MAX_OSC_PARAMS] =
             unsafe { MaybeUninit::uninit().assume_init() };
 
@@ -261,13 +183,9 @@ where
     }
 
     #[inline]
-    fn perform_action<P>(&mut self, performer: &mut P, action: Action, byte: u8)
-    where
-        P: Perform<char>,
-    {
+    fn perform_action<P: Perform>(&mut self, performer: &mut P, action: Action, byte: u8) {
         match action {
             Action::Print => performer.print(byte as char),
-            Action::Execute if P::print_control(byte) => performer.print(byte as char),
             Action::Execute => performer.execute(byte),
             Action::Hook => {
                 if self.params.is_full() {
@@ -460,15 +378,9 @@ impl<'a> utf8::Receiver for VtUtf8Receiver<'a> {
 /// a useful way in my own words for completeness, but the site should be
 /// referenced if something isn't clear. If the site disappears at some point in
 /// the future, consider checking archive.org.
-pub trait Perform<P> {
-    /// Whether single-byte control characters should be [`Perform::execute`]d or
-    /// [`Perform::print`]ed.
-    fn print_control(_byte: u8) -> bool {
-        false
-    }
-
+pub trait Perform {
     /// Draw a character to the screen and update states.
-    fn print(&mut self, _c: P) {}
+    fn print(&mut self, _c: char) {}
 
     /// Execute a C0 or C1 control function.
     fn execute(&mut self, _byte: u8) {}
@@ -516,69 +428,4 @@ pub trait Perform<P> {
     /// The `ignore` flag indicates that more than two intermediates arrived and
     /// subsequent characters were ignored.
     fn esc_dispatch(&mut self, _intermediates: &[u8], _ignore: bool, _byte: u8) {}
-}
-
-struct Forward<'p, P, O> {
-    inner: &'p mut P,
-    o: core::marker::PhantomData<O>,
-}
-
-impl<'p, P, O> Forward<'p, P, O>
-where
-    P: Perform<O>,
-{
-    fn new(inner: &'p mut P) -> Self {
-        Self {
-            inner,
-            o: Default::default(),
-        }
-    }
-}
-
-impl<'p, P, O> Perform<char> for Forward<'p, P, O>
-where
-    P: Perform<O>,
-{
-    fn print_control(_byte: u8) -> bool {
-        false
-    }
-
-    fn print(&mut self, _c: char) {
-        #[cfg(debug_assertions)]
-        panic!("should not be printing {:?}", _c);
-    }
-
-    fn execute(&mut self, byte: u8) {
-        self.inner.execute(byte)
-    }
-
-    fn hook(&mut self, params: &Params, intermediates: &[u8], ignore: bool, action: u8) {
-        self.inner.hook(params, intermediates, ignore, action)
-    }
-
-    fn put(&mut self, byte: u8) {
-        self.inner.put(byte)
-    }
-
-    fn unhook(&mut self) {
-        self.inner.unhook()
-    }
-
-    fn osc_dispatch(&mut self, params: &[&[u8]], bell_terminated: bool) {
-        self.inner.osc_dispatch(params, bell_terminated)
-    }
-
-    fn csi_dispatch(&mut self, params: &Params, intermediates: &[u8], ignore: bool, action: u8) {
-        self.inner
-            .csi_dispatch(params, intermediates, ignore, action)
-    }
-
-    fn esc_dispatch(&mut self, intermediates: &[u8], ignore: bool, byte: u8) {
-        self.inner.esc_dispatch(intermediates, ignore, byte)
-    }
-}
-
-#[inline]
-fn is_utf8_continuation(b: u8) -> bool {
-    matches!(b, 0x80..=0xbf)
 }
