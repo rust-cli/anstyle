@@ -132,7 +132,7 @@ pub fn unpack(delta: u8) -> (State, Action) {
 }
 
 #[inline(always)]
-#[cfg(all(test, not(feature = "core")))]
+#[cfg(test)]
 pub const fn pack(state: State, action: Action) -> u8 {
     (action as u8) << 4 | state as u8
 }

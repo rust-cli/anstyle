@@ -1,4 +1,4 @@
-use crate::definitions::{pack, unpack, Action, State};
+use super::{pack, unpack, Action, State};
 
 use vte_generate_state_changes::generate_state_changes;
 
@@ -9,7 +9,7 @@ fn table() {
 
     let content = String::from_utf8(content).unwrap();
     let content = codegenrs::rustfmt(&content, None).unwrap();
-    snapbox::assert_eq_path("./src/table.rs", content);
+    snapbox::assert_eq_path("./src/state/table.rs", content);
 }
 
 #[allow(clippy::write_literal)]
@@ -22,7 +22,7 @@ fn generate_table(file: &mut impl std::io::Write) -> std::io::Result<()> {
     writeln!(
         file,
         "{}",
-        r#"use crate::definitions::State;
+        r#"use super::State;
 
 #[inline]
 pub(crate) const fn state_change(state: State, byte: u8) -> u8 {

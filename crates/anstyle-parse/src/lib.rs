@@ -40,15 +40,12 @@ use arrayvec::ArrayVec;
 #[cfg(feature = "utf8")]
 use utf8parse as utf8;
 
-#[cfg(test)]
-mod codegen;
-mod definitions;
 mod params;
-mod table;
+mod state;
 
 pub use params::{Params, ParamsIter};
 
-use definitions::{unpack, Action, State};
+use state::{state_change, unpack, Action, State};
 
 const MAX_INTERMEDIATES: usize = 2;
 const MAX_OSC_PARAMS: usize = 16;
@@ -105,10 +102,10 @@ where
 
         // Handle state changes in the anywhere state before evaluating changes
         // for current state.
-        let mut change = table::state_change(State::Anywhere, byte);
+        let mut change = state_change(State::Anywhere, byte);
 
         if change == 0 {
-            change = table::state_change(self.state, byte);
+            change = state_change(self.state, byte);
         }
 
         // Unpack into a state and action
