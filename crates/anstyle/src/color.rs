@@ -109,7 +109,9 @@ impl core::ops::BitOr<crate::Effects> for Color {
     }
 }
 
-/// Available 4-bit ANSI color codes
+/// Available 4-bit ANSI color palette codes
+///
+/// The user's terminal defines the meaning of the each palette code.
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum AnsiColor {
     /// Black: #0 (foreground code `30`, background code `40`).
@@ -315,7 +317,11 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
     }
 }
 
-/// Index into the 8-bit ANSI color palette
+/// 256 (8-bit) color support
+///
+/// - `0..16` are [`AnsiColor`] palette codes
+/// - `0..232` map to [`RgbColor`] color values
+/// - `232..` map to [`RgbColor`] gray-scale values
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
 pub struct XTermColor(pub u8);
