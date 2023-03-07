@@ -38,6 +38,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().fg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
     pub const fn fg_color(mut self, fg: Option<crate::Color>) -> Self {
         self.fg = fg;
         self
@@ -50,6 +51,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
     pub const fn bg_color(mut self, bg: Option<crate::Color>) -> Self {
         self.bg = bg;
         self
@@ -62,6 +64,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().underline_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
     pub const fn underline_color(mut self, underline: Option<crate::Color>) -> Self {
         self.underline = underline;
         self
@@ -74,6 +77,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().effects(anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE);
     /// ```
+    #[must_use]
     pub const fn effects(mut self, effects: crate::Effects) -> Self {
         self.effects = effects;
         self
@@ -101,6 +105,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().bold();
     /// ```
+    #[must_use]
     pub const fn bold(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::BOLD);
         self
@@ -113,6 +118,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().dimmed();
     /// ```
+    #[must_use]
     pub const fn dimmed(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::DIMMED);
         self
@@ -125,6 +131,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().italic();
     /// ```
+    #[must_use]
     pub const fn italic(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::ITALIC);
         self
@@ -137,6 +144,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().underline();
     /// ```
+    #[must_use]
     pub const fn underline(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::UNDERLINE);
         self
@@ -149,6 +157,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().blink();
     /// ```
+    #[must_use]
     pub const fn blink(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::BLINK);
         self
@@ -161,6 +170,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().invert();
     /// ```
+    #[must_use]
     pub const fn invert(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::INVERT);
         self
@@ -173,6 +183,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().hidden();
     /// ```
+    #[must_use]
     pub const fn hidden(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::HIDDEN);
         self
@@ -185,6 +196,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().strikethrough();
     /// ```
+    #[must_use]
     pub const fn strikethrough(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::STRIKETHROUGH);
         self

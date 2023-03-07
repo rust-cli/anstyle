@@ -181,6 +181,7 @@ impl AnsiColor {
     }
 
     /// Change the color to/from bright
+    #[must_use]
     pub fn bright(self, yes: bool) -> Self {
         if yes {
             match self {

@@ -111,6 +111,7 @@ impl Effects {
     /// assert!(!effects.contains(anstyle::Effects::UNDERLINE));
     /// ```
     #[inline(always)]
+    #[must_use]
     pub const fn clear(self) -> Self {
         Self::new()
     }
@@ -124,6 +125,7 @@ impl Effects {
     /// assert!(effects.contains(anstyle::Effects::BOLD));
     /// ```
     #[inline]
+    #[must_use]
     pub const fn set(self, other: Self, enable: bool) -> Self {
         if enable {
             self.insert(other)
