@@ -55,6 +55,20 @@ where
         self.reset()
     }
 
+    /// Allow changing the stream
+    pub fn map<S1: crate::WinconStream + std::io::Write>(
+        mut self,
+        op: impl FnOnce(S) -> S1,
+    ) -> Console<S1> {
+        Console {
+            stream: Some(op(self.stream.take().unwrap())),
+            initial_fg: self.initial_fg,
+            initial_bg: self.initial_bg,
+            last_fg: self.last_fg,
+            last_bg: self.last_bg,
+        }
+    }
+
     fn apply(
         &mut self,
         fg: Option<anstyle::AnsiColor>,

@@ -99,6 +99,7 @@ version = "0.0.1"
 dependencies = [
  "anstyle",
  "anstyle-parse",
+ "anstyle-wincon",
  "concolor-query 0.2.0",
  "criterion",
  "is-terminal",
