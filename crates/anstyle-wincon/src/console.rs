@@ -67,6 +67,13 @@ where
         }
     }
 
+    /// Get the inner writer
+    #[inline]
+    pub fn into_inner(mut self) -> S {
+        let _ = self.reset();
+        self.stream.take().unwrap()
+    }
+
     fn apply(
         &mut self,
         fg: Option<anstyle::AnsiColor>,

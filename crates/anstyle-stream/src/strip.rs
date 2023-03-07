@@ -20,6 +20,12 @@ where
             state: Default::default(),
         }
     }
+
+    /// Get the wrapped [`RawStream`]
+    #[inline]
+    pub fn into_inner(self) -> S {
+        self.raw
+    }
 }
 
 impl<S> std::io::Write for StripStream<S>

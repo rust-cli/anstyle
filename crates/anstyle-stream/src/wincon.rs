@@ -27,6 +27,12 @@ where
             state: Box::default(),
         }
     }
+
+    /// Get the wrapped [`RawStream`]
+    #[inline]
+    pub fn into_inner(self) -> anstyle_wincon::Console<S> {
+        self.console
+    }
 }
 
 impl<S> std::io::Write for WinconStream<S>
