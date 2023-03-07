@@ -27,6 +27,7 @@
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 pub mod adapter;
+mod buffer;
 #[macro_use]
 mod macros;
 mod auto;
@@ -38,6 +39,8 @@ pub use auto::AutoStream;
 pub use lockable::Lockable;
 pub use raw::RawStream;
 pub use strip::StripStream;
+
+pub use buffer::Buffer;
 
 /// Create an ANSI escape code compatible stdout
 ///

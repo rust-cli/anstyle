@@ -12,6 +12,8 @@ impl RawStream for std::io::Stderr {}
 
 impl RawStream for std::io::StderrLock<'static> {}
 
+impl RawStream for crate::Buffer {}
+
 mod private {
     pub trait Sealed {}
 
@@ -22,4 +24,6 @@ mod private {
     impl Sealed for std::io::Stderr {}
 
     impl Sealed for std::io::StderrLock<'static> {}
+
+    impl Sealed for crate::Buffer {}
 }
