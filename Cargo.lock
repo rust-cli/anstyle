@@ -102,6 +102,7 @@ dependencies = [
  "concolor-query 0.2.0",
  "criterion",
  "is-terminal",
+ "owo-colors",
  "proptest",
  "strip-ansi-escapes",
  "utf8parse",

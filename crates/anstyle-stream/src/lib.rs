@@ -7,10 +7,26 @@
 //! - Allows the caller to not be concerned with the terminal's capabilities
 //! - Semver safe way of passing styled text between crates as ANSI escape codes offer more
 //!   compatibility than most crate APIs.
+//!
+//! # Example
+//!
+//! ```
+//! #  #[cfg(feature = "auto")] {
+//! use anstyle_stream::println;
+//! use owo_colors::OwoColorize as _;
+//!
+//! // Foreground colors
+//! println!("My number is {:#x}!", 10.green());
+//! // Background colors
+//! println!("My number is not {}!", 4.on_red());
+//! # }
+//! ```
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 pub mod adapter;
+#[macro_use]
+mod macros;
 
 /// Create an ANSI escape code compatible stdout
 ///
