@@ -1,9 +1,3 @@
-#[cfg(windows)]
-use std::os::windows::io::{AsHandle, AsRawHandle};
-
-#[cfg(windows)]
-use crate::windows::*;
-
 /// Extend `std::io::Write` with wincon styling
 ///
 /// Generally, you will want to use [`Console`][crate::Console] instead
@@ -26,17 +20,11 @@ impl WinconStream for std::io::Stdout {
         fg: anstyle::AnsiColor,
         bg: anstyle::AnsiColor,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
     fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+        inner::get_colors(self)
     }
 }
 
@@ -47,17 +35,11 @@ impl<'s> WinconStream for std::io::StdoutLock<'s> {
         fg: anstyle::AnsiColor,
         bg: anstyle::AnsiColor,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
     fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+        inner::get_colors(self)
     }
 }
 
@@ -68,17 +50,11 @@ impl WinconStream for std::io::Stderr {
         fg: anstyle::AnsiColor,
         bg: anstyle::AnsiColor,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
     fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+        inner::get_colors(self)
     }
 }
 
@@ -89,16 +65,35 @@ impl<'s> WinconStream for std::io::StderrLock<'s> {
         fg: anstyle::AnsiColor,
         bg: anstyle::AnsiColor,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
     fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
+        inner::get_colors(self)
+    }
+}
+
+#[cfg(windows)]
+mod inner {
+    use std::os::windows::io::{AsHandle, AsRawHandle};
+
+    pub(super) fn set_colors<S: AsHandle>(
+        stream: &mut S,
+        fg: anstyle::AnsiColor,
+        bg: anstyle::AnsiColor,
+    ) -> std::io::Result<()> {
+        let handle = stream.as_handle();
         let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+        let attributes = crate::windows::set_colors(fg, bg);
+        crate::windows::set_console_text_attributes(handle, attributes)
+    }
+
+    pub(super) fn get_colors<S: AsHandle>(
+        stream: &S,
+    ) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
+        let handle = stream.as_handle();
+        let handle = handle.as_raw_handle();
+        let info = crate::windows::get_screen_buffer_info(handle)?;
+        Ok(crate::windows::get_colors(&info))
     }
 }
