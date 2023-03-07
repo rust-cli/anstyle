@@ -9,7 +9,10 @@ where
     S: RawStream,
 {
     console: anstyle_wincon::Console<S>,
-    state: WinconBytes,
+    // `WinconBytes` is especially large compared to other variants of `AutoStream`, so boxing it
+    // here so `AutoStream` doesn't have to discard one allocation and create another one when
+    // calling `AutoStream::lock`
+    state: Box<WinconBytes>,
 }
 
 impl<S> WinconStream<S>
@@ -21,7 +24,7 @@ where
     pub fn new(console: anstyle_wincon::Console<S>) -> Self {
         Self {
             console,
-            state: Default::default(),
+            state: Box::default(),
         }
     }
 }
