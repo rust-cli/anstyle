@@ -116,6 +116,12 @@ where
     /// supports.
     #[inline]
     pub fn always_ansi(write: W) -> Self {
+        #[cfg(feature = "auto")]
+        let _ = concolor_query::windows::enable_ansi_colors();
+        Self::always_ansi_(write)
+    }
+
+    fn always_ansi_(write: W) -> Self {
         let write = StreamInner::PassThrough(write);
         Stream { write }
     }
@@ -157,7 +163,7 @@ where
     fn auto(write: W) -> Self {
         if write.is_terminal() {
             if concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
-                Self::always_ansi(write)
+                Self::always_ansi_(write)
             } else {
                 Self::never(write)
             }
