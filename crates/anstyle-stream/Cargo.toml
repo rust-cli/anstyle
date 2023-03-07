@@ -50,3 +50,7 @@ harness = false
 [[bench]]
 name = "wincon"
 harness = false
+
+[[bench]]
+name = "stream"
+harness = false
