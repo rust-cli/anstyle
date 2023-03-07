@@ -1,5 +1,6 @@
 This repo contains:
 - [`anstyle`](./crates/anstyle) for style definitions
+- [`anstyle-stream`](./crates/anstyle-stream) for a simple cross platform library for writing colored text to a termina
 - User-styling parsers
   - [`anstyle-git`](./crates/anstyle-git) for parsing `git` style descriptions
   - [`anstyle-ls`](./crates/anstyle-ls) for parsing `LS_COLORS` style descriptions
