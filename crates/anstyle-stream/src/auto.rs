@@ -21,7 +21,11 @@ where
     #[inline]
     pub fn always_ansi(raw: S) -> Self {
         #[cfg(feature = "auto")]
-        let _ = concolor_query::windows::enable_ansi_colors();
+        {
+            if raw.is_terminal() {
+                let _ = concolor_query::windows::enable_ansi_colors();
+            }
+        }
         Self::always_ansi_(raw)
     }
 
