@@ -41,6 +41,10 @@ where
         Ok(written)
     }
 
+    pub fn flush(&mut self) -> std::io::Result<()> {
+        self.as_stream_mut().flush()
+    }
+
     /// Change the terminal back to the initial colors
     pub fn reset(&mut self) -> std::io::Result<()> {
         self.apply(self.initial_fg, self.initial_bg)
