@@ -44,3 +44,7 @@ strip-ansi-escapes = "0.1.1"
 [[bench]]
 name = "strip"
 harness = false
+
+[[bench]]
+name = "wincon"
+harness = false

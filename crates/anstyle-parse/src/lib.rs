@@ -53,7 +53,7 @@ const MAX_OSC_PARAMS: usize = 16;
 const MAX_OSC_RAW: usize = 1024;
 
 /// Parser for raw _VTE_ protocol which delegates actions to a [`Perform`]
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct Parser<C = DefaultCharAccumulator> {
     state: State,
     intermediates: [u8; MAX_INTERMEDIATES],
@@ -328,7 +328,7 @@ pub type DefaultCharAccumulator = Utf8Parser;
 pub type DefaultCharAccumulator = AsciiParser;
 
 /// Only allow parsing 7-bit ASCII
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct AsciiParser;
 
 impl CharAccumulator for AsciiParser {
@@ -338,8 +338,8 @@ impl CharAccumulator for AsciiParser {
 }
 
 /// Allow parsing UTF-8
-#[derive(Default)]
 #[cfg(feature = "utf8")]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct Utf8Parser {
     utf8_parser: utf8::Parser,
 }
