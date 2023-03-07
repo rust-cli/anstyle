@@ -35,6 +35,7 @@ impl Effects {
     /// ```rust
     /// let effects = anstyle::Effects::new();
     /// ```
+    #[inline]
     pub const fn new() -> Self {
         Self::PLAIN
     }
@@ -50,6 +51,7 @@ impl Effects {
     /// let effects = anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
     /// assert!(!effects.is_plain());
     /// ```
+    #[inline]
     pub const fn is_plain(self) -> bool {
         self.0 == Self::PLAIN.0
     }
@@ -153,6 +155,7 @@ impl Effects {
     }
 
     /// Render the ANSI code
+    #[inline]
     pub fn render(self) -> impl core::fmt::Display {
         EffectsDisplay(self)
     }

@@ -4,6 +4,7 @@ pub struct Reset;
 
 impl Reset {
     /// Render the ANSI code
+    #[inline]
     pub fn render(self) -> impl core::fmt::Display {
         ResetDisplay
     }
