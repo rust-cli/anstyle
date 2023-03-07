@@ -21,6 +21,8 @@
 //! println!("My number is not {}!", 4.on_red());
 //! # }
 //! ```
+//!
+//! And this will correctly handle piping to a file, etc
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
