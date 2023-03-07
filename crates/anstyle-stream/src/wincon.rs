@@ -40,19 +40,17 @@ where
     S: RawStream,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut written = 0;
-        let mut possible = 0;
         for (style, printable) in self.state.extract_next(buf) {
             let fg = style.get_fg_color().and_then(cap_wincon_color);
             let bg = style.get_bg_color().and_then(cap_wincon_color);
-            written += self.console.write(fg, bg, printable.as_bytes())?;
-            possible += printable.len();
+            let written = self.console.write(fg, bg, printable.as_bytes())?;
+            let possible = printable.len();
             if possible != written {
                 // HACK: Unsupported atm
                 break;
             }
         }
-        Ok(written)
+        Ok(buf.len())
     }
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {

@@ -35,21 +35,19 @@ where
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         let initial_state = self.state.clone();
 
-        let mut written = 0;
-        let mut possible = 0;
         for printable in self.state.strip_next(buf) {
-            possible += printable.len();
-            written += self.raw.write(printable)?;
+            let possible = printable.len();
+            let written = self.raw.write(printable)?;
             if possible != written {
                 let divergence = &printable[written..];
                 let offset = offset_to(buf, divergence);
                 let consumed = &buf[offset..];
                 self.state = initial_state;
                 self.state.strip_next(consumed).last();
-                break;
+                return Ok(offset);
             }
         }
-        Ok(written)
+        Ok(buf.len())
     }
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
