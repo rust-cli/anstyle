@@ -33,7 +33,7 @@ anstyle = { version = "0.2.5", path = "../anstyle" }
 anstyle-parse = { version = "0.0.1", path = "../anstyle-parse" }
 concolor-query = { version = "0.2.0", optional = true }
 is-terminal = { version = "0.4.4", optional = true }
-utf8parse = "0.2.0"
+utf8parse = "0.2.1"
 
 [dev-dependencies]
 criterion = "0.4.0"

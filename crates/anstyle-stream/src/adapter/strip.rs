@@ -24,7 +24,7 @@ pub fn strip_str(data: &str) -> StrippedStr<'_> {
 }
 
 /// See [`strip_str`]
-#[derive(Default, Debug)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StrippedStr<'s> {
     bytes: &'s [u8],
     state: State,
@@ -75,7 +75,7 @@ impl<'s> Iterator for StrippedStr<'s> {
 }
 
 /// Incrementally strip non-contiguous data
-#[derive(Clone, Default, Debug)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StripStr {
     state: State,
 }
@@ -96,7 +96,7 @@ impl StripStr {
 }
 
 /// See [`StripStr`]
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct StripStrIter<'s> {
     bytes: &'s [u8],
     state: &'s mut State,
@@ -188,7 +188,7 @@ pub fn strip_bytes(data: &[u8]) -> StrippedBytes<'_> {
 }
 
 /// See [`strip_bytes`]
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StrippedBytes<'s> {
     bytes: &'s [u8],
     state: State,
@@ -249,7 +249,7 @@ impl<'s> Iterator for StrippedBytes<'s> {
 }
 
 /// Incrementally strip non-contiguous data
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StripBytes {
     state: State,
     utf8parser: Utf8Parser,
@@ -269,18 +269,10 @@ impl StripBytes {
             utf8parser: &mut self.utf8parser,
         }
     }
-
-    /// WARNING: This resets the UTF-8 parser state
-    #[inline]
-    pub(crate) fn clone_hack(&self) -> Self {
-        Self {
-            state: self.state,
-            utf8parser: Utf8Parser::default(),
-        }
-    }
 }
 
 /// See [`StripStr`]
+#[derive(Debug, PartialEq, Eq)]
 pub struct StripBytesIter<'s> {
     bytes: &'s [u8],
     state: &'s mut State,
@@ -344,7 +336,7 @@ fn next_bytes<'s>(
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct Utf8Parser {
     utf8_parser: utf8parse::Parser,
 }

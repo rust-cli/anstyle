@@ -257,10 +257,7 @@ where
     W: std::io::Write,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        // `clone_hack` is close enough until we can support clone as it only breaks if
-        // - `buf` ends in the middle of a UTF-8 character
-        // - `self.write` does not write the full buf
-        let initial_state = self.state.clone_hack();
+        let initial_state = self.state.clone();
 
         let mut written = 0;
         let mut possible = 0;
@@ -321,7 +318,7 @@ where
         Self::Locked {
             write: self.write.lock(),
             // WARNING: the state is not resumable after unlocking
-            state: self.state.clone_hack(),
+            state: self.state.clone(),
         }
     }
 }
