@@ -18,7 +18,6 @@ pub trait WinconStream {
     ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)>;
 }
 
-#[cfg(windows)]
 impl WinconStream for std::io::Stdout {
     fn set_colors(
         &mut self,
@@ -35,7 +34,6 @@ impl WinconStream for std::io::Stdout {
     }
 }
 
-#[cfg(windows)]
 impl<'s> WinconStream for std::io::StdoutLock<'s> {
     fn set_colors(
         &mut self,
@@ -52,7 +50,6 @@ impl<'s> WinconStream for std::io::StdoutLock<'s> {
     }
 }
 
-#[cfg(windows)]
 impl WinconStream for std::io::Stderr {
     fn set_colors(
         &mut self,
@@ -69,7 +66,6 @@ impl WinconStream for std::io::Stderr {
     }
 }
 
-#[cfg(windows)]
 impl<'s> WinconStream for std::io::StderrLock<'s> {
     fn set_colors(
         &mut self,
@@ -113,5 +109,31 @@ mod inner {
         let info = crate::windows::get_screen_buffer_info(handle)?;
         let (fg, bg) = crate::windows::get_colors(&info);
         Ok((Some(fg), Some(bg)))
+    }
+}
+
+#[cfg(not(windows))]
+mod inner {
+    pub(super) fn set_colors<S: std::io::Write>(
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        if let Some(fg) = fg {
+            write!(stream, "{}", fg.render_fg())?;
+        }
+        if let Some(bg) = bg {
+            write!(stream, "{}", bg.render_bg())?;
+        }
+        if fg.is_none() && bg.is_none() {
+            write!(stream, "{}", anstyle::Reset.render())?;
+        }
+        Ok(())
+    }
+
+    pub(super) fn get_colors<S>(
+        _stream: &S,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        Ok((None, None))
     }
 }

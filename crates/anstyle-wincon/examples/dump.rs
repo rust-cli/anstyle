@@ -1,11 +1,3 @@
-#![cfg_attr(not(windows), allow(dead_code))]
-
-#[cfg(not(windows))]
-fn main() {
-    panic!("unsupported");
-}
-
-#[cfg(windows)]
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
@@ -52,7 +44,6 @@ fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
     }) | effects
 }
 
-#[cfg(windows)]
 fn print_number(
     stdout: &mut anstyle_wincon::Console<std::io::StdoutLock<'_>>,
     fixed: u8,
