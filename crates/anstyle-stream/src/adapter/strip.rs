@@ -271,7 +271,7 @@ impl StripBytes {
     }
 }
 
-/// See [`StripStr`]
+/// See [`StripBytes`]
 #[derive(Debug, PartialEq, Eq)]
 pub struct StripBytesIter<'s> {
     bytes: &'s [u8],
