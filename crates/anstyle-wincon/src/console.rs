@@ -4,10 +4,10 @@ where
     S: crate::WinconStream + std::io::Write,
 {
     stream: Option<S>,
-    initial_fg: anstyle::AnsiColor,
-    initial_bg: anstyle::AnsiColor,
-    last_fg: anstyle::AnsiColor,
-    last_bg: anstyle::AnsiColor,
+    initial_fg: Option<anstyle::AnsiColor>,
+    initial_bg: Option<anstyle::AnsiColor>,
+    last_fg: Option<anstyle::AnsiColor>,
+    last_bg: Option<anstyle::AnsiColor>,
 }
 
 impl<S> Console<S>
@@ -36,7 +36,7 @@ where
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        self.apply(fg.unwrap_or(self.initial_fg), bg.unwrap_or(self.initial_bg))?;
+        self.apply(fg, bg)?;
         let written = self.as_stream_mut().write(data)?;
         Ok(written)
     }
@@ -51,7 +51,13 @@ where
         self.reset()
     }
 
-    fn apply(&mut self, fg: anstyle::AnsiColor, bg: anstyle::AnsiColor) -> std::io::Result<()> {
+    fn apply(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        let fg = fg.or(self.initial_fg);
+        let bg = bg.or(self.initial_bg);
         if fg == self.last_fg && bg == self.last_bg {
             return Ok(());
         }
