@@ -1,6 +1,6 @@
 //! **Auto-adapting [`stdout`] / [`stderr`] streams**
 //!
-//! [`Stream`] always accepts [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code),
+//! [`AutoStream`] always accepts [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code),
 //! adapting to the user's terminal's capabilities.
 //!
 //! Benefits
@@ -32,29 +32,29 @@ mod macros;
 
 /// Create an ANSI escape code compatible stdout
 ///
-/// **Note:** Call [`Stream::lock`] in loops to avoid the performance hit of acquiring/releasing
+/// **Note:** Call [`AutoStream::lock`] in loops to avoid the performance hit of acquiring/releasing
 /// from the implicit locking in each [`std::io::Write`] call
 #[cfg(feature = "auto")]
-pub fn stdout() -> Stream<std::io::Stdout> {
+pub fn stdout() -> AutoStream<std::io::Stdout> {
     let stdout = std::io::stdout();
-    Stream::auto(stdout)
+    AutoStream::auto(stdout)
 }
 
 /// Create an ANSI escape code compatible stderr
 ///
-/// **Note:** Call [`Stream::lock`] in loops to avoid the performance hit of acquiring/releasing
+/// **Note:** Call [`AutoStream::lock`] in loops to avoid the performance hit of acquiring/releasing
 /// from the implicit locking in each [`std::io::Write`] call
 #[cfg(feature = "auto")]
-pub fn stderr() -> Stream<std::io::Stderr> {
+pub fn stderr() -> AutoStream<std::io::Stderr> {
     let stderr = std::io::stderr();
-    Stream::auto(stderr)
+    AutoStream::auto(stderr)
 }
 
 /// Explicitly lock a [`std::io::Write`]able
 pub trait Lockable {
     type Locked;
 
-    /// Get exclusive access to the `Stream`
+    /// Get exclusive access to the `AutoStream`
     ///
     /// Why?
     /// - Faster performance when writing in a loop
@@ -83,7 +83,7 @@ impl Lockable for std::io::Stderr {
 }
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
-pub struct Stream<W> {
+pub struct AutoStream<W> {
     write: StreamInner<W>,
 }
 
@@ -92,7 +92,7 @@ enum StreamInner<W> {
     Strip(StripStream<W>),
 }
 
-impl<W> Stream<W>
+impl<W> AutoStream<W>
 where
     W: std::io::Write,
 {
@@ -107,22 +107,22 @@ where
 
     fn always_ansi_(write: W) -> Self {
         let write = StreamInner::PassThrough(write);
-        Stream { write }
+        AutoStream { write }
     }
 
     /// Only pass printable data to the inner `Write`.
     #[inline]
     pub fn never(write: W) -> Self {
         let write = StreamInner::Strip(StripStream::new(write));
-        Stream { write }
+        AutoStream { write }
     }
 }
 
-impl<W> Stream<W>
+impl<W> AutoStream<W>
 where
     W: Lockable,
 {
-    /// Get exclusive access to the `Stream`
+    /// Get exclusive access to the `AutoStream`
     ///
     /// Why?
     /// - Faster performance when writing in a loop
@@ -133,12 +133,12 @@ where
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
         };
-        Stream { write }
+        AutoStream { write }
     }
 }
 
 #[cfg(feature = "auto")]
-impl<W> Stream<W>
+impl<W> AutoStream<W>
 where
     W: std::io::Write + is_terminal::IsTerminal,
 {
@@ -157,7 +157,7 @@ where
     }
 }
 
-impl<W> std::io::Write for Stream<W>
+impl<W> std::io::Write for AutoStream<W>
 where
     W: std::io::Write,
 {
@@ -192,11 +192,11 @@ where
     // Not bothering with `write_fmt` as it just calls `write_all`
 }
 
-impl<W> Lockable for Stream<W>
+impl<W> Lockable for AutoStream<W>
 where
     W: Lockable,
 {
-    type Locked = Stream<<W as Lockable>::Locked>;
+    type Locked = AutoStream<<W as Lockable>::Locked>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
