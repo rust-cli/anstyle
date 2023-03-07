@@ -122,6 +122,7 @@ impl core::ops::BitOr<crate::Effects> for Color {
 ///
 /// The user's terminal defines the meaning of the each palette code.
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[repr(u8)]
 pub enum AnsiColor {
     /// Black: #0 (foreground code `30`, background code `40`).
     Black,
