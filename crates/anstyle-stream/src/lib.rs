@@ -31,10 +31,12 @@ pub mod adapter;
 mod macros;
 mod auto;
 mod lockable;
+mod raw;
 mod strip;
 
 pub use auto::AutoStream;
 pub use lockable::Lockable;
+pub use raw::RawStream;
 pub use strip::StripStream;
 
 /// Create an ANSI escape code compatible stdout

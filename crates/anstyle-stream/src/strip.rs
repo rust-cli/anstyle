@@ -1,29 +1,30 @@
 use crate::adapter::StripBytes;
 use crate::Lockable;
+use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
-pub struct StripStream<W> {
-    write: W,
+pub struct StripStream<S> {
+    raw: S,
     state: StripBytes,
 }
 
-impl<W> StripStream<W>
+impl<S> StripStream<S>
 where
-    W: std::io::Write,
+    S: RawStream,
 {
     /// Only pass printable data to the inner `Write`
     #[inline]
-    pub fn new(write: W) -> Self {
+    pub fn new(raw: S) -> Self {
         Self {
-            write,
+            raw,
             state: Default::default(),
         }
     }
 }
 
-impl<W> std::io::Write for StripStream<W>
+impl<S> std::io::Write for StripStream<S>
 where
-    W: std::io::Write,
+    S: RawStream,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         let initial_state = self.state.clone();
@@ -32,7 +33,7 @@ where
         let mut possible = 0;
         for printable in self.state.strip_next(buf) {
             possible += printable.len();
-            written += self.write.write(printable)?;
+            written += self.raw.write(printable)?;
             if possible != written {
                 let divergence = &printable[written..];
                 let offset = offset_to(buf, divergence);
@@ -46,7 +47,7 @@ where
     }
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
-        self.write.flush()
+        self.raw.flush()
     }
 
     // Provide explicit implementations of trait methods
@@ -56,7 +57,7 @@ where
     #[inline]
     fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
         for printable in self.state.strip_next(buf) {
-            self.write.write_all(printable)?;
+            self.raw.write_all(printable)?;
         }
         Ok(())
     }
@@ -76,16 +77,16 @@ fn offset_to(total: &[u8], subslice: &[u8]) -> usize {
     subslice as usize - total as usize
 }
 
-impl<W> Lockable for StripStream<W>
+impl<S> Lockable for StripStream<S>
 where
-    W: Lockable,
+    S: Lockable,
 {
-    type Locked = StripStream<<W as Lockable>::Locked>;
+    type Locked = StripStream<<S as Lockable>::Locked>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
         Self::Locked {
-            write: self.write.lock(),
+            raw: self.raw.lock(),
             state: self.state,
         }
     }

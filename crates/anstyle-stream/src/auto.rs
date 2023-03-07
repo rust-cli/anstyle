@@ -1,45 +1,46 @@
 use crate::Lockable;
+use crate::RawStream;
 use crate::StripStream;
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
-pub struct AutoStream<W> {
-    write: StreamInner<W>,
+pub struct AutoStream<S> {
+    inner: StreamInner<S>,
 }
 
-enum StreamInner<W> {
-    PassThrough(W),
-    Strip(StripStream<W>),
+enum StreamInner<S> {
+    PassThrough(S),
+    Strip(StripStream<S>),
 }
 
-impl<W> AutoStream<W>
+impl<S> AutoStream<S>
 where
-    W: std::io::Write,
+    S: RawStream,
 {
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
     /// supports.
     #[inline]
-    pub fn always_ansi(write: W) -> Self {
+    pub fn always_ansi(raw: S) -> Self {
         #[cfg(feature = "auto")]
         let _ = concolor_query::windows::enable_ansi_colors();
-        Self::always_ansi_(write)
+        Self::always_ansi_(raw)
     }
 
-    fn always_ansi_(write: W) -> Self {
-        let write = StreamInner::PassThrough(write);
-        AutoStream { write }
+    fn always_ansi_(raw: S) -> Self {
+        let inner = StreamInner::PassThrough(raw);
+        AutoStream { inner }
     }
 
     /// Only pass printable data to the inner `Write`.
     #[inline]
-    pub fn never(write: W) -> Self {
-        let write = StreamInner::Strip(StripStream::new(write));
-        AutoStream { write }
+    pub fn never(raw: S) -> Self {
+        let inner = StreamInner::Strip(StripStream::new(raw));
+        AutoStream { inner }
     }
 }
 
-impl<W> AutoStream<W>
+impl<S> AutoStream<S>
 where
-    W: Lockable,
+    S: Lockable,
 {
     /// Get exclusive access to the `AutoStream`
     ///
@@ -48,41 +49,41 @@ where
     /// - Avoid other threads interleaving output with the current thread
     #[inline]
     pub fn lock(self) -> <Self as Lockable>::Locked {
-        let write = match self.write {
+        let inner = match self.inner {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
         };
-        AutoStream { write }
+        AutoStream { inner }
     }
 }
 
 #[cfg(feature = "auto")]
-impl<W> AutoStream<W>
+impl<S> AutoStream<S>
 where
-    W: std::io::Write + is_terminal::IsTerminal,
+    S: RawStream,
 {
     #[cfg(feature = "auto")]
     #[inline]
-    pub(crate) fn auto(write: W) -> Self {
-        if write.is_terminal() {
+    pub(crate) fn auto(raw: S) -> Self {
+        if raw.is_terminal() {
             if concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
-                Self::always_ansi_(write)
+                Self::always_ansi_(raw)
             } else {
-                Self::never(write)
+                Self::never(raw)
             }
         } else {
-            Self::never(write)
+            Self::never(raw)
         }
     }
 }
 
-impl<W> std::io::Write for AutoStream<W>
+impl<S> std::io::Write for AutoStream<S>
 where
-    W: std::io::Write,
+    S: RawStream,
 {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        match &mut self.write {
+        match &mut self.inner {
             StreamInner::PassThrough(w) => w.write(buf),
             StreamInner::Strip(w) => w.write(buf),
         }
@@ -90,7 +91,7 @@ where
 
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
-        match &mut self.write {
+        match &mut self.inner {
             StreamInner::PassThrough(w) => w.flush(),
             StreamInner::Strip(w) => w.flush(),
         }
@@ -102,7 +103,7 @@ where
 
     #[inline]
     fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
-        match &mut self.write {
+        match &mut self.inner {
             StreamInner::PassThrough(w) => w.write_all(buf),
             StreamInner::Strip(w) => w.write_all(buf),
         }
