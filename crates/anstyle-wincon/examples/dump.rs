@@ -1,7 +1,7 @@
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock()).unwrap();
+    let mut stdout = anstyle_wincon::Console::new(stdout.lock());
 
     for fixed in 0..16 {
         let style = style(fixed, args.layer, args.effects);

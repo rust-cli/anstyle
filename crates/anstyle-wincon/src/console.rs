@@ -14,19 +14,17 @@ impl<S> Console<S>
 where
     S: crate::WinconStream + std::io::Write,
 {
-    pub fn new(stream: S) -> std::io::Result<Self> {
-        Self::from_stream(stream)
-    }
-
-    fn from_stream(stream: S) -> std::io::Result<Self> {
-        let (initial_fg, initial_bg) = stream.get_colors()?;
-        Ok(Self {
+    pub fn new(stream: S) -> Self {
+        // HACK: Assuming the error from `get_colors()` will be present on `write` and doing basic
+        // ops on the stream will cause the same result
+        let (initial_fg, initial_bg) = stream.get_colors().unwrap_or_default();
+        Self {
             stream: Some(stream),
             initial_fg,
             initial_bg,
             last_fg: initial_fg,
             last_bg: initial_bg,
-        })
+        }
     }
 
     /// Write colored text to the screen
