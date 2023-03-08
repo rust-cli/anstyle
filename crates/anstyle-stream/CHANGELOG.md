@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.0] - 2023-03-08
+
 ### Breaking Change
 
 - `anstyle` upgraded
@@ -31,5 +33,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.0.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.1.0...HEAD
+[0.1.0]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.0.1...anstyle-stream-v0.1.0
 [0.0.1]: https://github.com/rust-cli/anstyle/compare/f1a7e73e317f1278be72655f5ce34336ae3d325c...anstyle-stream-v0.0.1
