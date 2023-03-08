@@ -200,7 +200,7 @@ mod tests {
         );
         assert_style(
             "32;40",
-            anstyle::AnsiColor::Green | anstyle::AnsiColor::Black,
+            anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Black),
         );
     }
 
@@ -274,12 +274,12 @@ mod tests {
         );
         assert_style(
             "48;2;100;200;0;1;38;2;0;10;20",
-            anstyle::RgbColor(0, 10, 20) | anstyle::RgbColor(100, 200, 0) | anstyle::Effects::BOLD,
+            anstyle::RgbColor(0, 10, 20).on(anstyle::RgbColor(100, 200, 0))
+                | anstyle::Effects::BOLD,
         );
         assert_style(
             "48;2;100;200;0;1;38;2;0;10;20;58;2;64;64;64",
-            (anstyle::RgbColor(0, 10, 20)
-                | anstyle::RgbColor(100, 200, 0)
+            (anstyle::RgbColor(0, 10, 20).on(anstyle::RgbColor(100, 200, 0))
                 | anstyle::Effects::BOLD)
                 .underline_color(Some(anstyle::RgbColor(64, 64, 64).into())),
         );

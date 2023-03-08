@@ -251,7 +251,10 @@ mod test {
     fn start() {
         let input = format!("{} world!", "Hello".green().on_red());
         let expected = vec![
-            (anstyle::AnsiColor::Green | anstyle::AnsiColor::Red, "Hello"),
+            (
+                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
+                "Hello",
+            ),
             (anstyle::Style::default(), " world!"),
         ];
         verify(&input, expected);
@@ -262,7 +265,10 @@ mod test {
         let input = format!("Hello {}!", "world".green().on_red());
         let expected = vec![
             (anstyle::Style::default(), "Hello "),
-            (anstyle::AnsiColor::Green | anstyle::AnsiColor::Red, "world"),
+            (
+                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
+                "world",
+            ),
             (anstyle::Style::default(), "!"),
         ];
         verify(&input, expected);
@@ -274,7 +280,7 @@ mod test {
         let expected = vec![
             (anstyle::Style::default(), "Hello "),
             (
-                anstyle::AnsiColor::Green | anstyle::AnsiColor::Red,
+                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
                 "world!",
             ),
         ];
