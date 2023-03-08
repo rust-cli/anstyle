@@ -73,7 +73,7 @@ dependencies = [
 name = "anstyle-parse"
 version = "0.1.0"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.7.2",
  "codegenrs",
  "criterion",
  "proptest",
@@ -98,6 +98,14 @@ name = "anstyle-stream"
 version = "0.1.0"
 dependencies = [
  "anstyle",
+ "anstyle-parse",
+ "concolor-query 0.2.0",
+ "criterion",
+ "is-terminal",
+ "owo-colors",
+ "proptest",
+ "strip-ansi-escapes",
+ "utf8parse",
 ]
 
 [[package]]
@@ -132,6 +140,12 @@ dependencies = [
  "anstyle",
  "yansi",
 ]
+
+[[package]]
+name = "arrayvec"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
 name = "arrayvec"
@@ -279,7 +293,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7b3e3c41e9488eeda196b6806dbf487742107d61b2e16485bcca6c25ed5755b"
 dependencies = [
  "bitflags",
- "concolor-query",
+ "concolor-query 0.1.0",
  "is-terminal",
 ]
 
@@ -288,6 +302,15 @@ name = "concolor-query"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "82a90734b3d5dcf656e7624cca6bce9c3a90ee11f900e80141a7427ccfb3d317"
+
+[[package]]
+name = "concolor-query"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "71cd70b9f86dd588a4a08471ebbd5847cb25f0116aaddeace95470cce096ff7d"
+dependencies = [
+ "windows-sys 0.45.0",
+]
 
 [[package]]
 name = "content_inspector"
@@ -1084,6 +1107,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "485e65c1203eb37244465e857d15a26d3a85a5410648ccb53b18bd44cb3a7336"
 
 [[package]]
+name = "strip-ansi-escapes"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "011cbb39cf7c1f62871aea3cc46e5817b0937b49e9447370c93cacbe93a766d8"
+dependencies = [
+ "vte",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.102"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1185,6 +1217,17 @@ name = "utf8parse"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "936e4b492acfd135421d8dca4b1aa80a7bfc26e702ef3af710e0752684df5372"
+
+[[package]]
+name = "vte"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6cbce692ab4ca2f1f3047fcf732430249c0e971bfdd2b234cf2c47ad93af5983"
+dependencies = [
+ "arrayvec 0.5.2",
+ "utf8parse",
+ "vte_generate_state_changes",
+]
 
 [[package]]
 name = "vte_generate_state_changes"
