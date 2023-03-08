@@ -95,7 +95,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-stream"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anstyle",
  "anstyle-parse",
@@ -127,7 +127,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anstyle",
  "lexopt",
