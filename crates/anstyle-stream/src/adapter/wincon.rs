@@ -169,7 +169,7 @@ impl anstyle_parse::Perform for WinconCapture {
                         g = None;
                     }
                     (State::Ansi256, n) => {
-                        let color = anstyle::XTermColor(n as u8);
+                        let color = anstyle::Ansi256Color(n as u8);
                         if is_bg {
                             style = style.bg_color(Some(color.into()));
                         } else {

@@ -283,11 +283,11 @@ impl From<crate::AnsiColor> for Style {
 /// # Examples
 ///
 /// ```rust
-/// let style: anstyle::Style = anstyle::XTermColor(0).into();
+/// let style: anstyle::Style = anstyle::Ansi256Color(0).into();
 /// ```
-impl From<crate::XTermColor> for Style {
+impl From<crate::Ansi256Color> for Style {
     #[inline]
-    fn from(color: crate::XTermColor) -> Self {
+    fn from(color: crate::Ansi256Color) -> Self {
         Self::new().fg_color(Some(color.into()))
     }
 }

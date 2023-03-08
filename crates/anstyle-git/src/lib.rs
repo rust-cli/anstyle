@@ -207,10 +207,10 @@ mod tests {
         test!("black cyan" => Black | Cyan);
         test!("red normal" => Red);
         test!("normal red" => Style::new().bg_color(Some(Red.into())));
-        test!("0" => XTermColor(0));
-        test!("8 3" => XTermColor(8) | XTermColor(3));
-        test!("255" => XTermColor(255));
-        test!("255 -1" => XTermColor(255));
+        test!("0" => Ansi256Color(0));
+        test!("8 3" => Ansi256Color(8) | Ansi256Color(3));
+        test!("255" => Ansi256Color(255));
+        test!("255 -1" => Ansi256Color(255));
         test!("#000000" => RgbColor(0,0,0));
         test!("#204060" => RgbColor(0x20,0x40,0x60));
 

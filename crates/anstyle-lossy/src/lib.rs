@@ -5,15 +5,15 @@ use anstyle::RgbColor as Rgb;
 pub const fn color_to_rgb(color: anstyle::Color, palette: palette::Palette) -> anstyle::RgbColor {
     match color {
         anstyle::Color::Ansi(color) => ansi_to_rgb(color, palette),
-        anstyle::Color::XTerm(color) => xterm_to_rgb(color, palette),
+        anstyle::Color::Ansi256(color) => xterm_to_rgb(color, palette),
         anstyle::Color::Rgb(color) => color,
     }
 }
 
-pub const fn color_to_xterm(color: anstyle::Color) -> anstyle::XTermColor {
+pub const fn color_to_xterm(color: anstyle::Color) -> anstyle::Ansi256Color {
     match color {
-        anstyle::Color::Ansi(color) => anstyle::XTermColor::from_ansi(color),
-        anstyle::Color::XTerm(color) => color,
+        anstyle::Color::Ansi(color) => anstyle::Ansi256Color::from_ansi(color),
+        anstyle::Color::Ansi256(color) => color,
         anstyle::Color::Rgb(color) => rgb_to_xterm(color),
     }
 }
@@ -21,7 +21,7 @@ pub const fn color_to_xterm(color: anstyle::Color) -> anstyle::XTermColor {
 pub const fn color_to_ansi(color: anstyle::Color, palette: palette::Palette) -> anstyle::AnsiColor {
     match color {
         anstyle::Color::Ansi(color) => color,
-        anstyle::Color::XTerm(color) => xterm_to_ansi(color, palette),
+        anstyle::Color::Ansi256(color) => xterm_to_ansi(color, palette),
         anstyle::Color::Rgb(color) => rgb_to_ansi(color, palette),
     }
 }
@@ -34,7 +34,7 @@ pub const fn ansi_to_rgb(
 }
 
 pub const fn xterm_to_rgb(
-    color: anstyle::XTermColor,
+    color: anstyle::Ansi256Color,
     palette: palette::Palette,
 ) -> anstyle::RgbColor {
     match palette.rgb_from_index(color.0) {
@@ -44,7 +44,7 @@ pub const fn xterm_to_rgb(
 }
 
 pub const fn xterm_to_ansi(
-    color: anstyle::XTermColor,
+    color: anstyle::Ansi256Color,
     palette: palette::Palette,
 ) -> anstyle::AnsiColor {
     match color.0 {
@@ -78,10 +78,10 @@ pub const fn rgb_to_ansi(
     palette.find_match(color)
 }
 
-pub const fn rgb_to_xterm(color: anstyle::RgbColor) -> anstyle::XTermColor {
+pub const fn rgb_to_xterm(color: anstyle::RgbColor) -> anstyle::Ansi256Color {
     // Skip placeholders
     let index = find_xterm_match(color);
-    anstyle::XTermColor(index as u8)
+    anstyle::Ansi256Color(index as u8)
 }
 
 const fn find_xterm_match(color: anstyle::RgbColor) -> usize {

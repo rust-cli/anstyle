@@ -60,7 +60,7 @@ pub fn to_yansi_color(color: anstyle::Color) -> yansi::Color {
 fn to_yansi_color_with_bold(color: anstyle::Color) -> (yansi::Color, bool) {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_yansi_color(ansi),
-        anstyle::Color::XTerm(xterm) => (xterm_to_yansi_color(xterm), false),
+        anstyle::Color::Ansi256(xterm) => (xterm_to_yansi_color(xterm), false),
         anstyle::Color::Rgb(rgb) => (rgb_to_yansi_color(rgb), false),
     }
 }
@@ -86,7 +86,7 @@ fn ansi_to_yansi_color(color: anstyle::AnsiColor) -> (yansi::Color, bool) {
     }
 }
 
-fn xterm_to_yansi_color(color: anstyle::XTermColor) -> yansi::Color {
+fn xterm_to_yansi_color(color: anstyle::Ansi256Color) -> yansi::Color {
     yansi::Color::Fixed(color.0)
 }
 

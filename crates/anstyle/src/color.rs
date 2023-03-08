@@ -2,7 +2,7 @@
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Color {
     Ansi(AnsiColor),
-    XTerm(XTermColor),
+    Ansi256(Ansi256Color),
     Rgb(RgbColor),
 }
 
@@ -33,7 +33,7 @@ impl Color {
     ) -> core::fmt::Result {
         match self {
             Self::Ansi(color) => color.ansi_fmt(f, context),
-            Self::XTerm(color) => color.ansi_fmt(f, context),
+            Self::Ansi256(color) => color.ansi_fmt(f, context),
             Self::Rgb(color) => color.ansi_fmt(f, context),
         }
     }
@@ -53,10 +53,10 @@ impl From<AnsiColor> for Color {
     }
 }
 
-impl From<XTermColor> for Color {
+impl From<Ansi256Color> for Color {
     #[inline]
-    fn from(inner: XTermColor) -> Self {
-        Self::XTerm(inner)
+    fn from(inner: Ansi256Color) -> Self {
+        Self::Ansi256(inner)
     }
 }
 
@@ -70,7 +70,7 @@ impl From<RgbColor> for Color {
 impl From<u8> for Color {
     #[inline]
     fn from(inner: u8) -> Self {
-        Self::XTerm(inner.into())
+        Self::Ansi256(inner.into())
     }
 }
 
@@ -290,8 +290,8 @@ impl AnsiColorFmt for AnsiColor {
             (ColorContext::Foreground, true) => write!(f, "9{}", self.suffix()),
             (ColorContext::Background, false) => write!(f, "4{}", self.suffix()),
             (ColorContext::Foreground, false) => write!(f, "3{}", self.suffix()),
-            // No per-color codes; must delegate to `XTermColor`
-            (ColorContext::Underline, _) => XTermColor::from(*self).ansi_fmt(f, context),
+            // No per-color codes; must delegate to `Ansi256Color`
+            (ColorContext::Underline, _) => Ansi256Color::from(*self).ansi_fmt(f, context),
         }
     }
 }
@@ -340,9 +340,9 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
 /// - `232..` map to [`RgbColor`] gray-scale values
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
-pub struct XTermColor(pub u8);
+pub struct Ansi256Color(pub u8);
 
-impl XTermColor {
+impl Ansi256Color {
     #[inline]
     pub const fn index(self) -> u8 {
         self.0
@@ -412,7 +412,7 @@ impl XTermColor {
     }
 }
 
-impl AnsiColorFmt for XTermColor {
+impl AnsiColorFmt for Ansi256Color {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match context {
             ColorContext::Background => {
@@ -429,14 +429,14 @@ impl AnsiColorFmt for XTermColor {
     }
 }
 
-impl From<u8> for XTermColor {
+impl From<u8> for Ansi256Color {
     #[inline]
     fn from(inner: u8) -> Self {
         Self(inner)
     }
 }
 
-impl From<AnsiColor> for XTermColor {
+impl From<AnsiColor> for Ansi256Color {
     #[inline]
     fn from(inner: AnsiColor) -> Self {
         Self::from_ansi(inner)
@@ -448,11 +448,11 @@ impl From<AnsiColor> for XTermColor {
 /// # Examples
 ///
 /// ```rust
-/// let fg = anstyle::XTermColor(16);
-/// let bg = anstyle::XTermColor(231);
+/// let fg = anstyle::Ansi256Color(16);
+/// let bg = anstyle::Ansi256Color(231);
 /// let style = fg | bg;
 /// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
+impl<C: Into<Color>> core::ops::BitOr<C> for Ansi256Color {
     type Output = crate::Style;
 
     #[inline(always)]
@@ -468,10 +468,10 @@ impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
 /// # Examples
 ///
 /// ```rust
-/// let fg = anstyle::XTermColor(0);
+/// let fg = anstyle::Ansi256Color(0);
 /// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
-impl core::ops::BitOr<crate::Effects> for XTermColor {
+impl core::ops::BitOr<crate::Effects> for Ansi256Color {
     type Output = crate::Style;
 
     #[inline(always)]

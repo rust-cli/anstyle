@@ -38,7 +38,7 @@ fn main() -> Result<(), lexopt::Error> {
 }
 
 fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
-    let color = anstyle::XTermColor(fixed).into();
+    let color = anstyle::Ansi256Color(fixed).into();
     (match layer {
         Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
         Layer::Bg => anstyle::Style::new().bg_color(Some(color)),
