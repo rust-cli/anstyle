@@ -3,6 +3,7 @@ use crate::Lockable;
 use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
+#[derive(Debug)]
 pub struct StripStream<S> {
     raw: S,
     state: StripBytes,

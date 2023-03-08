@@ -5,10 +5,12 @@ use crate::StripStream;
 use crate::WinconStream;
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
+#[derive(Debug)]
 pub struct AutoStream<S: RawStream> {
     inner: StreamInner<S>,
 }
 
+#[derive(Debug)]
 enum StreamInner<S: RawStream> {
     PassThrough(S),
     Strip(StripStream<S>),
