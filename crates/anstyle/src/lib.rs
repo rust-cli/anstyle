@@ -17,15 +17,22 @@
 //! For integration with text styling crate, see:
 //! - [anstyle-ansi-term](https://docs.rs/anstyle-ansi-term)
 //! - [anstyle-crossterm](https://docs.rs/anstyle-crossterm)
-//! - [anstyle-termcolor](https://docs.rs/anstyle-termcolor)
 //! - [anstyle-owo-colors](https://docs.rs/anstyle-owo-colors)
+//! - [anstyle-termcolor](https://docs.rs/anstyle-termcolor)
 //! - [anstyle-yansi](https://docs.rs/anstyle-yansi)
 //!
-//! General utilities:
+//! User-styling parsers:
 //! - [anstyle-git](https://docs.s/anstyle-git): Parse Git style descriptions
 //! - [anstyle-ls](https://docs.s/anstyle-ls): Parse LS_COLORS style descriptions
-//! - [anstyle-lossy](https://docs.s/anstyle-lossy): Convert between `anstyle::Color` types
+//!
+//! Convert to other formats
+//! - [anstyle-stream](https://docs.s/anstyle-stream): A simple cross platform library for writing colored text to a termina
 //! - [anstyle-roff](https://docs.s/anstyle-roff): For converting to ROFF
+//!
+//! Utilities
+//! - [anstyle-lossy](https://docs.s/anstyle-lossy): Convert between `anstyle::Color` types
+//! - [anstyle-parse](https://docs.s/anstyle-parse): Parsing ANSI Style Escapes
+//! - [anstyle-wincon](https://docs.s/anstyle-wincon): Styling legacy Microsoft terminals
 //!
 //! # Examples
 //!
