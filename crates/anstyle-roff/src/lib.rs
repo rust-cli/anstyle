@@ -21,8 +21,6 @@ mod control_requests {
 /// Generate A RoffStyle from Style
 ///
 /// ```rust
-/// use anstyle::{Color, RgbColor};
-///
 /// let text = "\u{1b}[44;31mtest\u{1b}[0m";
 ///
 /// let roff_doc = anstyle_roff::to_roff(text);
