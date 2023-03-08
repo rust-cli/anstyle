@@ -7,6 +7,14 @@ pub enum Color {
 }
 
 impl Color {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self))
+            .bg_color(Some(background.into()))
+    }
+
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
@@ -174,6 +182,14 @@ pub enum AnsiColor {
 }
 
 impl AnsiColor {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
@@ -343,6 +359,14 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
 pub struct Ansi256Color(pub u8);
 
 impl Ansi256Color {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     #[inline]
     pub const fn index(self) -> u8 {
         self.0
@@ -485,6 +509,14 @@ impl core::ops::BitOr<crate::Effects> for Ansi256Color {
 pub struct RgbColor(pub u8, pub u8, pub u8);
 
 impl RgbColor {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     #[inline]
     pub const fn r(self) -> u8 {
         self.0
