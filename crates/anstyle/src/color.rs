@@ -89,26 +89,6 @@ impl From<(u8, u8, u8)> for Color {
     }
 }
 
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::Color::from((0, 0, 0));
-/// let bg = anstyle::Color::from((0xff, 0xff, 0xff));
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for Color {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self))
-            .bg_color(Some(rhs.into()))
-    }
-}
-
 /// Define style with specified foreground color and effects
 ///
 /// # Examples
@@ -312,26 +292,6 @@ impl AnsiColorFmt for AnsiColor {
     }
 }
 
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::AnsiColor::Black;
-/// let bg = anstyle::AnsiColor::White;
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for AnsiColor {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
-    }
-}
-
 /// Define style with specified foreground color and effects
 ///
 /// # Examples
@@ -467,26 +427,6 @@ impl From<AnsiColor> for Ansi256Color {
     }
 }
 
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::Ansi256Color(16);
-/// let bg = anstyle::Ansi256Color(231);
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for Ansi256Color {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
-    }
-}
-
 /// Define style with specified foreground color and effects
 ///
 /// # Examples
@@ -573,26 +513,6 @@ impl From<(u8, u8, u8)> for RgbColor {
     fn from(inner: (u8, u8, u8)) -> Self {
         let (r, g, b) = inner;
         Self(r, g, b)
-    }
-}
-
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::RgbColor(0, 0, 0);
-/// let bg = anstyle::RgbColor(0xff, 0xff, 0xff);
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for RgbColor {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
     }
 }
 
