@@ -26,7 +26,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-ansi-term"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "ansi_term",
  "anstyle",
@@ -34,7 +34,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-crossterm"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anstyle",
  "crossterm",
@@ -42,28 +42,28 @@ dependencies = [
 
 [[package]]
 name = "anstyle-git"
-version = "0.2.3"
+version = "0.3.0"
 dependencies = [
  "anstyle",
 ]
 
 [[package]]
 name = "anstyle-lossy"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anstyle",
 ]
 
 [[package]]
 name = "anstyle-ls"
-version = "0.1.1"
+version = "0.2.0"
 dependencies = [
  "anstyle",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anstyle",
  "owo-colors",
@@ -84,7 +84,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-roff"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anstyle",
  "anstyle-lossy",
@@ -111,7 +111,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-syntect"
-version = "0.1.2"
+version = "0.2.0"
 dependencies = [
  "anstyle",
  "syntect",
@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-termcolor"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anstyle",
  "termcolor",
@@ -136,7 +136,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-yansi"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anstyle",
  "yansi",

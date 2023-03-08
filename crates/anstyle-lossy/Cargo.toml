@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-lossy"
-version = "0.1.1"
+version = "0.2.0"
 description = "Lossy conversion between ANSI Color Codes"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"

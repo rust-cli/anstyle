@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-yansi"
-version = "0.2.2"
+version = "0.3.0"
 description = "Adapt between yansi and anstyle"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
