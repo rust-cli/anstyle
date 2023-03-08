@@ -20,6 +20,17 @@ impl<S> AutoStream<S>
 where
     S: RawStream,
 {
+    /// Auto-adapt for the stream's capabilities
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub fn auto(raw: S) -> Self {
+        if raw.is_terminal() {
+            Self::always(raw)
+        } else {
+            Self::never(raw)
+        }
+    }
+
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
     /// supports.
     #[inline]
@@ -62,16 +73,6 @@ where
     pub fn never(raw: S) -> Self {
         let inner = StreamInner::Strip(StripStream::new(raw));
         AutoStream { inner }
-    }
-
-    #[cfg(feature = "auto")]
-    #[inline]
-    pub(crate) fn auto(raw: S) -> Self {
-        if raw.is_terminal() {
-            Self::always(raw)
-        } else {
-            Self::never(raw)
-        }
     }
 
     /// Get the wrapped [`RawStream`]
