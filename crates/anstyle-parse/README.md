@@ -22,5 +22,12 @@ submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
 
+### Special Thanks
+
+[chrisduerr](https://github.com/alacritty/vte/commits?author=chrisduerr) and the
+[alacritty project](https://github.com/alacritty/alacritty) for
+[vte](https://crates.io/crates/vte) which
+[this was forked from](https://github.com/alacritty/vte/issues/82)
+
 [Crates.io]: https://crates.io/crates/anstyle-parse
 [Documentation]: https://docs.rs/anstyle-parse
