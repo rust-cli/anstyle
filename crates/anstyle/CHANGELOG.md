@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Compatibility
+
+- Rename `XTermColor` to `Ansi256Color`
+- Rename `Color::XTerm` to `Color::Ansi256`
+- Replaced `fg_color | bg_color` with `fg_color.on(bg_color)`
+- `#[must_use]` was added to calls
+
+### Features
+
+- Added `#[repr(u8)]` to `AnsiColor`
+
+### Fixes
+
+- Help catch API misused with `#[must_use]`
+
+### Performance
+
+- `#[inline]`d some calls
+
 ## [0.2.8] - 2023-03-06
 
 ### Documentation

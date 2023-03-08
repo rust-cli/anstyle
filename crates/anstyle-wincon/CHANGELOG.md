@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- `anstyle` upgraded
+- `Console::new` no longer errors
+- `Stream::set_color` and `Stream::get_color` changed their signatures
+
+### Features
+
+- `Console::lock` support
+- `Console::into_inner` support
+- `Console::map` support
+- `Console::flush` support
+- An ANSI implementation for windows
+
+
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->

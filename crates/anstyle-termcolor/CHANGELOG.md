@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- `anstyle` upgraded
+
 ## [0.2.2] - 2022-10-07
 
 ## [0.2.1] - 2022-08-17

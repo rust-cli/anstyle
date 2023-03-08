@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Implement basic traits (e.g. `Clone`)
+
 ## [0.1.0] - 2023-02-10
 
 <!-- next-url -->
