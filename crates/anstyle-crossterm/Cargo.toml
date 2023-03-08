@@ -22,5 +22,5 @@ pre-release-replacements = [
 
 
 [dependencies]
-anstyle = { version = "0.2.5", path = "../anstyle" }
+anstyle = { version = "0.3.0", path = "../anstyle" }
 crossterm = { version = "0.26.1", default-features = false }

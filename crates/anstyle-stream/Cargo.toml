@@ -30,7 +30,7 @@ auto = ["dep:concolor-query", "dep:is-terminal"]
 wincon = ["dep:anstyle-wincon"]
 
 [dependencies]
-anstyle = { version = "0.2.5", path = "../anstyle" }
+anstyle = { version = "0.3.0", path = "../anstyle" }
 anstyle-parse = { version = "0.0.1", path = "../anstyle-parse" }
 anstyle-wincon = { version = "0.0.1", path = "../anstyle-wincon", optional = true }
 concolor-query = { version = "0.2.0", optional = true }
