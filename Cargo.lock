@@ -100,6 +100,7 @@ dependencies = [
  "anstyle",
  "anstyle-parse",
  "anstyle-wincon",
+ "concolor-override",
  "concolor-query 0.2.0",
  "criterion",
  "is-terminal",
@@ -297,6 +298,12 @@ dependencies = [
  "concolor-query 0.1.0",
  "is-terminal",
 ]
+
+[[package]]
+name = "concolor-override"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a855d4a1978dc52fb0536a04d384c2c0c1aa273597f08b77c8c4d3b2eec6037f"
 
 [[package]]
 name = "concolor-query"
