@@ -3,11 +3,11 @@ pub struct Console<S>
 where
     S: crate::WinconStream + std::io::Write,
 {
-    stream: S,
-    initial_fg: anstyle::AnsiColor,
-    initial_bg: anstyle::AnsiColor,
-    last_fg: anstyle::AnsiColor,
-    last_bg: anstyle::AnsiColor,
+    stream: Option<S>,
+    initial_fg: Option<anstyle::AnsiColor>,
+    initial_bg: Option<anstyle::AnsiColor>,
+    last_fg: Option<anstyle::AnsiColor>,
+    last_bg: Option<anstyle::AnsiColor>,
 }
 
 impl<S> Console<S>
@@ -21,7 +21,7 @@ where
     fn from_stream(stream: S) -> std::io::Result<Self> {
         let (initial_fg, initial_bg) = stream.get_colors()?;
         Ok(Self {
-            stream,
+            stream: Some(stream),
             initial_fg,
             initial_bg,
             last_fg: initial_fg,
@@ -36,8 +36,8 @@ where
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        self.apply(fg.unwrap_or(self.initial_fg), bg.unwrap_or(self.initial_bg))?;
-        let written = self.stream.write(data)?;
+        self.apply(fg, bg)?;
+        let written = self.as_stream_mut().write(data)?;
         Ok(written)
     }
 
@@ -51,19 +51,66 @@ where
         self.reset()
     }
 
-    fn apply(&mut self, fg: anstyle::AnsiColor, bg: anstyle::AnsiColor) -> std::io::Result<()> {
+    fn apply(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        let fg = fg.or(self.initial_fg);
+        let bg = bg.or(self.initial_bg);
         if fg == self.last_fg && bg == self.last_bg {
             return Ok(());
         }
 
         // Ensure everything is written with the last set of colors before applying the next set
-        self.stream.flush()?;
+        self.as_stream_mut().flush()?;
 
-        self.stream.set_colors(fg, bg)?;
+        self.as_stream_mut().set_colors(fg, bg)?;
         self.last_fg = fg;
         self.last_bg = bg;
 
         Ok(())
+    }
+
+    fn as_stream_mut(&mut self) -> &mut S {
+        self.stream.as_mut().unwrap()
+    }
+}
+
+impl<S> Console<S>
+where
+    S: crate::WinconStream + std::io::Write,
+    S: crate::Lockable,
+    <S as crate::Lockable>::Locked: crate::WinconStream + std::io::Write,
+{
+    /// Get exclusive access to the `Console`
+    ///
+    /// Why?
+    /// - Faster performance when writing in a loop
+    /// - Avoid other threads interleaving output with the current thread
+    #[inline]
+    pub fn lock(mut self) -> <Self as crate::Lockable>::Locked {
+        Console {
+            stream: Some(self.stream.take().unwrap().lock()),
+            initial_fg: self.initial_fg,
+            initial_bg: self.initial_bg,
+            last_fg: self.last_fg,
+            last_bg: self.last_bg,
+        }
+    }
+}
+
+impl<S> crate::Lockable for Console<S>
+where
+    S: crate::WinconStream + std::io::Write,
+    S: crate::Lockable,
+    <S as crate::Lockable>::Locked: crate::WinconStream + std::io::Write,
+{
+    type Locked = Console<<S as crate::Lockable>::Locked>;
+
+    #[inline]
+    fn lock(self) -> Self::Locked {
+        self.lock()
     }
 }
 
@@ -72,6 +119,9 @@ where
     S: crate::WinconStream + std::io::Write,
 {
     fn drop(&mut self) {
-        let _ = self.reset();
+        // Otherwise `Console::lock` took it
+        if self.stream.is_some() {
+            let _ = self.reset();
+        }
     }
 }

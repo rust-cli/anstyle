@@ -1,9 +1,3 @@
-#[cfg(windows)]
-use std::os::windows::io::{AsHandle, AsRawHandle};
-
-#[cfg(windows)]
-use crate::windows::*;
-
 /// Extend `std::io::Write` with wincon styling
 ///
 /// Generally, you will want to use [`Console`][crate::Console] instead
@@ -12,93 +6,134 @@ pub trait WinconStream {
     ///
     /// A common pitfall is to forget to flush writes to
     /// stdout before setting new text attributes.
-    fn set_colors(&mut self, fg: anstyle::AnsiColor, bg: anstyle::AnsiColor)
-        -> std::io::Result<()>;
+    fn set_colors(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()>;
 
     /// Get the current foreground/background colors
-    fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)>;
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)>;
 }
 
-#[cfg(windows)]
 impl WinconStream for std::io::Stdout {
     fn set_colors(
         &mut self,
-        fg: anstyle::AnsiColor,
-        bg: anstyle::AnsiColor,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
-    fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        inner::get_colors(self)
     }
 }
 
-#[cfg(windows)]
 impl<'s> WinconStream for std::io::StdoutLock<'s> {
     fn set_colors(
         &mut self,
-        fg: anstyle::AnsiColor,
-        bg: anstyle::AnsiColor,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
-    fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        inner::get_colors(self)
     }
 }
 
-#[cfg(windows)]
 impl WinconStream for std::io::Stderr {
     fn set_colors(
         &mut self,
-        fg: anstyle::AnsiColor,
-        bg: anstyle::AnsiColor,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        inner::set_colors(self, fg, bg)
     }
 
-    fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
-        let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        inner::get_colors(self)
+    }
+}
+
+impl<'s> WinconStream for std::io::StderrLock<'s> {
+    fn set_colors(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        inner::set_colors(self, fg, bg)
+    }
+
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        inner::get_colors(self)
     }
 }
 
 #[cfg(windows)]
-impl<'s> WinconStream for std::io::StderrLock<'s> {
-    fn set_colors(
-        &mut self,
-        fg: anstyle::AnsiColor,
-        bg: anstyle::AnsiColor,
+mod inner {
+    use std::os::windows::io::{AsHandle, AsRawHandle};
+
+    pub(super) fn set_colors<S: AsHandle>(
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        let handle = self.as_handle();
+        let handle = stream.as_handle();
         let handle = handle.as_raw_handle();
-        let attributes = set_colors(fg, bg);
-        set_console_text_attributes(handle, attributes)
+        if let (Some(fg), Some(bg)) = (fg, bg) {
+            let attributes = crate::windows::set_colors(fg, bg);
+            crate::windows::set_console_text_attributes(handle, attributes)
+        } else {
+            Ok(())
+        }
     }
 
-    fn get_colors(&self) -> std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)> {
-        let handle = self.as_handle();
+    pub(super) fn get_colors<S: AsHandle>(
+        stream: &S,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        let handle = stream.as_handle();
         let handle = handle.as_raw_handle();
-        let info = get_screen_buffer_info(handle)?;
-        Ok(get_colors(&info))
+        let info = crate::windows::get_screen_buffer_info(handle)?;
+        let (fg, bg) = crate::windows::get_colors(&info);
+        Ok((Some(fg), Some(bg)))
+    }
+}
+
+#[cfg(not(windows))]
+mod inner {
+    pub(super) fn set_colors<S: std::io::Write>(
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        if let Some(fg) = fg {
+            write!(stream, "{}", fg.render_fg())?;
+        }
+        if let Some(bg) = bg {
+            write!(stream, "{}", bg.render_bg())?;
+        }
+        if fg.is_none() && bg.is_none() {
+            write!(stream, "{}", anstyle::Reset.render())?;
+        }
+        Ok(())
+    }
+
+    pub(super) fn get_colors<S>(
+        _stream: &S,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        Ok((None, None))
     }
 }
