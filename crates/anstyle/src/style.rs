@@ -22,6 +22,7 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new();
     /// ```
+    #[inline]
     pub const fn new() -> Self {
         Self {
             fg: None,
@@ -38,6 +39,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().fg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn fg_color(mut self, fg: Option<crate::Color>) -> Self {
         self.fg = fg;
         self
@@ -50,6 +53,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn bg_color(mut self, bg: Option<crate::Color>) -> Self {
         self.bg = bg;
         self
@@ -62,6 +67,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().underline_color(Some(anstyle::AnsiColor::Red.into()));
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn underline_color(mut self, underline: Option<crate::Color>) -> Self {
         self.underline = underline;
         self
@@ -74,12 +81,15 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().effects(anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE);
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn effects(mut self, effects: crate::Effects) -> Self {
         self.effects = effects;
         self
     }
 
     /// Render the ANSI code
+    #[inline]
     pub fn render(self) -> impl core::fmt::Display {
         StyleDisplay(self)
     }
@@ -87,6 +97,7 @@ impl Style {
     /// Renders the relevant [`Reset`][crate::Reset] code
     ///
     /// Unlike [`Reset::render`][crate::Reset::render], this will elide the code if there is nothing to reset.
+    #[inline]
     pub fn render_reset(self) -> impl core::fmt::Display {
         ResetDisplay(self != Self::new())
     }
@@ -101,6 +112,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().bold();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn bold(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::BOLD);
         self
@@ -113,6 +126,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().dimmed();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn dimmed(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::DIMMED);
         self
@@ -125,6 +140,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().italic();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn italic(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::ITALIC);
         self
@@ -137,6 +154,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().underline();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn underline(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::UNDERLINE);
         self
@@ -149,6 +168,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().blink();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn blink(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::BLINK);
         self
@@ -161,6 +182,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().invert();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn invert(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::INVERT);
         self
@@ -173,6 +196,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().hidden();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn hidden(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::HIDDEN);
         self
@@ -185,6 +210,8 @@ impl Style {
     /// ```rust
     /// let style = anstyle::Style::new().strikethrough();
     /// ```
+    #[must_use]
+    #[inline]
     pub const fn strikethrough(mut self) -> Self {
         self.effects = self.effects.insert(crate::Effects::STRIKETHROUGH);
         self
@@ -193,23 +220,28 @@ impl Style {
 
 /// # Reflection
 impl Style {
+    #[inline]
     pub const fn get_fg_color(self) -> Option<crate::Color> {
         self.fg
     }
 
+    #[inline]
     pub const fn get_bg_color(self) -> Option<crate::Color> {
         self.bg
     }
 
+    #[inline]
     pub const fn get_underline_color(self) -> Option<crate::Color> {
         self.underline
     }
 
+    #[inline]
     pub const fn get_effects(self) -> crate::Effects {
         self.effects
     }
 
     /// Check if no effects are enabled
+    #[inline]
     pub const fn is_plain(self) -> bool {
         self.fg.is_none()
             && self.bg.is_none()
@@ -226,6 +258,7 @@ impl Style {
 /// let style: anstyle::Style = anstyle::Color::from((0, 0, 0)).into();
 /// ```
 impl From<crate::Color> for Style {
+    #[inline]
     fn from(color: crate::Color) -> Self {
         Self::new().fg_color(Some(color))
     }
@@ -239,6 +272,7 @@ impl From<crate::Color> for Style {
 /// let style: anstyle::Style = anstyle::AnsiColor::Black.into();
 /// ```
 impl From<crate::AnsiColor> for Style {
+    #[inline]
     fn from(color: crate::AnsiColor) -> Self {
         Self::new().fg_color(Some(color.into()))
     }
@@ -252,6 +286,7 @@ impl From<crate::AnsiColor> for Style {
 /// let style: anstyle::Style = anstyle::XTermColor(0).into();
 /// ```
 impl From<crate::XTermColor> for Style {
+    #[inline]
     fn from(color: crate::XTermColor) -> Self {
         Self::new().fg_color(Some(color.into()))
     }
@@ -265,6 +300,7 @@ impl From<crate::XTermColor> for Style {
 /// let style: anstyle::Style = anstyle::RgbColor(0, 0, 0).into();
 /// ```
 impl From<crate::RgbColor> for Style {
+    #[inline]
     fn from(color: crate::RgbColor) -> Self {
         Self::new().fg_color(Some(color.into()))
     }
@@ -276,6 +312,7 @@ impl From<crate::RgbColor> for Style {
 /// let style: anstyle::Style = anstyle::Effects::BOLD.into();
 /// ```
 impl From<crate::Effects> for Style {
+    #[inline]
     fn from(effects: crate::Effects) -> Self {
         Self::new().effects(effects)
     }
@@ -345,6 +382,7 @@ impl core::ops::SubAssign<crate::Effects> for Style {
 /// assert_ne!(color | anstyle::Effects::BOLD, color);
 /// ```
 impl<C: Into<crate::Color> + Clone> core::cmp::PartialEq<C> for Style {
+    #[inline]
     fn eq(&self, other: &C) -> bool {
         let other = other.clone().into();
         let other = Self::from(other);
@@ -361,6 +399,7 @@ impl<C: Into<crate::Color> + Clone> core::cmp::PartialEq<C> for Style {
 /// assert_ne!(anstyle::RgbColor(0, 0, 0) | effects, effects);
 /// ```
 impl core::cmp::PartialEq<crate::Effects> for Style {
+    #[inline]
     fn eq(&self, other: &crate::Effects) -> bool {
         let other = Self::from(*other);
         *self == other

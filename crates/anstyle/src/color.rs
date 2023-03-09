@@ -8,6 +8,7 @@ pub enum Color {
 
 impl Color {
     /// Render the ANSI code for a foreground color
+    #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -16,6 +17,7 @@ impl Color {
     }
 
     /// Render the ANSI code for a background color
+    #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -23,6 +25,7 @@ impl Color {
         }
     }
 
+    #[inline]
     pub(crate) fn ansi_fmt(
         &self,
         f: &mut dyn core::fmt::Write,
@@ -37,36 +40,42 @@ impl Color {
 }
 
 impl AnsiColorFmt for Color {
+    #[inline]
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         self.ansi_fmt(f, context)
     }
 }
 
 impl From<AnsiColor> for Color {
+    #[inline]
     fn from(inner: AnsiColor) -> Self {
         Self::Ansi(inner)
     }
 }
 
 impl From<XTermColor> for Color {
+    #[inline]
     fn from(inner: XTermColor) -> Self {
         Self::XTerm(inner)
     }
 }
 
 impl From<RgbColor> for Color {
+    #[inline]
     fn from(inner: RgbColor) -> Self {
         Self::Rgb(inner)
     }
 }
 
 impl From<u8> for Color {
+    #[inline]
     fn from(inner: u8) -> Self {
         Self::XTerm(inner.into())
     }
 }
 
 impl From<(u8, u8, u8)> for Color {
+    #[inline]
     fn from(inner: (u8, u8, u8)) -> Self {
         Self::Rgb(inner.into())
     }
@@ -165,6 +174,7 @@ pub enum AnsiColor {
 
 impl AnsiColor {
     /// Render the ANSI code for a foreground color
+    #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -173,6 +183,7 @@ impl AnsiColor {
     }
 
     /// Render the ANSI code for a background color
+    #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -181,6 +192,8 @@ impl AnsiColor {
     }
 
     /// Change the color to/from bright
+    #[must_use]
+    #[inline]
     pub fn bright(self, yes: bool) -> Self {
         if yes {
             match self {
@@ -224,6 +237,7 @@ impl AnsiColor {
     }
 
     /// Report whether the color is bright
+    #[inline]
     pub fn is_bright(self) -> bool {
         match self {
             Self::Black => false,
@@ -245,6 +259,7 @@ impl AnsiColor {
         }
     }
 
+    #[inline]
     fn suffix(self) -> &'static str {
         match self {
             Self::Black => "0",
@@ -327,10 +342,12 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
 pub struct XTermColor(pub u8);
 
 impl XTermColor {
+    #[inline]
     pub const fn index(self) -> u8 {
         self.0
     }
 
+    #[inline]
     pub const fn into_ansi(self) -> Option<AnsiColor> {
         match self.index() {
             0 => Some(AnsiColor::Black),
@@ -353,6 +370,7 @@ impl XTermColor {
         }
     }
 
+    #[inline]
     pub const fn from_ansi(color: AnsiColor) -> Self {
         match color {
             AnsiColor::Black => Self(0),
@@ -375,6 +393,7 @@ impl XTermColor {
     }
 
     /// Render the ANSI code for a foreground color
+    #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -383,6 +402,7 @@ impl XTermColor {
     }
 
     /// Render the ANSI code for a background color
+    #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -409,12 +429,14 @@ impl AnsiColorFmt for XTermColor {
 }
 
 impl From<u8> for XTermColor {
+    #[inline]
     fn from(inner: u8) -> Self {
         Self(inner)
     }
 }
 
 impl From<AnsiColor> for XTermColor {
+    #[inline]
     fn from(inner: AnsiColor) -> Self {
         Self::from_ansi(inner)
     }
@@ -462,19 +484,23 @@ impl core::ops::BitOr<crate::Effects> for XTermColor {
 pub struct RgbColor(pub u8, pub u8, pub u8);
 
 impl RgbColor {
+    #[inline]
     pub const fn r(self) -> u8 {
         self.0
     }
 
+    #[inline]
     pub const fn g(self) -> u8 {
         self.1
     }
 
+    #[inline]
     pub const fn b(self) -> u8 {
         self.2
     }
 
     /// Render the ANSI code for a foreground color
+    #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -483,6 +509,7 @@ impl RgbColor {
     }
 
     /// Render the ANSI code for a background color
+    #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
         DisplayColor {
             color: self,
@@ -509,6 +536,7 @@ impl AnsiColorFmt for RgbColor {
 }
 
 impl From<(u8, u8, u8)> for RgbColor {
+    #[inline]
     fn from(inner: (u8, u8, u8)) -> Self {
         let (r, g, b) = inner;
         Self(r, g, b)
