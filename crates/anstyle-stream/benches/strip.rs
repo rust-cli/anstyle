@@ -21,7 +21,6 @@ impl anstyle_parse::Perform for Strip {
 
 fn strip(c: &mut Criterion) {
     for (name, content) in [
-        #[cfg(feature = "utf8")]
         ("demo.vte", &include_bytes!("../tests/demo.vte")[..]),
         ("rg_help.vte", &include_bytes!("../tests/rg_help.vte")[..]),
         ("rg_linus.vte", &include_bytes!("../tests/rg_linus.vte")[..]),

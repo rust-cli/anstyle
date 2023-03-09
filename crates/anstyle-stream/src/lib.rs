@@ -59,24 +59,16 @@ pub trait Lockable {
     /// Why?
     /// - Faster performance when writing in a loop
     /// - Avoid other threads interleaving output with the current thread
-    fn lock(&self) -> Self::Locked;
+    fn lock(self) -> Self::Locked;
 }
 
 impl Lockable for std::io::Stdout {
     type Locked = std::io::StdoutLock<'static>;
 
     #[inline]
-    fn lock(&self) -> Self::Locked {
-        self.lock()
-    }
-}
-
-impl Lockable for &'_ std::io::Stdout {
-    type Locked = std::io::StdoutLock<'static>;
-
-    #[inline]
-    fn lock(&self) -> Self::Locked {
-        (*self).lock()
+    fn lock(self) -> Self::Locked {
+        #[allow(clippy::needless_borrow)] // Its needed to avoid recursion
+        (&self).lock()
     }
 }
 
@@ -84,17 +76,9 @@ impl Lockable for std::io::Stderr {
     type Locked = std::io::StderrLock<'static>;
 
     #[inline]
-    fn lock(&self) -> Self::Locked {
-        self.lock()
-    }
-}
-
-impl Lockable for &'_ std::io::Stderr {
-    type Locked = std::io::StderrLock<'static>;
-
-    #[inline]
-    fn lock(&self) -> Self::Locked {
-        (*self).lock()
+    fn lock(self) -> Self::Locked {
+        #[allow(clippy::needless_borrow)] // Its needed to avoid recursion
+        (&self).lock()
     }
 }
 
@@ -144,8 +128,8 @@ where
     /// - Faster performance when writing in a loop
     /// - Avoid other threads interleaving output with the current thread
     #[inline]
-    pub fn lock(&self) -> <Self as Lockable>::Locked {
-        let write = match &self.write {
+    pub fn lock(self) -> <Self as Lockable>::Locked {
+        let write = match self.write {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
         };
@@ -215,20 +199,8 @@ where
     type Locked = Stream<<W as Lockable>::Locked>;
 
     #[inline]
-    fn lock(&self) -> Self::Locked {
+    fn lock(self) -> Self::Locked {
         self.lock()
-    }
-}
-
-impl<W> Lockable for &'_ Stream<W>
-where
-    W: Lockable,
-{
-    type Locked = Stream<<W as Lockable>::Locked>;
-
-    #[inline]
-    fn lock(&self) -> Self::Locked {
-        (*self).lock()
     }
 }
 
@@ -314,11 +286,10 @@ where
     type Locked = StripStream<<W as Lockable>::Locked>;
 
     #[inline]
-    fn lock(&self) -> Self::Locked {
+    fn lock(self) -> Self::Locked {
         Self::Locked {
             write: self.write.lock(),
-            // WARNING: the state is not resumable after unlocking
-            state: self.state.clone(),
+            state: self.state,
         }
     }
 }
