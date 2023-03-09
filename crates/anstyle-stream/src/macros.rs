@@ -9,7 +9,7 @@
 ///
 /// **NOTE:** The `print!` macro will lock the standard output on each call. If you call
 /// `print!` within a hot loop, this behavior may be the bottleneck of the loop.
-/// To avoid this, lock stdout with [`Stream::lock`][crate::Stream::lock]:
+/// To avoid this, lock stdout with [`AutoStream::lock`][crate::AutoStream::lock]:
 /// ```
 /// #  #[cfg(feature = "auto")] {
 /// use std::io::Write as _;
@@ -78,7 +78,7 @@ macro_rules! print {
 ///
 /// **NOTE:** The `println!` macro will lock the standard output on each call. If you call
 /// `println!` within a hot loop, this behavior may be the bottleneck of the loop.
-/// To avoid this, lock stdout with [`Stream::lock`][crate::Stream::lock]:
+/// To avoid this, lock stdout with [`AutoStream::lock`][crate::AutoStream::lock]:
 /// ```
 /// #  #[cfg(feature = "auto")] {
 /// use std::io::Write as _;
