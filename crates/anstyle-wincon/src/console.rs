@@ -14,19 +14,17 @@ impl<S> Console<S>
 where
     S: crate::WinconStream + std::io::Write,
 {
-    pub fn new(stream: S) -> std::io::Result<Self> {
-        Self::from_stream(stream)
-    }
-
-    fn from_stream(stream: S) -> std::io::Result<Self> {
-        let (initial_fg, initial_bg) = stream.get_colors()?;
-        Ok(Self {
+    pub fn new(stream: S) -> Self {
+        // HACK: Assuming the error from `get_colors()` will be present on `write` and doing basic
+        // ops on the stream will cause the same result
+        let (initial_fg, initial_bg) = stream.get_colors().unwrap_or_default();
+        Self {
             stream: Some(stream),
             initial_fg,
             initial_bg,
             last_fg: initial_fg,
             last_bg: initial_bg,
-        })
+        }
     }
 
     /// Write colored text to the screen
@@ -41,6 +39,10 @@ where
         Ok(written)
     }
 
+    pub fn flush(&mut self) -> std::io::Result<()> {
+        self.as_stream_mut().flush()
+    }
+
     /// Change the terminal back to the initial colors
     pub fn reset(&mut self) -> std::io::Result<()> {
         self.apply(self.initial_fg, self.initial_bg)
@@ -49,6 +51,20 @@ where
     /// Close the stream, reporting any errors
     pub fn close(mut self) -> std::io::Result<()> {
         self.reset()
+    }
+
+    /// Allow changing the stream
+    pub fn map<S1: crate::WinconStream + std::io::Write>(
+        mut self,
+        op: impl FnOnce(S) -> S1,
+    ) -> Console<S1> {
+        Console {
+            stream: Some(op(self.stream.take().unwrap())),
+            initial_fg: self.initial_fg,
+            initial_bg: self.initial_bg,
+            last_fg: self.last_fg,
+            last_bg: self.last_bg,
+        }
     }
 
     fn apply(

@@ -1,8 +1,17 @@
-#[cfg(not(feature = "auto"))]
+#[cfg(not(any(feature = "auto", feature = "wincon")))]
 pub trait RawStream: std::io::Write + private::Sealed {}
 
-#[cfg(feature = "auto")]
+#[cfg(all(feature = "auto", not(feature = "wincon")))]
 pub trait RawStream: std::io::Write + is_terminal::IsTerminal + private::Sealed {}
+
+#[cfg(all(not(feature = "auto"), feature = "wincon"))]
+pub trait RawStream: std::io::Write + anstyle_wincon::WinconStream + private::Sealed {}
+
+#[cfg(all(feature = "auto", feature = "wincon"))]
+pub trait RawStream:
+    std::io::Write + is_terminal::IsTerminal + anstyle_wincon::WinconStream + private::Sealed
+{
+}
 
 impl RawStream for std::io::Stdout {}
 

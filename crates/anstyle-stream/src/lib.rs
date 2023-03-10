@@ -34,11 +34,15 @@ mod auto;
 mod lockable;
 mod raw;
 mod strip;
+#[cfg(feature = "wincon")]
+mod wincon;
 
 pub use auto::AutoStream;
 pub use lockable::Lockable;
 pub use raw::RawStream;
 pub use strip::StripStream;
+#[cfg(feature = "wincon")]
+pub use wincon::WinconStream;
 
 pub use buffer::Buffer;
 

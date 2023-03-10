@@ -9,7 +9,7 @@ fn main() {
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock()).unwrap();
+    let mut stdout = anstyle_wincon::Console::new(stdout.lock());
 
     let fg = args.fg.and_then(|c| c.into_ansi());
     let bg = args.bg.and_then(|c| c.into_ansi());

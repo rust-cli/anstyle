@@ -1,15 +1,19 @@
 use crate::Lockable;
 use crate::RawStream;
 use crate::StripStream;
+#[cfg(feature = "wincon")]
+use crate::WinconStream;
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
-pub struct AutoStream<S> {
+pub struct AutoStream<S: RawStream> {
     inner: StreamInner<S>,
 }
 
-enum StreamInner<S> {
+enum StreamInner<S: RawStream> {
     PassThrough(S),
     Strip(StripStream<S>),
+    #[cfg(feature = "wincon")]
+    Wincon(Box<WinconStream<S>>),
 }
 
 impl<S> AutoStream<S>
@@ -29,9 +33,28 @@ where
         Self::always_ansi_(raw)
     }
 
+    #[inline]
     fn always_ansi_(raw: S) -> Self {
         let inner = StreamInner::PassThrough(raw);
         AutoStream { inner }
+    }
+
+    /// Force color, no matter what the inner `Write` supports.
+    #[inline]
+    pub fn always(raw: S) -> Self {
+        #[cfg(feature = "wincon")]
+        {
+            if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
+                let console = anstyle_wincon::Console::new(raw);
+                Self {
+                    inner: StreamInner::Wincon(Box::new(WinconStream::new(console))),
+                }
+            } else {
+                Self::always_ansi_(raw)
+            }
+        }
+        #[cfg(not(feature = "wincon"))]
+        Self::always_ansi(raw)
     }
 
     /// Only pass printable data to the inner `Write`.
@@ -44,7 +67,8 @@ where
 
 impl<S> AutoStream<S>
 where
-    S: Lockable,
+    S: Lockable + RawStream,
+    <S as Lockable>::Locked: RawStream,
 {
     /// Get exclusive access to the `AutoStream`
     ///
@@ -56,6 +80,8 @@ where
         let inner = match self.inner {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
+            #[cfg(feature = "wincon")]
+            StreamInner::Wincon(w) => StreamInner::Wincon(Box::new(w.lock())),
         };
         AutoStream { inner }
     }
@@ -70,11 +96,7 @@ where
     #[inline]
     pub(crate) fn auto(raw: S) -> Self {
         if raw.is_terminal() {
-            if concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
-                Self::always_ansi_(raw)
-            } else {
-                Self::never(raw)
-            }
+            Self::always(raw)
         } else {
             Self::never(raw)
         }
@@ -90,6 +112,8 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.write(buf),
             StreamInner::Strip(w) => w.write(buf),
+            #[cfg(feature = "wincon")]
+            StreamInner::Wincon(w) => w.write(buf),
         }
     }
 
@@ -98,6 +122,8 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.flush(),
             StreamInner::Strip(w) => w.flush(),
+            #[cfg(feature = "wincon")]
+            StreamInner::Wincon(w) => w.flush(),
         }
     }
 
@@ -110,17 +136,20 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.write_all(buf),
             StreamInner::Strip(w) => w.write_all(buf),
+            #[cfg(feature = "wincon")]
+            StreamInner::Wincon(w) => w.write_all(buf),
         }
     }
 
     // Not bothering with `write_fmt` as it just calls `write_all`
 }
 
-impl<W> Lockable for AutoStream<W>
+impl<S> Lockable for AutoStream<S>
 where
-    W: Lockable,
+    S: Lockable + RawStream,
+    <S as Lockable>::Locked: RawStream,
 {
-    type Locked = AutoStream<<W as Lockable>::Locked>;
+    type Locked = AutoStream<<S as Lockable>::Locked>;
 
     #[inline]
     fn lock(self) -> Self::Locked {

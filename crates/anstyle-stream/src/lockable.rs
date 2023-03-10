@@ -1,3 +1,6 @@
+#[cfg(feature = "wincon")]
+use crate::RawStream;
+
 /// Explicitly lock a [`std::io::Write`]able
 pub trait Lockable {
     type Locked;
@@ -27,5 +30,19 @@ impl Lockable for std::io::Stderr {
     fn lock(self) -> Self::Locked {
         #[allow(clippy::needless_borrow)] // Its needed to avoid recursion
         (&self).lock()
+    }
+}
+
+#[cfg(feature = "wincon")]
+impl<S> Lockable for anstyle_wincon::Console<S>
+where
+    S: RawStream + Lockable,
+    <S as Lockable>::Locked: RawStream,
+{
+    type Locked = anstyle_wincon::Console<<S as Lockable>::Locked>;
+
+    #[inline]
+    fn lock(self) -> Self::Locked {
+        self.map(|s| s.lock())
     }
 }
