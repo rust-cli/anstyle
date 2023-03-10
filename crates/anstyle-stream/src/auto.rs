@@ -13,7 +13,7 @@ enum StreamInner<S: RawStream> {
     PassThrough(S),
     Strip(StripStream<S>),
     #[cfg(feature = "wincon")]
-    Wincon(Box<WinconStream<S>>),
+    Wincon(WinconStream<S>),
 }
 
 impl<S> AutoStream<S>
@@ -47,7 +47,7 @@ where
             if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
                 let console = anstyle_wincon::Console::new(raw);
                 Self {
-                    inner: StreamInner::Wincon(Box::new(WinconStream::new(console))),
+                    inner: StreamInner::Wincon(WinconStream::new(console)),
                 }
             } else {
                 Self::always_ansi_(raw)
@@ -62,6 +62,27 @@ where
     pub fn never(raw: S) -> Self {
         let inner = StreamInner::Strip(StripStream::new(raw));
         AutoStream { inner }
+    }
+
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub(crate) fn auto(raw: S) -> Self {
+        if raw.is_terminal() {
+            Self::always(raw)
+        } else {
+            Self::never(raw)
+        }
+    }
+
+    /// Get the wrapped [`RawStream`]
+    #[inline]
+    pub fn into_inner(self) -> S {
+        match self.inner {
+            StreamInner::PassThrough(w) => w,
+            StreamInner::Strip(w) => w.into_inner(),
+            #[cfg(feature = "wincon")]
+            StreamInner::Wincon(w) => w.into_inner().into_inner(),
+        }
     }
 }
 
@@ -81,25 +102,9 @@ where
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
             #[cfg(feature = "wincon")]
-            StreamInner::Wincon(w) => StreamInner::Wincon(Box::new(w.lock())),
+            StreamInner::Wincon(w) => StreamInner::Wincon(w.lock()),
         };
         AutoStream { inner }
-    }
-}
-
-#[cfg(feature = "auto")]
-impl<S> AutoStream<S>
-where
-    S: RawStream,
-{
-    #[cfg(feature = "auto")]
-    #[inline]
-    pub(crate) fn auto(raw: S) -> Self {
-        if raw.is_terminal() {
-            Self::always(raw)
-        } else {
-            Self::never(raw)
-        }
     }
 }
 

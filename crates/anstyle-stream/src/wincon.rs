@@ -9,7 +9,10 @@ where
     S: RawStream,
 {
     console: anstyle_wincon::Console<S>,
-    state: WinconBytes,
+    // `WinconBytes` is especially large compared to other variants of `AutoStream`, so boxing it
+    // here so `AutoStream` doesn't have to discard one allocation and create another one when
+    // calling `AutoStream::lock`
+    state: Box<WinconBytes>,
 }
 
 impl<S> WinconStream<S>
@@ -21,8 +24,14 @@ where
     pub fn new(console: anstyle_wincon::Console<S>) -> Self {
         Self {
             console,
-            state: Default::default(),
+            state: Box::default(),
         }
+    }
+
+    /// Get the wrapped [`RawStream`]
+    #[inline]
+    pub fn into_inner(self) -> anstyle_wincon::Console<S> {
+        self.console
     }
 }
 
@@ -31,19 +40,17 @@ where
     S: RawStream,
 {
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let mut written = 0;
-        let mut possible = 0;
         for (style, printable) in self.state.extract_next(buf) {
             let fg = style.get_fg_color().and_then(cap_wincon_color);
             let bg = style.get_bg_color().and_then(cap_wincon_color);
-            written += self.console.write(fg, bg, printable.as_bytes())?;
-            possible += printable.len();
+            let written = self.console.write(fg, bg, printable.as_bytes())?;
+            let possible = printable.len();
             if possible != written {
                 // HACK: Unsupported atm
                 break;
             }
         }
-        Ok(written)
+        Ok(buf.len())
     }
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
@@ -72,5 +79,56 @@ fn cap_wincon_color(color: anstyle::Color) -> Option<anstyle::AnsiColor> {
         anstyle::Color::Ansi(c) => Some(c),
         anstyle::Color::XTerm(c) => c.into_ansi(),
         anstyle::Color::Rgb(_) => None,
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use proptest::prelude::*;
+    use std::io::Write as _;
+
+    proptest! {
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn write_all_no_escapes(s in "\\PC*") {
+            let buffer = crate::Buffer::new();
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            stream.write_all(s.as_bytes()).unwrap();
+            let buffer = stream.into_inner().into_inner();
+            let actual = std::str::from_utf8(buffer.as_ref()).unwrap();
+            assert_eq!(s, actual);
+        }
+
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn write_byte_no_escapes(s in "\\PC*") {
+            let buffer = crate::Buffer::new();
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            for byte in s.as_bytes() {
+                stream.write_all(&[*byte]).unwrap();
+            }
+            let buffer = stream.into_inner().into_inner();
+            let actual = std::str::from_utf8(buffer.as_ref()).unwrap();
+            assert_eq!(s, actual);
+        }
+
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn write_all_random(s in any::<Vec<u8>>()) {
+            let buffer = crate::Buffer::new();
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            stream.write_all(s.as_slice()).unwrap();
+        }
+
+        #[test]
+        #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
+        fn write_byte_random(s in any::<Vec<u8>>()) {
+            let buffer = crate::Buffer::new();
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            for byte in s.as_slice() {
+                stream.write_all(&[*byte]).unwrap();
+            }
+        }
     }
 }

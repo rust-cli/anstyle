@@ -155,7 +155,10 @@ unsafe fn from_utf8_unchecked<'b>(bytes: &'b [u8], safety_justification: &'stati
 
 #[inline]
 fn is_printable_str(action: Action, byte: u8) -> bool {
-    action == Action::Print
+    // VT320 considered 0x7f to be `Print`able but we expect to be working in UTF-8 systems and not
+    // ISO Latin-1, making it DEL and non-printable
+    const DEL: u8 = 0x7f;
+    (action == Action::Print && byte != DEL)
         || action == Action::BeginUtf8
         // since we know the input is valid UTF-8, the only thing  we can do with
         // continuations is to print them
@@ -364,8 +367,12 @@ impl<'a> utf8parse::Receiver for VtUtf8Receiver<'a> {
 
 #[inline]
 fn is_printable_bytes(action: Action, byte: u8) -> bool {
+    // VT320 considered 0x7f to be `Print`able but we expect to be working in UTF-8 systems and not
+    // ISO Latin-1, making it DEL and non-printable
+    const DEL: u8 = 0x7f;
+
     // Continuations aren't included as they may also be control codes, requiring more context
-    action == Action::Print
+    (action == Action::Print && byte != DEL)
         || action == Action::BeginUtf8
         || (action == Action::Execute && byte.is_ascii_whitespace())
 }
@@ -446,6 +453,22 @@ mod test {
     fn test_strip_byte_multibyte() {
         let bytes = [240, 145, 141, 139];
         let expected = parser_strip(&bytes);
+        let actual = String::from_utf8(strip_byte(&bytes).to_vec()).unwrap();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_strip_str_del() {
+        let input = std::str::from_utf8(&[0x7f]).unwrap();
+        let expected = "";
+        let actual = strip_str(input).to_string();
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_strip_byte_del() {
+        let bytes = [0x7f];
+        let expected = "";
         let actual = String::from_utf8(strip_byte(&bytes).to_vec()).unwrap();
         assert_eq!(expected, actual);
     }
