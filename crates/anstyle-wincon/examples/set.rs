@@ -23,8 +23,8 @@ fn main() -> Result<(), lexopt::Error> {
 
 #[derive(Default)]
 struct Args {
-    fg: Option<anstyle::XTermColor>,
-    bg: Option<anstyle::XTermColor>,
+    fg: Option<anstyle::Ansi256Color>,
+    bg: Option<anstyle::Ansi256Color>,
 }
 
 impl Args {
@@ -39,13 +39,13 @@ impl Args {
                 Long("fg") => {
                     res.fg = Some(
                         args.value()?
-                            .parse_with(|s| s.parse::<u8>().map(anstyle::XTermColor))?,
+                            .parse_with(|s| s.parse::<u8>().map(anstyle::Ansi256Color))?,
                     );
                 }
                 Long("bg") => {
                     res.fg = Some(
                         args.value()?
-                            .parse_with(|s| s.parse::<u8>().map(anstyle::XTermColor))?,
+                            .parse_with(|s| s.parse::<u8>().map(anstyle::Ansi256Color))?,
                     );
                 }
                 _ => return Err(arg.unexpected()),

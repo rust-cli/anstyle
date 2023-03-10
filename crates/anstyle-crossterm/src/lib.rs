@@ -58,7 +58,7 @@ pub fn to_crossterm(astyle: anstyle::Style) -> crossterm::style::ContentStyle {
 fn to_ansi_color(color: anstyle::Color) -> crossterm::style::Color {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_ansi_color(ansi),
-        anstyle::Color::XTerm(xterm) => xterm_to_ansi_color(xterm),
+        anstyle::Color::Ansi256(xterm) => xterm_to_ansi_color(xterm),
         anstyle::Color::Rgb(rgb) => rgb_to_ansi_color(rgb),
     }
 }
@@ -84,7 +84,7 @@ fn ansi_to_ansi_color(color: anstyle::AnsiColor) -> crossterm::style::Color {
     }
 }
 
-fn xterm_to_ansi_color(color: anstyle::XTermColor) -> crossterm::style::Color {
+fn xterm_to_ansi_color(color: anstyle::Ansi256Color) -> crossterm::style::Color {
     crossterm::style::Color::AnsiValue(color.0)
 }
 

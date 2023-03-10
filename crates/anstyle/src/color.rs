@@ -2,11 +2,19 @@
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Color {
     Ansi(AnsiColor),
-    XTerm(XTermColor),
+    Ansi256(Ansi256Color),
     Rgb(RgbColor),
 }
 
 impl Color {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self))
+            .bg_color(Some(background.into()))
+    }
+
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
@@ -33,7 +41,7 @@ impl Color {
     ) -> core::fmt::Result {
         match self {
             Self::Ansi(color) => color.ansi_fmt(f, context),
-            Self::XTerm(color) => color.ansi_fmt(f, context),
+            Self::Ansi256(color) => color.ansi_fmt(f, context),
             Self::Rgb(color) => color.ansi_fmt(f, context),
         }
     }
@@ -53,10 +61,10 @@ impl From<AnsiColor> for Color {
     }
 }
 
-impl From<XTermColor> for Color {
+impl From<Ansi256Color> for Color {
     #[inline]
-    fn from(inner: XTermColor) -> Self {
-        Self::XTerm(inner)
+    fn from(inner: Ansi256Color) -> Self {
+        Self::Ansi256(inner)
     }
 }
 
@@ -70,7 +78,7 @@ impl From<RgbColor> for Color {
 impl From<u8> for Color {
     #[inline]
     fn from(inner: u8) -> Self {
-        Self::XTerm(inner.into())
+        Self::Ansi256(inner.into())
     }
 }
 
@@ -78,26 +86,6 @@ impl From<(u8, u8, u8)> for Color {
     #[inline]
     fn from(inner: (u8, u8, u8)) -> Self {
         Self::Rgb(inner.into())
-    }
-}
-
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::Color::from((0, 0, 0));
-/// let bg = anstyle::Color::from((0xff, 0xff, 0xff));
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for Color {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self))
-            .bg_color(Some(rhs.into()))
     }
 }
 
@@ -174,6 +162,14 @@ pub enum AnsiColor {
 }
 
 impl AnsiColor {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
@@ -290,29 +286,9 @@ impl AnsiColorFmt for AnsiColor {
             (ColorContext::Foreground, true) => write!(f, "9{}", self.suffix()),
             (ColorContext::Background, false) => write!(f, "4{}", self.suffix()),
             (ColorContext::Foreground, false) => write!(f, "3{}", self.suffix()),
-            // No per-color codes; must delegate to `XTermColor`
-            (ColorContext::Underline, _) => XTermColor::from(*self).ansi_fmt(f, context),
+            // No per-color codes; must delegate to `Ansi256Color`
+            (ColorContext::Underline, _) => Ansi256Color::from(*self).ansi_fmt(f, context),
         }
-    }
-}
-
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::AnsiColor::Black;
-/// let bg = anstyle::AnsiColor::White;
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for AnsiColor {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
     }
 }
 
@@ -340,9 +316,17 @@ impl core::ops::BitOr<crate::Effects> for AnsiColor {
 /// - `232..` map to [`RgbColor`] gray-scale values
 #[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(transparent)]
-pub struct XTermColor(pub u8);
+pub struct Ansi256Color(pub u8);
 
-impl XTermColor {
+impl Ansi256Color {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     #[inline]
     pub const fn index(self) -> u8 {
         self.0
@@ -412,7 +396,7 @@ impl XTermColor {
     }
 }
 
-impl AnsiColorFmt for XTermColor {
+impl AnsiColorFmt for Ansi256Color {
     fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match context {
             ColorContext::Background => {
@@ -429,37 +413,17 @@ impl AnsiColorFmt for XTermColor {
     }
 }
 
-impl From<u8> for XTermColor {
+impl From<u8> for Ansi256Color {
     #[inline]
     fn from(inner: u8) -> Self {
         Self(inner)
     }
 }
 
-impl From<AnsiColor> for XTermColor {
+impl From<AnsiColor> for Ansi256Color {
     #[inline]
     fn from(inner: AnsiColor) -> Self {
         Self::from_ansi(inner)
-    }
-}
-
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::XTermColor(16);
-/// let bg = anstyle::XTermColor(231);
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
     }
 }
 
@@ -468,10 +432,10 @@ impl<C: Into<Color>> core::ops::BitOr<C> for XTermColor {
 /// # Examples
 ///
 /// ```rust
-/// let fg = anstyle::XTermColor(0);
+/// let fg = anstyle::Ansi256Color(0);
 /// let style = fg | anstyle::Effects::BOLD | anstyle::Effects::UNDERLINE;
 /// ```
-impl core::ops::BitOr<crate::Effects> for XTermColor {
+impl core::ops::BitOr<crate::Effects> for Ansi256Color {
     type Output = crate::Style;
 
     #[inline(always)]
@@ -485,6 +449,14 @@ impl core::ops::BitOr<crate::Effects> for XTermColor {
 pub struct RgbColor(pub u8, pub u8, pub u8);
 
 impl RgbColor {
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+        crate::Style::new()
+            .fg_color(Some(self.into()))
+            .bg_color(Some(background.into()))
+    }
+
     #[inline]
     pub const fn r(self) -> u8 {
         self.0
@@ -541,26 +513,6 @@ impl From<(u8, u8, u8)> for RgbColor {
     fn from(inner: (u8, u8, u8)) -> Self {
         let (r, g, b) = inner;
         Self(r, g, b)
-    }
-}
-
-/// Define style with specified foreground and background colors
-///
-/// # Examples
-///
-/// ```rust
-/// let fg = anstyle::RgbColor(0, 0, 0);
-/// let bg = anstyle::RgbColor(0xff, 0xff, 0xff);
-/// let style = fg | bg;
-/// ```
-impl<C: Into<Color>> core::ops::BitOr<C> for RgbColor {
-    type Output = crate::Style;
-
-    #[inline(always)]
-    fn bitor(self, rhs: C) -> Self::Output {
-        crate::Style::new()
-            .fg_color(Some(self.into()))
-            .bg_color(Some(rhs.into()))
     }
 }
 

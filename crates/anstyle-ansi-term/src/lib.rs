@@ -58,7 +58,7 @@ pub fn to_ansi_term(astyle: anstyle::Style) -> ansi_term::Style {
 fn to_ansi_color(color: anstyle::Color) -> (ansi_term::Color, bool) {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_ansi_color(ansi),
-        anstyle::Color::XTerm(xterm) => (xterm_to_ansi_color(xterm), false),
+        anstyle::Color::Ansi256(xterm) => (xterm_to_ansi_color(xterm), false),
         anstyle::Color::Rgb(rgb) => (rgb_to_ansi_color(rgb), false),
     }
 }
@@ -84,7 +84,7 @@ fn ansi_to_ansi_color(color: anstyle::AnsiColor) -> (ansi_term::Color, bool) {
     }
 }
 
-fn xterm_to_ansi_color(color: anstyle::XTermColor) -> ansi_term::Color {
+fn xterm_to_ansi_color(color: anstyle::Ansi256Color) -> ansi_term::Color {
     ansi_term::Color::Fixed(color.0)
 }
 

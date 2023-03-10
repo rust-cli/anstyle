@@ -5,7 +5,7 @@
 //!
 //! ```rust
 //! let style = anstyle_git::parse("bold red blue").unwrap();
-//! assert_eq!(style, anstyle::AnsiColor::Red | anstyle::AnsiColor::Blue | anstyle::Effects::BOLD);
+//! assert_eq!(style, anstyle::AnsiColor::Red.on(anstyle::AnsiColor::Blue) | anstyle::Effects::BOLD);
 //!
 //! let hyperlink_style = anstyle_git::parse("#0000ee ul").unwrap();
 //! assert_eq!(hyperlink_style, anstyle::RgbColor(0x00, 0x00, 0xee) | anstyle::Effects::UNDERLINE);
@@ -196,32 +196,32 @@ mod tests {
         test!("normal normal" => Style::new());
         test!("-1 normal" => Style::new());
         test!("red" => Red);
-        test!("red blue" => Red | Blue);
-        test!("   red blue   " => Red | Blue);
-        test!("red\tblue" => Red | Blue);
-        test!("red\n blue" => Red | Blue);
-        test!("red\r\n blue" => Red | Blue);
-        test!("blue red" => Blue | Red);
-        test!("yellow green" => Yellow | Green);
-        test!("white magenta" => White | Magenta);
-        test!("black cyan" => Black | Cyan);
+        test!("red blue" => Red.on(Blue));
+        test!("   red blue   " => Red.on(Blue));
+        test!("red\tblue" => Red.on(Blue));
+        test!("red\n blue" => Red.on(Blue));
+        test!("red\r\n blue" => Red.on(Blue));
+        test!("blue red" => Blue.on(Red));
+        test!("yellow green" => Yellow.on(Green));
+        test!("white magenta" => White.on(Magenta));
+        test!("black cyan" => Black.on(Cyan));
         test!("red normal" => Red);
         test!("normal red" => Style::new().bg_color(Some(Red.into())));
-        test!("0" => XTermColor(0));
-        test!("8 3" => XTermColor(8) | XTermColor(3));
-        test!("255" => XTermColor(255));
-        test!("255 -1" => XTermColor(255));
+        test!("0" => Ansi256Color(0));
+        test!("8 3" => Ansi256Color(8).on(Ansi256Color(3)));
+        test!("255" => Ansi256Color(255));
+        test!("255 -1" => Ansi256Color(255));
         test!("#000000" => RgbColor(0,0,0));
         test!("#204060" => RgbColor(0x20,0x40,0x60));
 
-        test!("bold cyan white" => (Cyan | White).bold());
-        test!("bold cyan nobold white" => Cyan | White);
-        test!("bold cyan reverse white nobold" => (Cyan | White).invert());
-        test!("bold cyan ul white dim" => (Cyan | White).bold().underline().dimmed());
-        test!("ul cyan white no-ul" => Cyan | White);
-        test!("italic cyan white" => (Cyan | White).italic());
-        test!("strike cyan white" => (Cyan | White).strikethrough());
-        test!("blink #050505 white" => (RgbColor(5,5,5) | White).blink());
+        test!("bold cyan white" => Cyan.on(White).bold());
+        test!("bold cyan nobold white" => Cyan.on(White));
+        test!("bold cyan reverse white nobold" => Cyan.on(White).invert());
+        test!("bold cyan ul white dim" => Cyan.on(White).bold().underline().dimmed());
+        test!("ul cyan white no-ul" => Cyan.on(White));
+        test!("italic cyan white" => Cyan.on(White).italic());
+        test!("strike cyan white" => Cyan.on(White).strikethrough());
+        test!("blink #050505 white" => RgbColor(5,5,5).on(White).blink());
     }
 
     #[test]
@@ -276,6 +276,6 @@ mod tests {
     #[test]
     fn test_extension_trait() {
         let style = anstyle::Style::parse_git("red blue");
-        assert_eq!(style.unwrap(), Red | Blue);
+        assert_eq!(style.unwrap(), Red.on(Blue));
     }
 }

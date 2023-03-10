@@ -7,7 +7,7 @@ pub struct Palette([anstyle::RgbColor; 16]);
 
 impl Palette {
     pub(crate) const fn rgb_from_ansi(&self, color: anstyle::AnsiColor) -> anstyle::RgbColor {
-        let color = anstyle::XTermColor::from_ansi(color);
+        let color = anstyle::Ansi256Color::from_ansi(color);
         self.0[color.index() as usize]
     }
 
@@ -35,7 +35,7 @@ impl Palette {
             index += 1;
         }
 
-        match anstyle::XTermColor(best_index as u8).into_ansi() {
+        match anstyle::Ansi256Color(best_index as u8).into_ansi() {
             Some(color) => color,
             None => {
                 // Panic

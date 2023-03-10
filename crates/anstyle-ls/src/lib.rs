@@ -90,7 +90,7 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
             36 => fg_color = Some(anstyle::AnsiColor::Cyan.into()),
             37 => fg_color = Some(anstyle::AnsiColor::White.into()),
             38 => match (parts.pop_front(), parts.pop_front()) {
-                (Some(5), Some(color)) => fg_color = Some(anstyle::XTermColor(color).into()),
+                (Some(5), Some(color)) => fg_color = Some(anstyle::Ansi256Color(color).into()),
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
                         fg_color = Some(anstyle::RgbColor(red, green, blue).into())
@@ -113,7 +113,7 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
             46 => bg_color = Some(anstyle::AnsiColor::Cyan.into()),
             47 => bg_color = Some(anstyle::AnsiColor::White.into()),
             48 => match (parts.pop_front(), parts.pop_front()) {
-                (Some(5), Some(color)) => bg_color = Some(anstyle::XTermColor(color).into()),
+                (Some(5), Some(color)) => bg_color = Some(anstyle::Ansi256Color(color).into()),
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
                         bg_color = Some(anstyle::RgbColor(red, green, blue).into())
@@ -128,7 +128,9 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
             },
             49 => bg_color = None,
             58 => match (parts.pop_front(), parts.pop_front()) {
-                (Some(5), Some(color)) => underline_color = Some(anstyle::XTermColor(color).into()),
+                (Some(5), Some(color)) => {
+                    underline_color = Some(anstyle::Ansi256Color(color).into())
+                }
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
                         underline_color = Some(anstyle::RgbColor(red, green, blue).into())
@@ -198,7 +200,7 @@ mod tests {
         );
         assert_style(
             "32;40",
-            anstyle::AnsiColor::Green | anstyle::AnsiColor::Black,
+            anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Black),
         );
     }
 
@@ -238,27 +240,27 @@ mod tests {
 
     #[test]
     fn parse_8_bit_colors() {
-        assert_style("38;5;115", anstyle::XTermColor(115));
-        assert_style("00;38;5;115", anstyle::XTermColor(115));
+        assert_style("38;5;115", anstyle::Ansi256Color(115));
+        assert_style("00;38;5;115", anstyle::Ansi256Color(115));
         assert_style(
             "01;38;5;119",
-            anstyle::XTermColor(119) | anstyle::Effects::BOLD,
+            anstyle::Ansi256Color(119) | anstyle::Effects::BOLD,
         );
         assert_style(
             "38;5;119;01",
-            anstyle::XTermColor(119) | anstyle::Effects::BOLD,
+            anstyle::Ansi256Color(119) | anstyle::Effects::BOLD,
         );
         assert_style(
             "58;5;115",
-            anstyle::Style::new().underline_color(Some(anstyle::XTermColor(115).into())),
+            anstyle::Style::new().underline_color(Some(anstyle::Ansi256Color(115).into())),
         );
         assert_style(
             "00;58;5;115",
-            anstyle::Style::new().underline_color(Some(anstyle::XTermColor(115).into())),
+            anstyle::Style::new().underline_color(Some(anstyle::Ansi256Color(115).into())),
         );
         assert_style(
             "01;58;5;119",
-            anstyle::Style::new().underline_color(Some(anstyle::XTermColor(119).into()))
+            anstyle::Style::new().underline_color(Some(anstyle::Ansi256Color(119).into()))
                 | anstyle::Effects::BOLD,
         );
     }
@@ -272,12 +274,12 @@ mod tests {
         );
         assert_style(
             "48;2;100;200;0;1;38;2;0;10;20",
-            anstyle::RgbColor(0, 10, 20) | anstyle::RgbColor(100, 200, 0) | anstyle::Effects::BOLD,
+            anstyle::RgbColor(0, 10, 20).on(anstyle::RgbColor(100, 200, 0))
+                | anstyle::Effects::BOLD,
         );
         assert_style(
             "48;2;100;200;0;1;38;2;0;10;20;58;2;64;64;64",
-            (anstyle::RgbColor(0, 10, 20)
-                | anstyle::RgbColor(100, 200, 0)
+            (anstyle::RgbColor(0, 10, 20).on(anstyle::RgbColor(100, 200, 0))
                 | anstyle::Effects::BOLD)
                 .underline_color(Some(anstyle::RgbColor(64, 64, 64).into())),
         );

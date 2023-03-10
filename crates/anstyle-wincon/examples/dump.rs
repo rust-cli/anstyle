@@ -36,7 +36,7 @@ fn main() -> Result<(), lexopt::Error> {
 }
 
 fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
-    let color = anstyle::XTermColor(fixed).into();
+    let color = anstyle::Ansi256Color(fixed).into();
     (match layer {
         Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
         Layer::Bg => anstyle::Style::new().bg_color(Some(color)),
@@ -51,12 +51,12 @@ fn print_number(
 ) -> std::io::Result<()> {
     let fg = style.get_fg_color().and_then(|c| match c {
         anstyle::Color::Ansi(c) => Some(c),
-        anstyle::Color::XTerm(c) => c.into_ansi(),
+        anstyle::Color::Ansi256(c) => c.into_ansi(),
         anstyle::Color::Rgb(_) => None,
     });
     let bg = style.get_bg_color().and_then(|c| match c {
         anstyle::Color::Ansi(c) => Some(c),
-        anstyle::Color::XTerm(c) => c.into_ansi(),
+        anstyle::Color::Ansi256(c) => c.into_ansi(),
         anstyle::Color::Rgb(_) => None,
     });
 
