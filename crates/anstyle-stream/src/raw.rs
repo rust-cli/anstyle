@@ -1,12 +1,16 @@
+/// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(not(any(feature = "auto", feature = "wincon")))]
 pub trait RawStream: std::io::Write + private::Sealed {}
 
+/// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(all(feature = "auto", not(feature = "wincon")))]
 pub trait RawStream: std::io::Write + is_terminal::IsTerminal + private::Sealed {}
 
+/// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(all(not(feature = "auto"), feature = "wincon"))]
 pub trait RawStream: std::io::Write + anstyle_wincon::WinconStream + private::Sealed {}
 
+/// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(all(feature = "auto", feature = "wincon"))]
 pub trait RawStream:
     std::io::Write + is_terminal::IsTerminal + anstyle_wincon::WinconStream + private::Sealed
