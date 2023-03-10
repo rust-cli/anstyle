@@ -4,6 +4,7 @@ use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[cfg(feature = "wincon")] // here mostly for documentation purposes
+#[derive(Debug)]
 pub struct WinconStream<S>
 where
     S: RawStream,

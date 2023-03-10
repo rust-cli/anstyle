@@ -1,4 +1,5 @@
 /// Write colored text to the screen
+#[derive(Debug)]
 pub struct Console<S>
 where
     S: crate::WinconStream + std::io::Write,
