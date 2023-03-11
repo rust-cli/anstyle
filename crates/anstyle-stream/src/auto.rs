@@ -1,3 +1,5 @@
+#[cfg(feature = "auto")]
+use crate::ColorChoice;
 use crate::Lockable;
 use crate::RawStream;
 use crate::StripStream;
@@ -26,10 +28,17 @@ where
     #[cfg(feature = "auto")]
     #[inline]
     pub fn auto(raw: S) -> Self {
-        if raw.is_terminal() {
-            Self::always(raw)
-        } else {
-            Self::never(raw)
+        match concolor_override::get() {
+            ColorChoice::Auto => {
+                if raw.is_terminal() {
+                    Self::always(raw)
+                } else {
+                    Self::never(raw)
+                }
+            }
+            ColorChoice::AlwaysAnsi => Self::always_ansi(raw),
+            ColorChoice::Always => Self::always(raw),
+            ColorChoice::Never => Self::never(raw),
         }
     }
 
