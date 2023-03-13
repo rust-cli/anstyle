@@ -78,7 +78,12 @@ where
     pub fn always(raw: S) -> Self {
         #[cfg(feature = "wincon")]
         {
-            if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
+            #[cfg(feature = "auto")]
+            let use_wincon =
+                raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true);
+            #[cfg(not(feature = "auto"))]
+            let use_wincon = cfg!(windows);
+            if use_wincon {
                 Self::wincon(raw).unwrap_or_else(|raw| Self::always_ansi_(raw))
             } else {
                 Self::always_ansi_(raw)
