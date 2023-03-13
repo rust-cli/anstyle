@@ -30,7 +30,10 @@ where
     pub fn new(raw: S, choice: ColorChoice) -> Self {
         match choice {
             ColorChoice::Auto => {
-                if raw.is_terminal() && !concolor_query::no_color() {
+                if raw.is_terminal()
+                    && !concolor_query::no_color()
+                    && concolor_query::term_supports_color()
+                {
                     Self::always(raw)
                 } else {
                     Self::never(raw)
