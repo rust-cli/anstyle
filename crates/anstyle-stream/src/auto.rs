@@ -34,6 +34,7 @@ where
                     && !concolor_query::no_color()
                     && concolor_query::term_supports_color()
                     && concolor_query::clicolor()
+                    || concolor_query::clicolor_force()
                 {
                     Self::always(raw)
                 } else {
