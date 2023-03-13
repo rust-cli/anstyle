@@ -36,7 +36,9 @@ where
                 if raw.is_terminal()
                     && !concolor_query::no_color()
                     && !clicolor_disabled
-                    && (concolor_query::term_supports_color() || clicolor_enabled)
+                    && (concolor_query::term_supports_color()
+                        || clicolor_enabled
+                        || concolor_query::is_ci())
                     || concolor_query::clicolor_force()
                 {
                     Self::always(raw)
