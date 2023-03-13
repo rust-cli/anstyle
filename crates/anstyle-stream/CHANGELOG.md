@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- `WinconStream` is only exposed on Windows
+
+### Performance
+
+- Build time and binary size improvements for Linux by dropping wincon on non-Windows platforms
+
 ## [0.1.2] - 2023-03-13
 
 ### Features
