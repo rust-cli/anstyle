@@ -9,7 +9,8 @@ fn main() {
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock());
+    let mut stdout = anstyle_wincon::Console::new(stdout.lock())
+        .map_err(|_err| lexopt::Error::from("could not open `stdout` for color control"))?;
 
     let fg = args.fg.and_then(|c| c.into_ansi());
     let bg = args.bg.and_then(|c| c.into_ansi());

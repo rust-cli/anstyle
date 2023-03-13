@@ -95,7 +95,7 @@ where
     fn wincon(raw: S) -> Result<Self, S> {
         #[cfg(feature = "wincon")]
         {
-            let console = anstyle_wincon::Console::new(raw);
+            let console = anstyle_wincon::Console::new(raw)?;
             Ok(Self {
                 inner: StreamInner::Wincon(WinconStream::new(console)),
             })

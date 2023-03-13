@@ -1,7 +1,8 @@
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock());
+    let mut stdout = anstyle_wincon::Console::new(stdout.lock())
+        .map_err(|_err| lexopt::Error::from("could not open `stdout` for color control"))?;
 
     for fixed in 0..16 {
         let style = style(fixed, args.layer, args.effects);
