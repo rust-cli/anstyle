@@ -24,11 +24,11 @@ impl<S> AutoStream<S>
 where
     S: RawStream,
 {
-    /// Auto-adapt for the stream's capabilities
+    /// Runtime control over styling behavior
     #[cfg(feature = "auto")]
     #[inline]
-    pub fn auto(raw: S) -> Self {
-        match concolor_override::get() {
+    pub fn new(raw: S, choice: ColorChoice) -> Self {
+        match choice {
             ColorChoice::Auto => {
                 if raw.is_terminal() {
                     Self::always(raw)
@@ -40,6 +40,13 @@ where
             ColorChoice::Always => Self::always(raw),
             ColorChoice::Never => Self::never(raw),
         }
+    }
+
+    /// Auto-adapt for the stream's capabilities
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub fn auto(raw: S) -> Self {
+        Self::new(raw, concolor_override::get())
     }
 
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
