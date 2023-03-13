@@ -22,6 +22,7 @@ pub enum State {
 }
 
 impl Default for State {
+    #[inline]
     fn default() -> State {
         State::Ground
     }
@@ -77,6 +78,7 @@ pub enum Action {
 }
 
 impl Default for Action {
+    #[inline]
     fn default() -> Action {
         Action::Nop
     }
