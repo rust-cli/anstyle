@@ -74,10 +74,7 @@ where
         #[cfg(feature = "wincon")]
         {
             if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
-                let console = anstyle_wincon::Console::new(raw);
-                Self {
-                    inner: StreamInner::Wincon(WinconStream::new(console)),
-                }
+                Self::wincon(raw).unwrap_or_else(|raw| Self::always_ansi_(raw))
             } else {
                 Self::always_ansi_(raw)
             }
@@ -91,6 +88,22 @@ where
     pub fn never(raw: S) -> Self {
         let inner = StreamInner::Strip(StripStream::new(raw));
         AutoStream { inner }
+    }
+
+    #[inline]
+    #[cfg(feature = "wincon")]
+    fn wincon(raw: S) -> Result<Self, S> {
+        #[cfg(feature = "wincon")]
+        {
+            let console = anstyle_wincon::Console::new(raw);
+            Ok(Self {
+                inner: StreamInner::Wincon(WinconStream::new(console)),
+            })
+        }
+        #[cfg(not(feature = "wincon"))]
+        {
+            Err(raw)
+        }
     }
 
     /// Get the wrapped [`RawStream`]
