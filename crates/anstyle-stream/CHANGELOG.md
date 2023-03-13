@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Allow global override of `AutoStream`, meant for CLI use cases
+- `AutoStream` no reads
+  - `NO_COLOR`
+  - `CLICOLOR` / `CLICOLOR_FORCE`
+  - `TERM`
+  - `CI`
+
+### Fixes
+
+- Compile with `--no-default-features --features wincon`
+
 ## [0.1.1] - 2023-03-08
 
 ### Features
