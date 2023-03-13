@@ -1,4 +1,4 @@
-#[cfg(feature = "wincon")]
+#[cfg(all(windows, feature = "wincon"))]
 use crate::RawStream;
 
 /// Explicitly lock a [`std::io::Write`]able
@@ -33,7 +33,7 @@ impl Lockable for std::io::Stderr {
     }
 }
 
-#[cfg(feature = "wincon")]
+#[cfg(all(windows, feature = "wincon"))]
 impl<S> Lockable for anstyle_wincon::Console<S>
 where
     S: RawStream + Lockable,

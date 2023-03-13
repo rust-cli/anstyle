@@ -47,7 +47,7 @@ impl std::io::Write for Buffer {
     }
 }
 
-#[cfg(feature = "wincon")]
+#[cfg(all(windows, feature = "wincon"))]
 impl anstyle_wincon::WinconStream for Buffer {
     fn set_colors(
         &mut self,
