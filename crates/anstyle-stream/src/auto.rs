@@ -76,21 +76,20 @@ where
     /// Force color, no matter what the inner `Write` supports.
     #[inline]
     pub fn always(raw: S) -> Self {
-        #[cfg(feature = "wincon")]
-        {
+        if cfg!(windows) {
             #[cfg(feature = "auto")]
             let use_wincon =
                 raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true);
             #[cfg(not(feature = "auto"))]
-            let use_wincon = cfg!(windows);
+            let use_wincon = true;
             if use_wincon {
                 Self::wincon(raw).unwrap_or_else(|raw| Self::always_ansi_(raw))
             } else {
                 Self::always_ansi_(raw)
             }
+        } else {
+            Self::always_ansi(raw)
         }
-        #[cfg(not(feature = "wincon"))]
-        Self::always_ansi(raw)
     }
 
     /// Only pass printable data to the inner `Write`.
@@ -101,7 +100,6 @@ where
     }
 
     #[inline]
-    #[cfg(feature = "wincon")]
     fn wincon(raw: S) -> Result<Self, S> {
         #[cfg(feature = "wincon")]
         {
