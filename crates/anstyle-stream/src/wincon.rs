@@ -94,7 +94,7 @@ mod test {
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_all_no_escapes(s in "\\PC*") {
             let buffer = crate::Buffer::new();
-            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer).unwrap());
             stream.write_all(s.as_bytes()).unwrap();
             let buffer = stream.into_inner().into_inner();
             let actual = std::str::from_utf8(buffer.as_ref()).unwrap();
@@ -105,7 +105,7 @@ mod test {
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_byte_no_escapes(s in "\\PC*") {
             let buffer = crate::Buffer::new();
-            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer).unwrap());
             for byte in s.as_bytes() {
                 stream.write_all(&[*byte]).unwrap();
             }
@@ -118,7 +118,7 @@ mod test {
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_all_random(s in any::<Vec<u8>>()) {
             let buffer = crate::Buffer::new();
-            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer).unwrap());
             stream.write_all(s.as_slice()).unwrap();
         }
 
@@ -126,7 +126,7 @@ mod test {
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_byte_random(s in any::<Vec<u8>>()) {
             let buffer = crate::Buffer::new();
-            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer));
+            let mut stream = WinconStream::new(anstyle_wincon::Console::new(buffer).unwrap());
             for byte in s.as_slice() {
                 stream.write_all(&[*byte]).unwrap();
             }

@@ -37,8 +37,9 @@ fn stream(c: &mut Criterion) {
         group.bench_function("WinconStream", |b| {
             b.iter(|| {
                 let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream =
-                    anstyle_stream::WinconStream::new(anstyle_wincon::Console::new(buffer));
+                let mut stream = anstyle_stream::WinconStream::new(
+                    anstyle_wincon::Console::new(buffer).unwrap(),
+                );
 
                 stream.write_all(content).unwrap();
 

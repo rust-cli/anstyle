@@ -24,11 +24,11 @@ impl<S> AutoStream<S>
 where
     S: RawStream,
 {
-    /// Auto-adapt for the stream's capabilities
+    /// Runtime control over styling behavior
     #[cfg(feature = "auto")]
     #[inline]
-    pub fn auto(raw: S) -> Self {
-        match concolor_override::get() {
+    pub fn new(raw: S, choice: ColorChoice) -> Self {
+        match choice {
             ColorChoice::Auto => {
                 if raw.is_terminal() {
                     Self::always(raw)
@@ -40,6 +40,13 @@ where
             ColorChoice::Always => Self::always(raw),
             ColorChoice::Never => Self::never(raw),
         }
+    }
+
+    /// Auto-adapt for the stream's capabilities
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub fn auto(raw: S) -> Self {
+        Self::new(raw, concolor_override::get())
     }
 
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
@@ -67,10 +74,7 @@ where
         #[cfg(feature = "wincon")]
         {
             if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
-                let console = anstyle_wincon::Console::new(raw);
-                Self {
-                    inner: StreamInner::Wincon(WinconStream::new(console)),
-                }
+                Self::wincon(raw).unwrap_or_else(|raw| Self::always_ansi_(raw))
             } else {
                 Self::always_ansi_(raw)
             }
@@ -84,6 +88,22 @@ where
     pub fn never(raw: S) -> Self {
         let inner = StreamInner::Strip(StripStream::new(raw));
         AutoStream { inner }
+    }
+
+    #[inline]
+    #[cfg(feature = "wincon")]
+    fn wincon(raw: S) -> Result<Self, S> {
+        #[cfg(feature = "wincon")]
+        {
+            let console = anstyle_wincon::Console::new(raw)?;
+            Ok(Self {
+                inner: StreamInner::Wincon(WinconStream::new(console)),
+            })
+        }
+        #[cfg(not(feature = "wincon"))]
+        {
+            Err(raw)
+        }
     }
 
     /// Get the wrapped [`RawStream`]
