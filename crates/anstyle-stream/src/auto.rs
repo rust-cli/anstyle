@@ -33,6 +33,7 @@ where
                 if raw.is_terminal()
                     && !concolor_query::no_color()
                     && concolor_query::term_supports_color()
+                    && concolor_query::clicolor()
                 {
                     Self::always(raw)
                 } else {
