@@ -30,10 +30,13 @@ where
     pub fn new(raw: S, choice: ColorChoice) -> Self {
         match choice {
             ColorChoice::Auto => {
+                let clicolor = concolor_query::clicolor();
+                let clicolor_enabled = clicolor.unwrap_or(false);
+                let clicolor_disabled = !clicolor.unwrap_or(true);
                 if raw.is_terminal()
                     && !concolor_query::no_color()
-                    && concolor_query::term_supports_color()
-                    && concolor_query::clicolor()
+                    && !clicolor_disabled
+                    && (concolor_query::term_supports_color() || clicolor_enabled)
                     || concolor_query::clicolor_force()
                 {
                     Self::always(raw)
