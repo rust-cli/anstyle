@@ -30,7 +30,15 @@ where
     pub fn new(raw: S, choice: ColorChoice) -> Self {
         match choice {
             ColorChoice::Auto => {
-                if raw.is_terminal() {
+                let clicolor = concolor_query::clicolor();
+                let clicolor_enabled = clicolor.unwrap_or(false);
+                let clicolor_disabled = !clicolor.unwrap_or(true);
+                if raw.is_terminal()
+                    && !concolor_query::no_color()
+                    && !clicolor_disabled
+                    && (concolor_query::term_supports_color() || clicolor_enabled)
+                    || concolor_query::clicolor_force()
+                {
                     Self::always(raw)
                 } else {
                     Self::never(raw)
@@ -71,16 +79,21 @@ where
     /// Force color, no matter what the inner `Write` supports.
     #[inline]
     pub fn always(raw: S) -> Self {
-        #[cfg(feature = "wincon")]
-        {
-            if raw.is_terminal() && !concolor_query::windows::enable_ansi_colors().unwrap_or(true) {
+        if cfg!(windows) {
+            #[cfg(feature = "auto")]
+            let use_wincon = raw.is_terminal()
+                && !concolor_query::windows::enable_ansi_colors().unwrap_or(true)
+                && !concolor_query::term_supports_ansi_color();
+            #[cfg(not(feature = "auto"))]
+            let use_wincon = true;
+            if use_wincon {
                 Self::wincon(raw).unwrap_or_else(|raw| Self::always_ansi_(raw))
             } else {
                 Self::always_ansi_(raw)
             }
+        } else {
+            Self::always_ansi(raw)
         }
-        #[cfg(not(feature = "wincon"))]
-        Self::always_ansi(raw)
     }
 
     /// Only pass printable data to the inner `Write`.
@@ -91,7 +104,6 @@ where
     }
 
     #[inline]
-    #[cfg(feature = "wincon")]
     fn wincon(raw: S) -> Result<Self, S> {
         #[cfg(feature = "wincon")]
         {
