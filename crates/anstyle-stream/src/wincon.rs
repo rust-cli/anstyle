@@ -34,6 +34,25 @@ where
     pub fn into_inner(self) -> anstyle_wincon::Console<S> {
         self.console
     }
+
+    #[inline]
+    #[cfg(feature = "auto")]
+    pub fn is_terminal(&self) -> bool {
+        // HACK: We can't get the console's stream to check but if there is a console, it likely is
+        // a terminal
+        true
+    }
+}
+
+#[cfg(feature = "auto")]
+impl<S> is_terminal::IsTerminal for WinconStream<S>
+where
+    S: RawStream,
+{
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        self.is_terminal()
+    }
 }
 
 impl<S> std::io::Write for WinconStream<S>

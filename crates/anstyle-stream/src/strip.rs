@@ -27,6 +27,23 @@ where
     pub fn into_inner(self) -> S {
         self.raw
     }
+
+    #[inline]
+    #[cfg(feature = "auto")]
+    pub fn is_terminal(&self) -> bool {
+        self.raw.is_terminal()
+    }
+}
+
+#[cfg(feature = "auto")]
+impl<S> is_terminal::IsTerminal for StripStream<S>
+where
+    S: RawStream,
+{
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        self.is_terminal()
+    }
 }
 
 impl<S> std::io::Write for StripStream<S>
