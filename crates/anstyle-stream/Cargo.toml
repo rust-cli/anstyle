@@ -32,11 +32,13 @@ wincon = ["dep:anstyle-wincon"]
 [dependencies]
 anstyle = { version = "0.3.0", path = "../anstyle" }
 anstyle-parse = { version = "0.1.0", path = "../anstyle-parse" }
-anstyle-wincon = { version = "0.2.0", path = "../anstyle-wincon", optional = true }
 concolor-override = { version = "1.0.0", optional = true }
 concolor-query = { version = "0.3.1", optional = true }
 is-terminal = { version = "0.4.4", optional = true }
 utf8parse = "0.2.1"
+
+[target.'cfg(windows)'.dependencies]
+anstyle-wincon = { version = "0.2.0", path = "../anstyle-wincon", optional = true }
 
 [dev-dependencies]
 criterion = "0.4.0"

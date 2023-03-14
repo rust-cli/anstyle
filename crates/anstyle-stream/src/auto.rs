@@ -3,7 +3,7 @@ use crate::ColorChoice;
 use crate::Lockable;
 use crate::RawStream;
 use crate::StripStream;
-#[cfg(feature = "wincon")]
+#[cfg(all(windows, feature = "wincon"))]
 use crate::WinconStream;
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
@@ -16,7 +16,7 @@ pub struct AutoStream<S: RawStream> {
 enum StreamInner<S: RawStream> {
     PassThrough(S),
     Strip(StripStream<S>),
-    #[cfg(feature = "wincon")]
+    #[cfg(all(windows, feature = "wincon"))]
     Wincon(WinconStream<S>),
 }
 
@@ -107,14 +107,14 @@ where
 
     #[inline]
     fn wincon(raw: S) -> Result<Self, S> {
-        #[cfg(feature = "wincon")]
+        #[cfg(all(windows, feature = "wincon"))]
         {
             let console = anstyle_wincon::Console::new(raw)?;
             Ok(Self {
                 inner: StreamInner::Wincon(WinconStream::new(console)),
             })
         }
-        #[cfg(not(feature = "wincon"))]
+        #[cfg(not(all(windows, feature = "wincon")))]
         {
             Err(raw)
         }
@@ -126,7 +126,7 @@ where
         match self.inner {
             StreamInner::PassThrough(w) => w,
             StreamInner::Strip(w) => w.into_inner(),
-            #[cfg(feature = "wincon")]
+            #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => w.into_inner().into_inner(),
         }
     }
@@ -147,7 +147,7 @@ where
         let inner = match self.inner {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
-            #[cfg(feature = "wincon")]
+            #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => StreamInner::Wincon(w.lock()),
         };
         AutoStream { inner }
@@ -163,7 +163,7 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.write(buf),
             StreamInner::Strip(w) => w.write(buf),
-            #[cfg(feature = "wincon")]
+            #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => w.write(buf),
         }
     }
@@ -173,7 +173,7 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.flush(),
             StreamInner::Strip(w) => w.flush(),
-            #[cfg(feature = "wincon")]
+            #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => w.flush(),
         }
     }
@@ -187,7 +187,7 @@ where
         match &mut self.inner {
             StreamInner::PassThrough(w) => w.write_all(buf),
             StreamInner::Strip(w) => w.write_all(buf),
-            #[cfg(feature = "wincon")]
+            #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => w.write_all(buf),
         }
     }

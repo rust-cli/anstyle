@@ -33,7 +33,7 @@ fn stream(c: &mut Criterion) {
                 black_box(stream)
             })
         });
-        #[cfg(feature = "wincon")]
+        #[cfg(all(windows, feature = "wincon"))]
         group.bench_function("WinconStream", |b| {
             b.iter(|| {
                 let buffer = anstyle_stream::Buffer::with_capacity(content.len());
