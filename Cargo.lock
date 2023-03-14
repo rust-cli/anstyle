@@ -95,7 +95,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-stream"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "anstyle",
  "anstyle-parse",
