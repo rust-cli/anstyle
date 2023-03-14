@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Implement `IsTerminal` for stream types
+
 ## [0.2.1] - 2023-03-14
 
 ### Features
