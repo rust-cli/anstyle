@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- `panic!` for styled panic messages
+- `AutoStream::choice`
+
 ## [0.2.0] - 2023-03-13
 
 ### Breaking Change
