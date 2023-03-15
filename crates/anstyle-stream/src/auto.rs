@@ -29,6 +29,28 @@ where
     #[inline]
     pub fn new(raw: S, choice: ColorChoice) -> Self {
         match choice {
+            ColorChoice::Auto => Self::auto(raw),
+            ColorChoice::AlwaysAnsi => Self::always_ansi(raw),
+            ColorChoice::Always => Self::always(raw),
+            ColorChoice::Never => Self::never(raw),
+        }
+    }
+
+    /// Auto-adapt for the stream's capabilities
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub fn auto(raw: S) -> Self {
+        let choice = Self::choice(&raw);
+        debug_assert_ne!(choice, ColorChoice::Auto);
+        Self::new(raw, choice)
+    }
+
+    /// Report the desired choice for the given stream
+    #[cfg(feature = "auto")]
+    #[inline]
+    pub fn choice(raw: &S) -> ColorChoice {
+        let choice = concolor_override::get();
+        match choice {
             ColorChoice::Auto => {
                 let clicolor = concolor_query::clicolor();
                 let clicolor_enabled = clicolor.unwrap_or(false);
@@ -41,22 +63,13 @@ where
                         || concolor_query::is_ci())
                     || concolor_query::clicolor_force()
                 {
-                    Self::always(raw)
+                    ColorChoice::Always
                 } else {
-                    Self::never(raw)
+                    ColorChoice::Never
                 }
             }
-            ColorChoice::AlwaysAnsi => Self::always_ansi(raw),
-            ColorChoice::Always => Self::always(raw),
-            ColorChoice::Never => Self::never(raw),
+            ColorChoice::AlwaysAnsi | ColorChoice::Always | ColorChoice::Never => choice,
         }
-    }
-
-    /// Auto-adapt for the stream's capabilities
-    #[cfg(feature = "auto")]
-    #[inline]
-    pub fn auto(raw: S) -> Self {
-        Self::new(raw, concolor_override::get())
     }
 
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
