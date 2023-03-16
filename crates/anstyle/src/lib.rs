@@ -24,17 +24,17 @@
 //! - [anstyle-yansi](https://docs.rs/anstyle-yansi)
 //!
 //! User-styling parsers:
-//! - [anstyle-git](https://docs.s/anstyle-git): Parse Git style descriptions
-//! - [anstyle-ls](https://docs.s/anstyle-ls): Parse LS_COLORS style descriptions
+//! - [anstyle-git](https://docs.rs/anstyle-git): Parse Git style descriptions
+//! - [anstyle-ls](https://docs.rs/anstyle-ls): Parse LS_COLORS style descriptions
 //!
 //! Convert to other formats
-//! - [anstream](https://docs.s/anstream): A simple cross platform library for writing colored text to a terminal
-//! - [anstyle-roff](https://docs.s/anstyle-roff): For converting to ROFF
+//! - [anstream](https://docs.rs/anstream): A simple cross platform library for writing colored text to a terminal
+//! - [anstyle-roff](https://docs.rs/anstyle-roff): For converting to ROFF
 //!
 //! Utilities
-//! - [anstyle-lossy](https://docs.s/anstyle-lossy): Convert between `anstyle::Color` types
-//! - [anstyle-parse](https://docs.s/anstyle-parse): Parsing ANSI Style Escapes
-//! - [anstyle-wincon](https://docs.s/anstyle-wincon): Styling legacy Microsoft terminals
+//! - [anstyle-lossy](https://docs.rs/anstyle-lossy): Convert between `anstyle::Color` types
+//! - [anstyle-parse](https://docs.rs/anstyle-parse): Parsing ANSI Style Escapes
+//! - [anstyle-wincon](https://docs.rs/anstyle-wincon): Styling legacy Microsoft terminals
 //!
 //! # Examples
 //!
