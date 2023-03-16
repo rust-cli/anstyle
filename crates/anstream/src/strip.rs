@@ -66,10 +66,7 @@ where
 
     #[inline]
     fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
-        for printable in self.state.strip_next(buf) {
-            self.raw.write_all(printable)?;
-        }
-        Ok(())
+        write_all(&mut self.raw, &mut self.state, buf)
     }
 
     // Not bothering with `write_fmt` as it just calls `write_all`
@@ -95,6 +92,17 @@ fn write(
         }
     }
     Ok(buf.len())
+}
+
+fn write_all(
+    raw: &mut dyn std::io::Write,
+    state: &mut StripBytes,
+    buf: &[u8],
+) -> std::io::Result<()> {
+    for printable in state.strip_next(buf) {
+        raw.write_all(printable)?;
+    }
+    Ok(())
 }
 
 #[inline]
