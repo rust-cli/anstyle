@@ -1,3 +1,5 @@
+use crate::reset::RESET;
+
 /// ANSI Text styling
 ///
 /// # Examples
@@ -94,12 +96,46 @@ impl Style {
         StyleDisplay(self)
     }
 
+    /// Write the ANSI code
+    #[inline]
+    #[cfg(feature = "std")]
+    pub fn write_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        self.effects.write_to(write)?;
+
+        if let Some(fg) = self.fg {
+            fg.write_fg_to(write)?;
+        }
+
+        if let Some(bg) = self.bg {
+            bg.write_bg_to(write)?;
+        }
+
+        if let Some(underline) = self.underline {
+            underline.write_underline_to(write)?;
+        }
+
+        Ok(())
+    }
+
     /// Renders the relevant [`Reset`][crate::Reset] code
     ///
     /// Unlike [`Reset::render`][crate::Reset::render], this will elide the code if there is nothing to reset.
     #[inline]
     pub fn render_reset(self) -> impl core::fmt::Display {
         ResetDisplay(self != Self::new())
+    }
+
+    /// Write the relevant [`Reset`][crate::Reset] code
+    ///
+    /// Unlike [`Reset::render`][crate::Reset::render], this will elide the code if there is nothing to reset.
+    #[inline]
+    #[cfg(feature = "std")]
+    pub fn write_reset_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        if self != Self::new() {
+            write.write_all(RESET.as_bytes())
+        } else {
+            Ok(())
+        }
     }
 }
 
@@ -410,49 +446,21 @@ struct StyleDisplay(Style);
 
 impl core::fmt::Display for StyleDisplay {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        if self.0.is_plain() {
-            return Ok(());
-        }
-
-        write!(f, "\x1B[")?;
-
-        let mut first = true;
-
-        for index in self.0.effects.index_iter() {
-            separator(f, &mut first)?;
-            write!(f, "{}", crate::effect::METADATA[index].primary)?;
-            if let Some(secondary) = crate::effect::METADATA[index].secondary {
-                write!(f, ":{}", secondary)?;
-            }
-        }
+        self.0.effects.render().fmt(f)?;
 
         if let Some(fg) = self.0.fg {
-            separator(f, &mut first)?;
-            fg.ansi_fmt(f, crate::ColorContext::Foreground)?;
+            fg.render_fg().fmt(f)?;
         }
 
         if let Some(bg) = self.0.bg {
-            separator(f, &mut first)?;
-            bg.ansi_fmt(f, crate::ColorContext::Background)?;
+            bg.render_bg().fmt(f)?;
         }
 
         if let Some(underline) = self.0.underline {
-            separator(f, &mut first)?;
-            underline.ansi_fmt(f, crate::ColorContext::Underline)?;
+            underline.render_underline().fmt(f)?;
         }
 
-        write!(f, "m")?;
         Ok(())
-    }
-}
-
-#[inline]
-fn separator(f: &mut core::fmt::Formatter<'_>, first: &mut bool) -> core::fmt::Result {
-    if *first {
-        *first = false;
-        Ok(())
-    } else {
-        write!(f, ";")
     }
 }
 
@@ -461,7 +469,7 @@ struct ResetDisplay(bool);
 impl core::fmt::Display for ResetDisplay {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.0 {
-            write!(f, "\x1B[0m")
+            RESET.fmt(f)
         } else {
             Ok(())
         }

@@ -45,6 +45,9 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#[macro_use]
+mod macros;
+
 mod color;
 mod effect;
 mod reset;

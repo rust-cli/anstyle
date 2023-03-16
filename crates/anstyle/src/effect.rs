@@ -159,6 +159,15 @@ impl Effects {
     pub fn render(self) -> impl core::fmt::Display {
         EffectsDisplay(self)
     }
+
+    #[inline]
+    #[cfg(feature = "std")]
+    pub(crate) fn write_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        for index in self.index_iter() {
+            write.write_all(METADATA[index].escape.as_bytes())?;
+        }
+        Ok(())
+    }
 }
 
 /// # Examples
@@ -244,92 +253,68 @@ impl core::ops::SubAssign for Effects {
 
 pub(crate) struct Metadata {
     pub(crate) name: &'static str,
-    pub(crate) primary: usize,
-    pub(crate) secondary: Option<usize>,
+    pub(crate) escape: &'static str,
 }
 
 pub(crate) const METADATA: [Metadata; 12] = [
     Metadata {
         name: "BOLD",
-        primary: 1,
-        secondary: None,
+        escape: escape!("1"),
     },
     Metadata {
         name: "DIMMED",
-        primary: 2,
-        secondary: None,
+        escape: escape!("2"),
     },
     Metadata {
         name: "ITALIC",
-        primary: 3,
-        secondary: None,
+        escape: escape!("3"),
     },
     Metadata {
         name: "UNDERLINE",
-        primary: 4,
-        secondary: None,
+        escape: escape!("4"),
     },
     Metadata {
         name: "DOUBLE_UNDERLINE",
-        primary: 21,
-        secondary: None,
+        escape: escape!("21"),
     },
     Metadata {
         name: "CURLY_UNDERLINE",
-        primary: 4,
-        secondary: Some(3),
+        escape: escape!("4:3"),
     },
     Metadata {
         name: "DOTTED_UNDERLINE",
-        primary: 4,
-        secondary: Some(4),
+        escape: escape!("4:4"),
     },
     Metadata {
         name: "DASHED_UNDERLINE",
-        primary: 4,
-        secondary: Some(5),
+        escape: escape!("4:5"),
     },
     Metadata {
         name: "BLINK",
-        primary: 5,
-        secondary: None,
+        escape: escape!("5"),
     },
     Metadata {
         name: "INVERT",
-        primary: 7,
-        secondary: None,
+        escape: escape!("7"),
     },
     Metadata {
         name: "HIDDEN",
-        primary: 8,
-        secondary: None,
+        escape: escape!("8"),
     },
     Metadata {
         name: "STRIKETHROUGH",
-        primary: 9,
-        secondary: None,
+        escape: escape!("9"),
     },
 ];
 
 struct EffectsDisplay(Effects);
 
 impl core::fmt::Display for EffectsDisplay {
+    #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        if self.0.is_plain() {
-            return Ok(());
+        for index in self.0.index_iter() {
+            METADATA[index].escape.fmt(f)?;
         }
-
-        write!(f, "\x1B[")?;
-        for (i, index) in self.0.index_iter().enumerate() {
-            if i != 0 {
-                write!(f, ";")?;
-            }
-            write!(f, "{}", METADATA[index].primary)?;
-            if let Some(secondary) = METADATA[index].secondary {
-                write!(f, ":{}", secondary)?;
-            }
-        }
-        write!(f, "m")?;
         Ok(())
     }
 }
