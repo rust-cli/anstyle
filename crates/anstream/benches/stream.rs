@@ -15,7 +15,7 @@ fn stream(c: &mut Criterion) {
         let mut group = c.benchmark_group(name);
         group.bench_function("nop", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
+                let buffer = anstream::Buffer::with_capacity(content.len());
                 let mut stream = buffer;
 
                 stream.write_all(content).unwrap();
@@ -25,8 +25,8 @@ fn stream(c: &mut Criterion) {
         });
         group.bench_function("StripStream", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream = anstyle_stream::StripStream::new(buffer);
+                let buffer = anstream::Buffer::with_capacity(content.len());
+                let mut stream = anstream::StripStream::new(buffer);
 
                 stream.write_all(content).unwrap();
 
@@ -36,10 +36,9 @@ fn stream(c: &mut Criterion) {
         #[cfg(all(windows, feature = "wincon"))]
         group.bench_function("WinconStream", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream = anstyle_stream::WinconStream::new(
-                    anstyle_wincon::Console::new(buffer).unwrap(),
-                );
+                let buffer = anstream::Buffer::with_capacity(content.len());
+                let mut stream =
+                    anstream::WinconStream::new(anstyle_wincon::Console::new(buffer).unwrap());
 
                 stream.write_all(content).unwrap();
 
@@ -48,8 +47,8 @@ fn stream(c: &mut Criterion) {
         });
         group.bench_function("AutoStream::always_ansi", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream = anstyle_stream::AutoStream::always_ansi(buffer);
+                let buffer = anstream::Buffer::with_capacity(content.len());
+                let mut stream = anstream::AutoStream::always_ansi(buffer);
 
                 stream.write_all(content).unwrap();
 
@@ -58,8 +57,8 @@ fn stream(c: &mut Criterion) {
         });
         group.bench_function("AutoStream::always", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream = anstyle_stream::AutoStream::always(buffer);
+                let buffer = anstream::Buffer::with_capacity(content.len());
+                let mut stream = anstream::AutoStream::always(buffer);
 
                 stream.write_all(content).unwrap();
 
@@ -68,8 +67,8 @@ fn stream(c: &mut Criterion) {
         });
         group.bench_function("AutoStream::never", |b| {
             b.iter(|| {
-                let buffer = anstyle_stream::Buffer::with_capacity(content.len());
-                let mut stream = anstyle_stream::AutoStream::never(buffer);
+                let buffer = anstream::Buffer::with_capacity(content.len());
+                let mut stream = anstream::AutoStream::never(buffer);
 
                 stream.write_all(content).unwrap();
 

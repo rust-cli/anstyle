@@ -15,7 +15,7 @@ use anstyle_parse::state::State;
 /// use std::io::Write as _;
 ///
 /// let styled_text = "\x1b[32mfoo\x1b[m bar";
-/// let plain_str = anstyle_stream::adapter::strip_str(&styled_text).to_string();
+/// let plain_str = anstream::adapter::strip_str(&styled_text).to_string();
 /// assert_eq!(plain_str, "foo bar");
 /// ```
 #[inline]
@@ -182,7 +182,7 @@ fn is_utf8_continuation(b: u8) -> bool {
 /// use std::io::Write as _;
 ///
 /// let styled_text = "\x1b[32mfoo\x1b[m bar";
-/// let plain_str = anstyle_stream::adapter::strip_bytes(styled_text.as_bytes()).into_vec();
+/// let plain_str = anstream::adapter::strip_bytes(styled_text.as_bytes()).into_vec();
 /// assert_eq!(plain_str.as_slice(), &b"foo bar"[..]);
 /// ```
 #[inline]

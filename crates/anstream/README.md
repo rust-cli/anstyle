@@ -1,10 +1,12 @@
-# anstyle-stream
+# anstream
 
 > A simple cross platform library for writing colored text to a terminal.
 
+*A portmanteau of "ansi stream"*
+
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
-![License](https://img.shields.io/crates/l/anstyle-stream.svg)
-[![Crates Status](https://img.shields.io/crates/v/anstyle-stream.svg)](https://crates.io/crates/anstyle-stream)
+![License](https://img.shields.io/crates/l/anstream.svg)
+[![Crates Status](https://img.shields.io/crates/v/anstream.svg)](https://crates.io/crates/anstream)
 
 ## License
 
@@ -22,5 +24,5 @@ submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
 
-[Crates.io]: https://crates.io/crates/anstyle-stream
-[Documentation]: https://docs.rs/anstyle-stream
+[Crates.io]: https://crates.io/crates/anstream
+[Documentation]: https://docs.rs/anstream

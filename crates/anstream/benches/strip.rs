@@ -38,14 +38,12 @@ fn strip(c: &mut Criterion) {
             }
             assert_eq!(
                 stripped.0,
-                anstyle_stream::adapter::strip_str(content).to_string()
+                anstream::adapter::strip_str(content).to_string()
             );
             assert_eq!(
                 stripped.0,
-                String::from_utf8(
-                    anstyle_stream::adapter::strip_bytes(content.as_bytes()).into_vec()
-                )
-                .unwrap()
+                String::from_utf8(anstream::adapter::strip_bytes(content.as_bytes()).into_vec())
+                    .unwrap()
             );
         }
 
@@ -73,7 +71,7 @@ fn strip(c: &mut Criterion) {
         if let Ok(content) = std::str::from_utf8(content) {
             group.bench_function("strip_str", |b| {
                 b.iter(|| {
-                    let stripped = anstyle_stream::adapter::strip_str(content).to_string();
+                    let stripped = anstream::adapter::strip_str(content).to_string();
 
                     black_box(stripped)
                 })
@@ -81,7 +79,7 @@ fn strip(c: &mut Criterion) {
             group.bench_function("StripStr", |b| {
                 b.iter(|| {
                     let mut stripped = String::with_capacity(content.len());
-                    let mut state = anstyle_stream::adapter::StripStr::new();
+                    let mut state = anstream::adapter::StripStr::new();
                     for printable in state.strip_next(content) {
                         stripped.push_str(printable);
                     }
@@ -92,7 +90,7 @@ fn strip(c: &mut Criterion) {
         }
         group.bench_function("strip_bytes", |b| {
             b.iter(|| {
-                let stripped = anstyle_stream::adapter::strip_bytes(content).into_vec();
+                let stripped = anstream::adapter::strip_bytes(content).into_vec();
 
                 black_box(stripped)
             })

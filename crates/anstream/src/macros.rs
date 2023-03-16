@@ -14,7 +14,7 @@
 /// #  #[cfg(feature = "auto")] {
 /// use std::io::Write as _;
 ///
-/// let mut lock = anstyle_stream::stdout().lock();
+/// let mut lock = anstream::stdout().lock();
 /// write!(lock, "hello world").unwrap();
 /// # }
 /// ```
@@ -34,8 +34,8 @@
 /// ```
 /// #  #[cfg(feature = "auto")] {
 /// use std::io::Write as _;
-/// use anstyle_stream::print;
-/// use anstyle_stream::stdout;
+/// use anstream::print;
+/// use anstream::stdout;
 ///
 /// print!("this ");
 /// print!("will ");
@@ -83,7 +83,7 @@ macro_rules! print {
 /// #  #[cfg(feature = "auto")] {
 /// use std::io::Write as _;
 ///
-/// let mut lock = anstyle_stream::stdout().lock();
+/// let mut lock = anstream::stdout().lock();
 /// writeln!(lock, "hello world").unwrap();
 /// # }
 /// ```
@@ -102,7 +102,7 @@ macro_rules! print {
 ///
 /// ```
 /// #  #[cfg(feature = "auto")] {
-/// use anstyle_stream::println;
+/// use anstream::println;
 ///
 /// println!(); // prints just a newline
 /// println!("hello there!");
@@ -150,7 +150,7 @@ macro_rules! println {
 ///
 /// ```
 /// #  #[cfg(feature = "auto")] {
-/// use anstyle_stream::eprint;
+/// use anstream::eprint;
 ///
 /// eprint!("Error: Could not complete task");
 /// # }
@@ -191,7 +191,7 @@ macro_rules! eprint {
 ///
 /// ```
 /// #  #[cfg(feature = "auto")] {
-/// use anstyle_stream::eprintln;
+/// use anstream::eprintln;
 ///
 /// eprintln!("Error: Could not complete task");
 /// # }
@@ -285,7 +285,7 @@ macro_rules! eprintln {
 ///
 /// ```should_panic
 /// # #![allow(unreachable_code)]
-/// use anstyle_stream::panic;
+/// use anstream::panic;
 /// panic!();
 /// panic!("this is a terrible mistake!");
 /// panic!("this is a {} {message}", "fancy", message = "message");
