@@ -143,6 +143,28 @@ where
             StreamInner::Wincon(w) => w.into_inner().into_inner(),
         }
     }
+
+    #[inline]
+    #[cfg(feature = "auto")]
+    pub fn is_terminal(&self) -> bool {
+        match &self.inner {
+            StreamInner::PassThrough(w) => w.is_terminal(),
+            StreamInner::Strip(w) => w.is_terminal(),
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(w) => true,
+        }
+    }
+}
+
+#[cfg(feature = "auto")]
+impl<S> is_terminal::IsTerminal for AutoStream<S>
+where
+    S: RawStream,
+{
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        self.is_terminal()
+    }
 }
 
 impl<S> AutoStream<S>
