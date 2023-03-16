@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- `Anstyle::write_to` to bypass `Display` overhead
+
+### Internal
+
+- Simplified writing of ANSI codes by writing them separately
+
 ## [0.3.3] - 2023-03-16
 
 ### Features
