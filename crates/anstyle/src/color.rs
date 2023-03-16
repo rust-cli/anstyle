@@ -15,6 +15,12 @@ impl Color {
             .bg_color(Some(background.into()))
     }
 
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on_default(self) -> crate::Style {
+        crate::Style::new().fg_color(Some(self))
+    }
+
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
@@ -168,6 +174,12 @@ impl AnsiColor {
         crate::Style::new()
             .fg_color(Some(self.into()))
             .bg_color(Some(background.into()))
+    }
+
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on_default(self) -> crate::Style {
+        crate::Style::new().fg_color(Some(self.into()))
     }
 
     /// Render the ANSI code for a foreground color
@@ -327,6 +339,12 @@ impl Ansi256Color {
             .bg_color(Some(background.into()))
     }
 
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on_default(self) -> crate::Style {
+        crate::Style::new().fg_color(Some(self.into()))
+    }
+
     #[inline]
     pub const fn index(self) -> u8 {
         self.0
@@ -455,6 +473,12 @@ impl RgbColor {
         crate::Style::new()
             .fg_color(Some(self.into()))
             .bg_color(Some(background.into()))
+    }
+
+    /// Create a [`Style`][crate::Style] with this as the foregroun
+    #[inline]
+    pub fn on_default(self) -> crate::Style {
+        crate::Style::new().fg_color(Some(self.into()))
     }
 
     #[inline]
