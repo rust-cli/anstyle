@@ -122,7 +122,11 @@ impl Style {
     /// Unlike [`Reset::render`][crate::Reset::render], this will elide the code if there is nothing to reset.
     #[inline]
     pub fn render_reset(self) -> impl core::fmt::Display {
-        ResetDisplay(self != Self::new())
+        if self != Self::new() {
+            RESET
+        } else {
+            ""
+        }
     }
 
     /// Write the relevant [`Reset`][crate::Reset] code
@@ -461,17 +465,5 @@ impl core::fmt::Display for StyleDisplay {
         }
 
         Ok(())
-    }
-}
-
-struct ResetDisplay(bool);
-
-impl core::fmt::Display for ResetDisplay {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        if self.0 {
-            RESET.fmt(f)
-        } else {
-            Ok(())
-        }
     }
 }
