@@ -47,29 +47,8 @@ where
 
     /// Report the desired choice for the given stream
     #[cfg(feature = "auto")]
-    #[inline]
     pub fn choice(raw: &S) -> ColorChoice {
-        let choice = concolor_override::get();
-        match choice {
-            ColorChoice::Auto => {
-                let clicolor = concolor_query::clicolor();
-                let clicolor_enabled = clicolor.unwrap_or(false);
-                let clicolor_disabled = !clicolor.unwrap_or(true);
-                if raw.is_terminal()
-                    && !concolor_query::no_color()
-                    && !clicolor_disabled
-                    && (concolor_query::term_supports_color()
-                        || clicolor_enabled
-                        || concolor_query::is_ci())
-                    || concolor_query::clicolor_force()
-                {
-                    ColorChoice::Always
-                } else {
-                    ColorChoice::Never
-                }
-            }
-            ColorChoice::AlwaysAnsi | ColorChoice::Always | ColorChoice::Never => choice,
-        }
+        choice(raw)
     }
 
     /// Force ANSI escape codes to be passed through as-is, no matter what the inner `Write`
@@ -153,6 +132,31 @@ where
             #[cfg(all(windows, feature = "wincon"))]
             StreamInner::Wincon(w) => true,
         }
+    }
+}
+
+#[cfg(feature = "auto")]
+fn choice(raw: &dyn RawStream) -> ColorChoice {
+    let choice = concolor_override::get();
+    match choice {
+        ColorChoice::Auto => {
+            let clicolor = concolor_query::clicolor();
+            let clicolor_enabled = clicolor.unwrap_or(false);
+            let clicolor_disabled = !clicolor.unwrap_or(true);
+            if raw.is_terminal()
+                && !concolor_query::no_color()
+                && !clicolor_disabled
+                && (concolor_query::term_supports_color()
+                    || clicolor_enabled
+                    || concolor_query::is_ci())
+                || concolor_query::clicolor_force()
+            {
+                ColorChoice::Always
+            } else {
+                ColorChoice::Never
+            }
+        }
+        ColorChoice::AlwaysAnsi | ColorChoice::Always | ColorChoice::Never => choice,
     }
 }
 
