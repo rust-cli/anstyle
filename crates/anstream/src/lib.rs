@@ -12,7 +12,7 @@
 //!
 //! ```
 //! #  #[cfg(feature = "auto")] {
-//! use anstyle_stream::println;
+//! use anstream::println;
 //! use owo_colors::OwoColorize as _;
 //!
 //! // Foreground colors

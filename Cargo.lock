@@ -18,6 +18,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstream"
+version = "0.2.2"
+dependencies = [
+ "anstyle",
+ "anstyle-parse",
+ "anstyle-wincon",
+ "concolor-override",
+ "concolor-query 0.3.1",
+ "criterion",
+ "is-terminal",
+ "owo-colors",
+ "proptest",
+ "strip-ansi-escapes",
+ "utf8parse",
+]
+
+[[package]]
 name = "anstyle"
 version = "0.3.1"
 dependencies = [
@@ -91,23 +108,6 @@ dependencies = [
  "cansi",
  "roff",
  "snapbox",
-]
-
-[[package]]
-name = "anstyle-stream"
-version = "0.2.2"
-dependencies = [
- "anstyle",
- "anstyle-parse",
- "anstyle-wincon",
- "concolor-override",
- "concolor-query 0.3.1",
- "criterion",
- "is-terminal",
- "owo-colors",
- "proptest",
- "strip-ansi-escapes",
- "utf8parse",
 ]
 
 [[package]]

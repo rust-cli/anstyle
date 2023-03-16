@@ -26,7 +26,7 @@
 //! - [anstyle-ls](https://docs.s/anstyle-ls): Parse LS_COLORS style descriptions
 //!
 //! Convert to other formats
-//! - [anstyle-stream](https://docs.s/anstyle-stream): A simple cross platform library for writing colored text to a termina
+//! - [anstream](https://docs.s/anstream): A simple cross platform library for writing colored text to a terminal
 //! - [anstyle-roff](https://docs.s/anstyle-roff): For converting to ROFF
 //!
 //! Utilities

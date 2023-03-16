@@ -13,7 +13,7 @@ fn wincon(c: &mut Criterion) {
         let mut group = c.benchmark_group(name);
         group.bench_function("wincon_bytes", |b| {
             b.iter(|| {
-                let mut state = anstyle_stream::adapter::WinconBytes::new();
+                let mut state = anstream::adapter::WinconBytes::new();
                 let stripped = state.extract_next(content).collect::<Vec<_>>();
 
                 black_box(stripped)
