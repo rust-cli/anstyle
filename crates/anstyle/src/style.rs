@@ -410,49 +410,21 @@ struct StyleDisplay(Style);
 
 impl core::fmt::Display for StyleDisplay {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        if self.0.is_plain() {
-            return Ok(());
-        }
-
-        write!(f, "\x1B[")?;
-
-        let mut first = true;
-
-        for index in self.0.effects.index_iter() {
-            separator(f, &mut first)?;
-            write!(f, "{}", crate::effect::METADATA[index].primary)?;
-            if let Some(secondary) = crate::effect::METADATA[index].secondary {
-                write!(f, ":{}", secondary)?;
-            }
-        }
+        self.0.effects.render().fmt(f)?;
 
         if let Some(fg) = self.0.fg {
-            separator(f, &mut first)?;
-            fg.ansi_fmt(f, crate::ColorContext::Foreground)?;
+            fg.render_fg().fmt(f)?;
         }
 
         if let Some(bg) = self.0.bg {
-            separator(f, &mut first)?;
-            bg.ansi_fmt(f, crate::ColorContext::Background)?;
+            bg.render_bg().fmt(f)?;
         }
 
         if let Some(underline) = self.0.underline {
-            separator(f, &mut first)?;
-            underline.ansi_fmt(f, crate::ColorContext::Underline)?;
+            underline.render_underline().fmt(f)?;
         }
 
-        write!(f, "m")?;
         Ok(())
-    }
-}
-
-#[inline]
-fn separator(f: &mut core::fmt::Formatter<'_>, first: &mut bool) -> core::fmt::Result {
-    if *first {
-        *first = false;
-        Ok(())
-    } else {
-        write!(f, ";")
     }
 }
 

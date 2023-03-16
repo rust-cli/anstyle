@@ -40,6 +40,14 @@ impl Color {
     }
 
     #[inline]
+    pub(crate) fn render_underline(self) -> impl core::fmt::Display {
+        DisplayColor {
+            color: self,
+            context: ColorContext::Underline,
+        }
+    }
+
+    #[inline]
     pub(crate) fn ansi_fmt(
         &self,
         f: &mut dyn core::fmt::Write,
