@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Performance
+
+- Remove a duplicated function due to generics
+
 ## [0.2.3] - 2023-03-16
 
 ## [0.2.2] - 2023-03-14
