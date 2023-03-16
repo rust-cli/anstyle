@@ -50,23 +50,11 @@ impl<S> std::io::Write for StripStream<S>
 where
     S: RawStream,
 {
+    #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        let initial_state = self.state.clone();
-
-        for printable in self.state.strip_next(buf) {
-            let possible = printable.len();
-            let written = self.raw.write(printable)?;
-            if possible != written {
-                let divergence = &printable[written..];
-                let offset = offset_to(buf, divergence);
-                let consumed = &buf[offset..];
-                self.state = initial_state;
-                self.state.strip_next(consumed).last();
-                return Ok(offset);
-            }
-        }
-        Ok(buf.len())
+        write(&mut self.raw, &mut self.state, buf)
     }
+
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
         self.raw.flush()
@@ -85,6 +73,28 @@ where
     }
 
     // Not bothering with `write_fmt` as it just calls `write_all`
+}
+
+fn write(
+    raw: &mut dyn std::io::Write,
+    state: &mut StripBytes,
+    buf: &[u8],
+) -> std::io::Result<usize> {
+    let initial_state = state.clone();
+
+    for printable in state.strip_next(buf) {
+        let possible = printable.len();
+        let written = raw.write(printable)?;
+        if possible != written {
+            let divergence = &printable[written..];
+            let offset = offset_to(buf, divergence);
+            let consumed = &buf[offset..];
+            *state = initial_state;
+            state.strip_next(consumed).last();
+            return Ok(offset);
+        }
+    }
+    Ok(buf.len())
 }
 
 #[inline]
