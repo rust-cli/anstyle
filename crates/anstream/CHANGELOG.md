@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.2.4] - 2023-03-16
+
 ### Performance
 
 - Remove a duplicated function due to generics
@@ -84,7 +86,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.4...HEAD
+[0.2.4]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.3...anstream-v0.2.4
 [0.2.3]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.2.2...anstream-v0.2.3
 [0.2.2]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.2.1...anstyle-stream-v0.2.2
 [0.2.1]: https://github.com/rust-cli/anstyle/compare/anstyle-stream-v0.2.0...anstyle-stream-v0.2.1
