@@ -14,6 +14,8 @@ struct ResetDisplay;
 
 impl core::fmt::Display for ResetDisplay {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "\x1B[0m")
+        RESET.fmt(f)
     }
 }
+
+pub(crate) const RESET: &str = "\x1B[0m";

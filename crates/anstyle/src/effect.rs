@@ -159,6 +159,15 @@ impl Effects {
     pub fn render(self) -> impl core::fmt::Display {
         EffectsDisplay(self)
     }
+
+    #[inline]
+    #[cfg(feature = "std")]
+    pub(crate) fn write_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        for index in self.index_iter() {
+            write.write_all(METADATA[index].escape.as_bytes())?;
+        }
+        Ok(())
+    }
 }
 
 /// # Examples

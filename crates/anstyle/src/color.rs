@@ -31,6 +31,17 @@ impl Color {
         }
     }
 
+    #[inline]
+    #[cfg(feature = "std")]
+    pub(crate) fn write_fg_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        let buffer = match self {
+            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_fg_str()),
+            Self::Ansi256(color) => color.as_fg_buffer(),
+            Self::Rgb(color) => color.as_fg_buffer(),
+        };
+        buffer.write_to(write)
+    }
+
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
@@ -42,12 +53,34 @@ impl Color {
     }
 
     #[inline]
+    #[cfg(feature = "std")]
+    pub(crate) fn write_bg_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        let buffer = match self {
+            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_bg_str()),
+            Self::Ansi256(color) => color.as_bg_buffer(),
+            Self::Rgb(color) => color.as_bg_buffer(),
+        };
+        buffer.write_to(write)
+    }
+
+    #[inline]
     pub(crate) fn render_underline(self) -> impl core::fmt::Display {
         match self {
             Self::Ansi(color) => color.as_underline_buffer(),
             Self::Ansi256(color) => color.as_underline_buffer(),
             Self::Rgb(color) => color.as_underline_buffer(),
         }
+    }
+
+    #[inline]
+    #[cfg(feature = "std")]
+    pub(crate) fn write_underline_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        let buffer = match self {
+            Self::Ansi(color) => color.as_underline_buffer(),
+            Self::Ansi256(color) => color.as_underline_buffer(),
+            Self::Rgb(color) => color.as_underline_buffer(),
+        };
+        buffer.write_to(write)
     }
 }
 
@@ -616,6 +649,12 @@ impl DisplayBuffer {
     fn as_str(&self) -> &str {
         // SAFETY: Only `&str` can be written to the buffer
         unsafe { core::str::from_utf8_unchecked(&self.buffer[0..self.len]) }
+    }
+
+    #[inline]
+    #[cfg(feature = "std")]
+    fn write_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
+        write.write_all(self.as_str().as_bytes())
     }
 }
 
