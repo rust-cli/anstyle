@@ -1,5 +1,7 @@
 //! ANSI Text Styling
 //!
+//! *A portmanteau of "ansi style"*
+//!
 //! `anstyle` provides core types describing [ANSI styling escape
 //! codes](https://en.wikipedia.org/wiki/ANSI_escape_code) for interoperability
 //! between crates.

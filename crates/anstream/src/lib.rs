@@ -1,5 +1,7 @@
 //! **Auto-adapting [`stdout`] / [`stderr`] streams**
 //!
+//! *A portmanteau of "ansi stream"*
+//!
 //! [`AutoStream`] always accepts [ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code),
 //! adapting to the user's terminal's capabilities.
 //!

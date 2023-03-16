@@ -2,6 +2,8 @@
 
 > A simple cross platform library for writing colored text to a terminal.
 
+*A portmanteau of "ansi stream"*
+
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstream.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstream.svg)](https://crates.io/crates/anstream)
