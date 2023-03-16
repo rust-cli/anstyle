@@ -8,6 +8,12 @@
 ![License](https://img.shields.io/crates/l/anstream.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstream.svg)](https://crates.io/crates/anstream)
 
+Specialized `stdout` and `stderr` that accept ANSI escape codes and adapt them
+based on the terminal's capabilities.
+
+`anstream::adapter::strip_str` may also be of interest on its own for low
+overhead stripping of ANSI escape codes.
+
 ## License
 
 Licensed under either of
