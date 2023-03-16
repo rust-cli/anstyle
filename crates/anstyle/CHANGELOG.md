@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.3.5] - 2023-03-16
+
 ### Performance
 
 - Binary size optimizations
@@ -120,7 +122,8 @@ MSRV updated to 1.64.0
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/rust-cli/anstyle/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/rust-cli/anstyle/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/rust-cli/anstyle/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/rust-cli/anstyle/compare/v0.3.1...v0.3.2
