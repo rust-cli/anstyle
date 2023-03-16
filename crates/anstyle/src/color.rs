@@ -24,37 +24,29 @@ impl Color {
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
-        DisplayColor {
-            color: self,
-            context: ColorContext::Foreground,
+        match self {
+            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_fg_str()),
+            Self::Ansi256(color) => color.as_fg_buffer(),
+            Self::Rgb(color) => color.as_fg_buffer(),
         }
     }
 
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
-        DisplayColor {
-            color: self,
-            context: ColorContext::Background,
+        match self {
+            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_bg_str()),
+            Self::Ansi256(color) => color.as_bg_buffer(),
+            Self::Rgb(color) => color.as_bg_buffer(),
         }
     }
 
     #[inline]
     pub(crate) fn render_underline(self) -> impl core::fmt::Display {
-        DisplayColor {
-            color: self,
-            context: ColorContext::Underline,
-        }
-    }
-}
-
-impl AnsiColorFmt for Color {
-    #[inline]
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
         match self {
-            Self::Ansi(color) => color.ansi_fmt(f, context),
-            Self::Ansi256(color) => color.ansi_fmt(f, context),
-            Self::Rgb(color) => color.ansi_fmt(f, context),
+            Self::Ansi(color) => color.as_underline_buffer(),
+            Self::Ansi256(color) => color.as_underline_buffer(),
+            Self::Rgb(color) => color.as_underline_buffer(),
         }
     }
 }
@@ -184,6 +176,11 @@ impl AnsiColor {
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
+        self.as_fg_str()
+    }
+
+    #[inline]
+    fn as_fg_str(&self) -> &'static str {
         match self {
             Self::Black => escape!("3", "0"),
             Self::Red => escape!("3", "1"),
@@ -207,6 +204,11 @@ impl AnsiColor {
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
+        self.as_bg_str()
+    }
+
+    #[inline]
+    fn as_bg_str(&self) -> &'static str {
         match self {
             Self::Black => escape!("4", "0"),
             Self::Red => escape!("4", "1"),
@@ -228,9 +230,9 @@ impl AnsiColor {
     }
 
     #[inline]
-    pub(crate) fn render_underline(self) -> impl core::fmt::Display {
+    fn as_underline_buffer(&self) -> DisplayBuffer {
         // No per-color codes; must delegate to `Ansi256Color`
-        Ansi256Color::from(self).render_underline()
+        Ansi256Color::from(*self).as_underline_buffer()
     }
 
     /// Change the color to/from bright
@@ -298,16 +300,6 @@ impl AnsiColor {
             Self::BrightMagenta => true,
             Self::BrightCyan => true,
             Self::BrightWhite => true,
-        }
-    }
-}
-
-impl AnsiColorFmt for AnsiColor {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
-        match context {
-            ColorContext::Background => write!(f, "{}", self.render_bg()),
-            ColorContext::Foreground => write!(f, "{}", self.render_fg()),
-            ColorContext::Underline => write!(f, "{}", self.render_underline()),
         }
     }
 }
@@ -406,6 +398,11 @@ impl Ansi256Color {
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
+        self.as_fg_buffer()
+    }
+
+    #[inline]
+    fn as_fg_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[38;5;")
             .write_code(self.index())
@@ -415,6 +412,11 @@ impl Ansi256Color {
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
+        self.as_bg_buffer()
+    }
+
+    #[inline]
+    fn as_bg_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[48;5;")
             .write_code(self.index())
@@ -422,21 +424,11 @@ impl Ansi256Color {
     }
 
     #[inline]
-    pub(crate) fn render_underline(self) -> impl core::fmt::Display {
+    fn as_underline_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[58;5;")
             .write_code(self.index())
             .write_str("m")
-    }
-}
-
-impl AnsiColorFmt for Ansi256Color {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
-        match context {
-            ColorContext::Background => write!(f, "{}", self.render_bg()),
-            ColorContext::Foreground => write!(f, "{}", self.render_fg()),
-            ColorContext::Underline => write!(f, "{}", self.render_underline()),
-        }
     }
 }
 
@@ -508,6 +500,11 @@ impl RgbColor {
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display {
+        self.as_fg_buffer()
+    }
+
+    #[inline]
+    fn as_fg_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[38;2;")
             .write_code(self.r())
@@ -521,6 +518,11 @@ impl RgbColor {
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display {
+        self.as_bg_buffer()
+    }
+
+    #[inline]
+    fn as_bg_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[48;2;")
             .write_code(self.r())
@@ -532,7 +534,7 @@ impl RgbColor {
     }
 
     #[inline]
-    pub(crate) fn render_underline(self) -> impl core::fmt::Display {
+    fn as_underline_buffer(&self) -> DisplayBuffer {
         DisplayBuffer::default()
             .write_str("\x1B[58;2;")
             .write_code(self.r())
@@ -541,16 +543,6 @@ impl RgbColor {
             .write_str(";")
             .write_code(self.b())
             .write_str("m")
-    }
-}
-
-impl AnsiColorFmt for RgbColor {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result {
-        match context {
-            ColorContext::Background => write!(f, "{}", self.render_bg()),
-            ColorContext::Foreground => write!(f, "{}", self.render_fg()),
-            ColorContext::Underline => write!(f, "{}", self.render_underline()),
-        }
     }
 }
 
@@ -576,30 +568,6 @@ impl core::ops::BitOr<crate::Effects> for RgbColor {
     #[inline(always)]
     fn bitor(self, rhs: crate::Effects) -> Self::Output {
         crate::Style::new().fg_color(Some(self.into())) | rhs
-    }
-}
-
-#[derive(Copy, Clone)]
-pub(crate) enum ColorContext {
-    Background,
-    Foreground,
-    Underline,
-}
-
-trait AnsiColorFmt {
-    fn ansi_fmt(&self, f: &mut dyn core::fmt::Write, context: ColorContext) -> core::fmt::Result;
-}
-
-struct DisplayColor<C: AnsiColorFmt> {
-    color: C,
-    context: ColorContext,
-}
-
-impl<C: AnsiColorFmt> core::fmt::Display for DisplayColor<C> {
-    #[inline]
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.color.ansi_fmt(f, self.context)?;
-        Ok(())
     }
 }
 
@@ -655,5 +623,17 @@ impl core::fmt::Display for DisplayBuffer {
     #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         self.as_str().fmt(f)
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn max_display_buffer() {
+        let c = RgbColor(255, 255, 255);
+        let actual = c.render_fg().to_string();
+        assert_eq!(actual, "\u{1b}[38;2;255;255;255m");
     }
 }
