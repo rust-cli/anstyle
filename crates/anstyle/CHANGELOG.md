@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- `Color::on_default` for more explicit color to style conversion
+
 ## [0.3.2] - 2023-03-16
 
 ### Documentation
