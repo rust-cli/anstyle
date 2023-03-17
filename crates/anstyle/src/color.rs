@@ -611,8 +611,8 @@ struct DisplayBuffer {
 }
 
 impl DisplayBuffer {
-    #[inline]
     #[must_use]
+    #[inline(never)]
     fn write_str(mut self, part: &'static str) -> Self {
         for (i, b) in part.as_bytes().iter().enumerate() {
             self.buffer[self.len + i] = *b;
@@ -621,8 +621,8 @@ impl DisplayBuffer {
         self
     }
 
-    #[inline]
     #[must_use]
+    #[inline(never)]
     fn write_code(mut self, code: u8) -> Self {
         let c1: u8 = (code / 100) % 10;
         let c2: u8 = (code / 10) % 10;
