@@ -29,7 +29,7 @@
       "commitMessageTopic": "MSRV",
       "matchManagers": ["regex"],
       "matchPackageNames": ["rust"],
-      "stabilityDays": 126,  // 3 releases * 6 weeks per release * 7 days per week
+      "stabilityDays": 252,  // 6 releases * 6 weeks per release * 7 days per week
     },
     // Goals:
     // - Keep version reqs low, ignoring compatible normal/build dependencies
