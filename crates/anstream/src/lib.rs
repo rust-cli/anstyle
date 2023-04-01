@@ -10,6 +10,12 @@
 //! - Semver safe way of passing styled text between crates as ANSI escape codes offer more
 //!   compatibility than most crate APIs.
 //!
+//! Available styling crates:
+//! - [anstyle](https://docs.rs/anstyle) for minimal runtime styling, designed to go in public APIs
+//!   (once it hits 1.0)
+//! - [owo-colors](https://docs.rs/owo-colors) for feature-rich runtime styling
+//! - [color-print](https://docs.rs/color-print) for feature-rich compile-time styling
+//!
 //! # Example
 //!
 //! ```
