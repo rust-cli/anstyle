@@ -5,7 +5,7 @@
 //!
 //! ```rust
 //! let style = anstyle_ls::parse("34;03").unwrap();
-//! assert_eq!(style, anstyle::AnsiColor::Blue | anstyle::Effects::ITALIC);
+//! assert_eq!(style, anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::ITALIC);
 //! ```
 
 mod sealed {
@@ -188,12 +188,12 @@ mod tests {
 
     #[test]
     fn parse_simple() {
-        assert_style("31", anstyle::AnsiColor::Red);
+        assert_style("31", anstyle::AnsiColor::Red.on_default());
         assert_style(
             "47",
             anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::White.into())),
         );
-        assert_style("91", anstyle::AnsiColor::BrightRed);
+        assert_style("91", anstyle::AnsiColor::BrightRed.on_default());
         assert_style(
             "107",
             anstyle::Style::new().bg_color(Some(anstyle::AnsiColor::BrightWhite.into())),
@@ -213,42 +213,60 @@ mod tests {
 
     #[test]
     fn parse_font_style() {
-        assert_style("00;31", anstyle::AnsiColor::Red);
-        assert_style("03;34", anstyle::AnsiColor::Blue | anstyle::Effects::ITALIC);
-        assert_style("06;34", anstyle::AnsiColor::Blue | anstyle::Effects::BLINK);
-        assert_style("01;36", anstyle::AnsiColor::Cyan | anstyle::Effects::BOLD);
+        assert_style("00;31", anstyle::AnsiColor::Red.on_default());
+        assert_style(
+            "03;34",
+            anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::ITALIC,
+        );
+        assert_style(
+            "06;34",
+            anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::BLINK,
+        );
+        assert_style(
+            "01;36",
+            anstyle::AnsiColor::Cyan.on_default() | anstyle::Effects::BOLD,
+        );
         assert_style("01;03", anstyle::Effects::BOLD | anstyle::Effects::ITALIC);
     }
 
     #[test]
     fn ignore_unsupported_styles() {
-        assert_style("14;31", anstyle::AnsiColor::Red);
+        assert_style("14;31", anstyle::AnsiColor::Red.on_default());
     }
 
     #[test]
     fn support_reset_of_styles() {
-        assert_style("01;31", anstyle::AnsiColor::Red | anstyle::Effects::BOLD);
-        assert_style("01;31;22", anstyle::AnsiColor::Red);
+        assert_style(
+            "01;31",
+            anstyle::AnsiColor::Red.on_default() | anstyle::Effects::BOLD,
+        );
+        assert_style("01;31;22", anstyle::AnsiColor::Red.on_default());
     }
 
     #[test]
     fn parse_font_style_backwards() {
-        assert_style("34;03", anstyle::AnsiColor::Blue | anstyle::Effects::ITALIC);
-        assert_style("36;01", anstyle::AnsiColor::Cyan | anstyle::Effects::BOLD);
+        assert_style(
+            "34;03",
+            anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::ITALIC,
+        );
+        assert_style(
+            "36;01",
+            anstyle::AnsiColor::Cyan.on_default() | anstyle::Effects::BOLD,
+        );
         assert_style("31;00", anstyle::Style::new());
     }
 
     #[test]
     fn parse_8_bit_colors() {
-        assert_style("38;5;115", anstyle::Ansi256Color(115));
-        assert_style("00;38;5;115", anstyle::Ansi256Color(115));
+        assert_style("38;5;115", anstyle::Ansi256Color(115).on_default());
+        assert_style("00;38;5;115", anstyle::Ansi256Color(115).on_default());
         assert_style(
             "01;38;5;119",
-            anstyle::Ansi256Color(119) | anstyle::Effects::BOLD,
+            anstyle::Ansi256Color(119).on_default() | anstyle::Effects::BOLD,
         );
         assert_style(
             "38;5;119;01",
-            anstyle::Ansi256Color(119) | anstyle::Effects::BOLD,
+            anstyle::Ansi256Color(119).on_default() | anstyle::Effects::BOLD,
         );
         assert_style(
             "58;5;115",
@@ -267,10 +285,13 @@ mod tests {
 
     #[test]
     fn parse_24_bit_colors() {
-        assert_style("38;2;115;3;100", anstyle::RgbColor(115, 3, 100));
+        assert_style(
+            "38;2;115;3;100",
+            anstyle::RgbColor(115, 3, 100).on_default(),
+        );
         assert_style(
             "38;2;115;3;100;3",
-            anstyle::RgbColor(115, 3, 100) | anstyle::Effects::ITALIC,
+            anstyle::RgbColor(115, 3, 100).on_default() | anstyle::Effects::ITALIC,
         );
         assert_style(
             "48;2;100;200;0;1;38;2;0;10;20",
