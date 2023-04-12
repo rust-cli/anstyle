@@ -64,6 +64,10 @@ When we're ready to release, a project owner should do the following
 2. Determine what the next version is, according to semver
 3. Run [`cargo release -x <level>`](https://github.com/crate-ci/cargo-release)
 
+## Resources
+
+- [HN post on syntax history](https://news.ycombinator.com/item?id=35137153#35157058)
+
 [issues]: https://github.com/rust-cli/anstyle/issues
 [new issue]: https://github.com/rust-cli/anstyle/issues/new
 [all issues]: https://github.com/rust-cli/anstyle/issues?utf8=%E2%9C%93&q=is%3Aissue
