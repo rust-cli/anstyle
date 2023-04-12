@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Updated `anstyle`
+
 ## [0.2.0] - 2023-03-13
 
 ### Breaking Chaneg

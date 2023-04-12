@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Removed APIs that assume a color is a foreground color
+  - See instead `Color::on_default`
+
 ## [0.3.5] - 2023-03-16
 
 ### Performance
