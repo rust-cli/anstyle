@@ -8,7 +8,7 @@
 //! assert_eq!(style, anstyle::AnsiColor::Red.on(anstyle::AnsiColor::Blue) | anstyle::Effects::BOLD);
 //!
 //! let hyperlink_style = anstyle_git::parse("#0000ee ul").unwrap();
-//! assert_eq!(hyperlink_style, anstyle::RgbColor(0x00, 0x00, 0xee) | anstyle::Effects::UNDERLINE);
+//! assert_eq!(hyperlink_style, anstyle::RgbColor(0x00, 0x00, 0xee).on_default() | anstyle::Effects::UNDERLINE);
 //! ```
 
 mod sealed {
@@ -195,7 +195,7 @@ mod tests {
         test!("normal" => Style::new());
         test!("normal normal" => Style::new());
         test!("-1 normal" => Style::new());
-        test!("red" => Red);
+        test!("red" => Red.on_default());
         test!("red blue" => Red.on(Blue));
         test!("   red blue   " => Red.on(Blue));
         test!("red\tblue" => Red.on(Blue));
@@ -205,14 +205,14 @@ mod tests {
         test!("yellow green" => Yellow.on(Green));
         test!("white magenta" => White.on(Magenta));
         test!("black cyan" => Black.on(Cyan));
-        test!("red normal" => Red);
+        test!("red normal" => Red.on_default());
         test!("normal red" => Style::new().bg_color(Some(Red.into())));
-        test!("0" => Ansi256Color(0));
+        test!("0" => Ansi256Color(0).on_default());
         test!("8 3" => Ansi256Color(8).on(Ansi256Color(3)));
-        test!("255" => Ansi256Color(255));
-        test!("255 -1" => Ansi256Color(255));
-        test!("#000000" => RgbColor(0,0,0));
-        test!("#204060" => RgbColor(0x20,0x40,0x60));
+        test!("255" => Ansi256Color(255).on_default());
+        test!("255 -1" => Ansi256Color(255).on_default());
+        test!("#000000" => RgbColor(0,0,0).on_default());
+        test!("#204060" => RgbColor(0x20,0x40,0x60).on_default());
 
         test!("bold cyan white" => Cyan.on(White).bold());
         test!("bold cyan nobold white" => Cyan.on(White));
