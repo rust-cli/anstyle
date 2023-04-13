@@ -58,7 +58,7 @@ where
         #[cfg(feature = "auto")]
         {
             if raw.is_terminal() {
-                let _ = concolor_query::windows::enable_ansi_colors();
+                let _ = anstyle_query::windows::enable_ansi_colors();
             }
         }
         Self::always_ansi_(raw)
@@ -76,8 +76,8 @@ where
         if cfg!(windows) {
             #[cfg(feature = "auto")]
             let use_wincon = raw.is_terminal()
-                && !concolor_query::windows::enable_ansi_colors().unwrap_or(true)
-                && !concolor_query::term_supports_ansi_color();
+                && !anstyle_query::windows::enable_ansi_colors().unwrap_or(true)
+                && !anstyle_query::term_supports_ansi_color();
             #[cfg(not(feature = "auto"))]
             let use_wincon = true;
             if use_wincon {
@@ -137,19 +137,19 @@ where
 
 #[cfg(feature = "auto")]
 fn choice(raw: &dyn RawStream) -> ColorChoice {
-    let choice = concolor_override::get();
+    let choice = ColorChoice::global();
     match choice {
         ColorChoice::Auto => {
-            let clicolor = concolor_query::clicolor();
+            let clicolor = anstyle_query::clicolor();
             let clicolor_enabled = clicolor.unwrap_or(false);
             let clicolor_disabled = !clicolor.unwrap_or(true);
             if raw.is_terminal()
-                && !concolor_query::no_color()
+                && !anstyle_query::no_color()
                 && !clicolor_disabled
-                && (concolor_query::term_supports_color()
+                && (anstyle_query::term_supports_color()
                     || clicolor_enabled
-                    || concolor_query::is_ci())
-                || concolor_query::clicolor_force()
+                    || anstyle_query::is_ci())
+                || anstyle_query::clicolor_force()
             {
                 ColorChoice::Always
             } else {
