@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-termcolor"
-version = "0.3.0"
+version = "1.0.0"
 description = "Adapt between termcolor and anstyle"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
