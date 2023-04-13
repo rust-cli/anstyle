@@ -24,7 +24,7 @@ dependencies = [
  "anstyle 1.0.0",
  "anstyle-parse 0.2.0",
  "anstyle-query",
- "anstyle-wincon 0.2.0",
+ "anstyle-wincon 1.0.0",
  "colorchoice",
  "criterion",
  "is-terminal",
@@ -42,7 +42,7 @@ checksum = "342258dd14006105c2b75ab1bd7543a03bdf0cfc94383303ac212a04939dff6f"
 dependencies = [
  "anstyle 0.3.5",
  "anstyle-parse 0.1.1",
- "anstyle-wincon 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-wincon 0.2.0",
  "concolor-override",
  "concolor-query",
  "is-terminal",
@@ -166,20 +166,20 @@ dependencies = [
 [[package]]
 name = "anstyle-wincon"
 version = "0.2.0"
-dependencies = [
- "anstyle 1.0.0",
- "lexopt",
- "windows-sys 0.48.0",
-]
-
-[[package]]
-name = "anstyle-wincon"
-version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3127af6145b149f3287bb9a0d10ad9c5692dba8c53ad48285e5bec4063834fa"
 dependencies = [
  "anstyle 0.3.5",
  "windows-sys 0.45.0",
+]
+
+[[package]]
+name = "anstyle-wincon"
+version = "1.0.0"
+dependencies = [
+ "anstyle 1.0.0",
+ "lexopt",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
