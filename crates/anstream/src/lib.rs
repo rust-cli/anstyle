@@ -74,12 +74,6 @@ pub fn stderr() -> AutoStream<std::io::Stderr> {
     AutoStream::auto(stderr)
 }
 
-/// Selection for overriding color output with [`force_color`]
+/// Selection for overriding color output
 #[cfg(feature = "auto")]
-pub use concolor_override::ColorChoice;
-
-/// Override the detected [`ColorChoice`]
-#[cfg(feature = "auto")]
-pub fn force_color(choice: ColorChoice) {
-    concolor_override::set(choice);
-}
+pub use colorchoice::ColorChoice;
