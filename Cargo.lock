@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-ansi-term"
-version = "0.2.0"
+version = "1.0.0"
 dependencies = [
  "ansi_term",
  "anstyle 1.0.0",
