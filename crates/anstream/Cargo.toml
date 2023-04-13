@@ -30,7 +30,7 @@ auto = ["dep:anstyle-query", "dep:colorchoice", "dep:is-terminal"]
 wincon = ["dep:anstyle-wincon"]
 
 [dependencies]
-anstyle = { version = "0.3.0", path = "../anstyle" }
+anstyle = { version = "1.0.0", path = "../anstyle" }
 anstyle-parse = { version = "0.1.0", path = "../anstyle-parse" }
 colorchoice = { version = "1.0.0", path = "../colorchoice", optional = true }
 anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }

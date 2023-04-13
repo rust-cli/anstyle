@@ -21,7 +21,7 @@ dependencies = [
 name = "anstream"
 version = "0.2.6"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "anstyle-parse 0.1.1",
  "anstyle-query",
  "anstyle-wincon 0.2.0",
@@ -40,7 +40,7 @@ version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "342258dd14006105c2b75ab1bd7543a03bdf0cfc94383303ac212a04939dff6f"
 dependencies = [
- "anstyle 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle 0.3.5",
  "anstyle-parse 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "anstyle-wincon 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "concolor-override",
@@ -52,29 +52,29 @@ dependencies = [
 [[package]]
 name = "anstyle"
 version = "0.3.5"
-dependencies = [
- "lexopt",
-]
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23ea9e81bd02e310c216d080f6223c179012256e5151c41db88d12c88a1684d2"
 
 [[package]]
 name = "anstyle"
-version = "0.3.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23ea9e81bd02e310c216d080f6223c179012256e5151c41db88d12c88a1684d2"
+version = "1.0.0"
+dependencies = [
+ "lexopt",
+]
 
 [[package]]
 name = "anstyle-ansi-term"
 version = "0.2.0"
 dependencies = [
  "ansi_term",
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
 ]
 
 [[package]]
 name = "anstyle-crossterm"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "crossterm",
 ]
 
@@ -82,28 +82,28 @@ dependencies = [
 name = "anstyle-git"
 version = "0.3.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
 ]
 
 [[package]]
 name = "anstyle-lossy"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
 ]
 
 [[package]]
 name = "anstyle-ls"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
 version = "0.3.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "owo-colors",
 ]
 
@@ -140,7 +140,7 @@ dependencies = [
 name = "anstyle-roff"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "anstyle-lossy",
  "cansi",
  "roff",
@@ -151,7 +151,7 @@ dependencies = [
 name = "anstyle-syntect"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "syntect",
 ]
 
@@ -159,7 +159,7 @@ dependencies = [
 name = "anstyle-termcolor"
 version = "0.3.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "termcolor",
 ]
 
@@ -167,7 +167,7 @@ dependencies = [
 name = "anstyle-wincon"
 version = "0.2.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "lexopt",
  "windows-sys 0.48.0",
 ]
@@ -178,7 +178,7 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3127af6145b149f3287bb9a0d10ad9c5692dba8c53ad48285e5bec4063834fa"
 dependencies = [
- "anstyle 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle 0.3.5",
  "windows-sys 0.45.0",
 ]
 
@@ -186,7 +186,7 @@ dependencies = [
 name = "anstyle-yansi"
 version = "0.3.0"
 dependencies = [
- "anstyle 0.3.5",
+ "anstyle 1.0.0",
  "yansi",
 ]
 
@@ -1209,7 +1209,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9615402f9cff539301119bdf2c2f328739cf2b45c2116666618fb6ac399f75bb"
 dependencies = [
  "anstream 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "anstyle 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle 0.3.5",
  "content_inspector",
  "dunce",
  "filetime",
