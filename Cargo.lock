@@ -22,7 +22,7 @@ name = "anstream"
 version = "0.2.6"
 dependencies = [
  "anstyle 1.0.0",
- "anstyle-parse 0.1.1",
+ "anstyle-parse 0.2.0",
  "anstyle-query",
  "anstyle-wincon 0.2.0",
  "colorchoice",
@@ -41,7 +41,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "342258dd14006105c2b75ab1bd7543a03bdf0cfc94383303ac212a04939dff6f"
 dependencies = [
  "anstyle 0.3.5",
- "anstyle-parse 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-parse 0.1.1",
  "anstyle-wincon 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "concolor-override",
  "concolor-query",
@@ -110,6 +110,15 @@ dependencies = [
 [[package]]
 name = "anstyle-parse"
 version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a7d1bb534e9efed14f3e5f44e7dd1a4f709384023a4165199a4241e18dff0116"
+dependencies = [
+ "utf8parse",
+]
+
+[[package]]
+name = "anstyle-parse"
+version = "0.2.0"
 dependencies = [
  "arrayvec 0.7.2",
  "codegenrs",
@@ -118,15 +127,6 @@ dependencies = [
  "snapbox",
  "utf8parse",
  "vte_generate_state_changes",
-]
-
-[[package]]
-name = "anstyle-parse"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7d1bb534e9efed14f3e5f44e7dd1a4f709384023a4165199a4241e18dff0116"
-dependencies = [
- "utf8parse",
 ]
 
 [[package]]
