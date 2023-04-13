@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.0] - 2023-04-13
+
 ### Breaking Change
 
 - Updated `anstyle`
@@ -22,7 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v0.2.0...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.0...HEAD
+[1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v0.2.0...anstyle-syntect-v1.0.0
 [0.2.0]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v0.1.2...anstyle-syntect-v0.2.0
 [0.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v0.1.1...anstyle-syntect-v0.1.2
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/eedb6bfa9b9dc932e9046d122eb0ef314184e013...anstyle-syntect-v0.1.1
