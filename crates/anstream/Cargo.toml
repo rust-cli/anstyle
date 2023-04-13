@@ -33,7 +33,7 @@ wincon = ["dep:anstyle-wincon"]
 anstyle = { version = "0.3.0", path = "../anstyle" }
 anstyle-parse = { version = "0.1.0", path = "../anstyle-parse" }
 colorchoice = { version = "1.0.0", path = "../colorchoice", optional = true }
-anstyle-query = { version = "0.1.0", path = "../anstyle-query", optional = true }
+anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }
 is-terminal = { version = "0.4.4", optional = true }
 utf8parse = "0.2.1"
 

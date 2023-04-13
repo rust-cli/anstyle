@@ -131,7 +131,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-query"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "windows-sys 0.48.0",
 ]
