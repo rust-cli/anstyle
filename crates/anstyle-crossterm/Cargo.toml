@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-crossterm"
-version = "0.2.0"
+version = "1.0.0"
 description = "Adapt between crossterm and anstyle"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
