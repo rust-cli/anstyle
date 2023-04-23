@@ -34,7 +34,7 @@ anstyle = { version = "1.0.0", path = "../anstyle" }
 anstyle-parse = { version = "0.2.0", path = "../anstyle-parse" }
 colorchoice = { version = "1.0.0", path = "../colorchoice", optional = true }
 anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }
-is-terminal = { version = "0.4.4", optional = true }
+is-terminal = { version = "0.4.6", optional = true }
 utf8parse = "0.2.1"
 
 [target.'cfg(windows)'.dependencies]
