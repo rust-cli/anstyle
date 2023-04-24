@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- `std::fs::File` support (writes ANSI to it)
+
 ## [1.0.0] - 2023-04-13
 
 ### Breaking Change
