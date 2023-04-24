@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.3.1] - 2023-04-24
+
 ### Features
 
 - `std::fs::File` support as a `RawStream`, allowing stripping content written to a file
@@ -104,7 +106,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.3.0...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.3.1...HEAD
+[0.3.1]: https://github.com/rust-cli/anstyle/compare/anstream-v0.3.0...anstream-v0.3.1
 [0.3.0]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.6...anstream-v0.3.0
 [0.2.6]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.5...anstream-v0.2.6
 [0.2.5]: https://github.com/rust-cli/anstyle/compare/anstream-v0.2.4...anstream-v0.2.5

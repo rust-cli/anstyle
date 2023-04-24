@@ -34,12 +34,12 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "anstyle 1.0.0",
  "anstyle-parse 0.2.0",
  "anstyle-query",
- "anstyle-wincon 1.0.0",
+ "anstyle-wincon 1.0.1",
  "colorchoice",
  "criterion",
  "is-terminal",
@@ -175,7 +175,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "anstyle 1.0.0",
  "lexopt",
