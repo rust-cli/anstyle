@@ -82,8 +82,24 @@ impl<'s> WinconStream for std::io::StderrLock<'s> {
     }
 }
 
+impl WinconStream for std::fs::File {
+    fn set_colors(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        ansi::set_colors(self, fg, bg)
+    }
+
+    fn get_colors(
+        &self,
+    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        ansi::get_colors(self)
+    }
+}
+
 #[cfg(windows)]
-mod inner {
+mod wincon {
     use std::os::windows::io::{AsHandle, AsRawHandle};
 
     pub(super) fn set_colors<S: AsHandle>(
@@ -112,8 +128,7 @@ mod inner {
     }
 }
 
-#[cfg(not(windows))]
-mod inner {
+mod ansi {
     pub(super) fn set_colors<S: std::io::Write>(
         stream: &mut S,
         fg: Option<anstyle::AnsiColor>,
@@ -137,3 +152,8 @@ mod inner {
         Ok((None, None))
     }
 }
+
+#[cfg(not(windows))]
+use ansi as inner;
+#[cfg(windows)]
+use wincon as inner;

@@ -25,6 +25,8 @@ impl RawStream for std::io::Stderr {}
 
 impl RawStream for std::io::StderrLock<'static> {}
 
+impl RawStream for std::fs::File {}
+
 impl RawStream for crate::Buffer {}
 
 mod private {
@@ -37,6 +39,8 @@ mod private {
     impl Sealed for std::io::Stderr {}
 
     impl Sealed for std::io::StderrLock<'static> {}
+
+    impl Sealed for std::fs::File {}
 
     impl Sealed for crate::Buffer {}
 }
