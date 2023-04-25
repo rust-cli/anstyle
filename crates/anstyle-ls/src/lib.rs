@@ -24,7 +24,7 @@ impl Ext for anstyle::Style {
     }
 }
 
-/// Parse a string in Git's color configuration syntax into an
+/// Parse a string in `LS_COLORS`'s color configuration syntax into an
 /// `ansi_term::Style`.
 pub fn parse(code: &str) -> Option<anstyle::Style> {
     if code.is_empty() || code == "0" || code == "00" {
