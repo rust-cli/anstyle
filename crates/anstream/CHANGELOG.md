@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Reference needed `anstyle-wincon` version
+
 ## [0.3.1] - 2023-04-24
 
 ### Features
