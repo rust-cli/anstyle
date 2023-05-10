@@ -345,6 +345,7 @@ dependencies = [
  "anstyle 1.0.0",
  "bitflags",
  "clap_lex 0.5.0",
+ "strsim",
 ]
 
 [[package]]
@@ -399,8 +400,10 @@ checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 name = "colorchoice-clap"
 version = "1.0.1"
 dependencies = [
+ "anstream 0.3.2",
  "clap 4.3.5",
  "colorchoice 1.0.0",
+ "owo-colors",
 ]
 
 [[package]]
@@ -1214,6 +1217,12 @@ checksum = "011cbb39cf7c1f62871aea3cc46e5817b0937b49e9447370c93cacbe93a766d8"
 dependencies = [
  "vte",
 ]
+
+[[package]]
+name = "strsim"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "syn"
