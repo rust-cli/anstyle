@@ -21,4 +21,4 @@ pre-release-replacements = [
 
 [dependencies]
 colorchoice = { version = "1.0.0", path = "../colorchoice", default-features = false }
-clap = { version = "4.0.0", default-features = false, features = ["std", "derive"] }
+clap = { version = "4.3.5", default-features = false, features = ["std", "derive", "color"] }
