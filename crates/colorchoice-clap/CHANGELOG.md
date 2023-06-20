@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Better interop with clap by reusing `clap::ColorChoice`
+
 ## [1.0.0] - 2023-04-13
 
 <!-- next-url -->
