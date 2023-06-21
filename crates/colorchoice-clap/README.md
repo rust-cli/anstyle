@@ -1,6 +1,6 @@
 # colorchoice-clap
 
-> **Convenience helper for working with `clap`**
+> **Convenience helper for working with `clap` to override console colors**
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/colorchoice-clap.svg)

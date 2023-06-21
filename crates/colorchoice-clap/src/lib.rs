@@ -2,13 +2,25 @@
 //!
 //! ## Examples
 //!
-//! ```rust
-//! // ...
-//! #[derive(Debug, clap::Parser)]
+//! To get `--color` through your entire program, just `flatten` [`Color`]
+//! and use it to configure your formatter:
+//!
+//! ```rust,no_run
+//! use clap::Parser;
+//! use owo_colors::OwoColorize as _;
+//!
+//! /// Le CLI
+//! #[derive(Debug, Parser)]
 //! struct Cli {
 //!     #[command(flatten)]
 //!     color: colorchoice_clap::Color,
 //! }
+//!
+//! let cli = Cli::parse();
+//!
+//! cli.color.write_global();
+//!
+//! anstream::println!("Hello, {}!", "world".red());
 //! ```
 
 pub use clap::ColorChoice;
