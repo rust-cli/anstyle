@@ -598,6 +598,7 @@ impl core::fmt::Display for DisplayBuffer {
 }
 
 #[cfg(test)]
+#[cfg(feature = "std")]
 mod test {
     use super::*;
 
