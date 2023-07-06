@@ -76,14 +76,14 @@ fn ansi_to_owo_colors_color(color: anstyle::AnsiColor) -> owo_colors::colored::C
         anstyle::AnsiColor::Magenta => owo_colors::colored::Color::Magenta,
         anstyle::AnsiColor::Cyan => owo_colors::colored::Color::Cyan,
         anstyle::AnsiColor::White => owo_colors::colored::Color::White,
-        anstyle::AnsiColor::BrightBlack => owo_colors::colored::Color::Black,
-        anstyle::AnsiColor::BrightRed => owo_colors::colored::Color::Red,
-        anstyle::AnsiColor::BrightGreen => owo_colors::colored::Color::Green,
-        anstyle::AnsiColor::BrightYellow => owo_colors::colored::Color::Yellow,
-        anstyle::AnsiColor::BrightBlue => owo_colors::colored::Color::Black,
-        anstyle::AnsiColor::BrightMagenta => owo_colors::colored::Color::Magenta,
-        anstyle::AnsiColor::BrightCyan => owo_colors::colored::Color::Cyan,
-        anstyle::AnsiColor::BrightWhite => owo_colors::colored::Color::White,
+        anstyle::AnsiColor::BrightBlack => owo_colors::colored::Color::BrightBlack,
+        anstyle::AnsiColor::BrightRed => owo_colors::colored::Color::BrightRed,
+        anstyle::AnsiColor::BrightGreen => owo_colors::colored::Color::BrightGreen,
+        anstyle::AnsiColor::BrightYellow => owo_colors::colored::Color::BrightYellow,
+        anstyle::AnsiColor::BrightBlue => owo_colors::colored::Color::BrightBlue,
+        anstyle::AnsiColor::BrightMagenta => owo_colors::colored::Color::BrightMagenta,
+        anstyle::AnsiColor::BrightCyan => owo_colors::colored::Color::BrightCyan,
+        anstyle::AnsiColor::BrightWhite => owo_colors::colored::Color::BrightWhite,
     }
 }
 
