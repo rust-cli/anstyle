@@ -103,6 +103,75 @@ impl WinconStream for std::fs::File {
     }
 }
 
+/// Write colored text to the screen
+#[derive(Clone, Debug)]
+pub(crate) struct ConsoleState {
+    initial_fg: Option<anstyle::AnsiColor>,
+    initial_bg: Option<anstyle::AnsiColor>,
+    last_fg: Option<anstyle::AnsiColor>,
+    last_bg: Option<anstyle::AnsiColor>,
+}
+
+impl ConsoleState {
+    pub(crate) fn new<S: crate::WinconStream + std::io::Write>(
+        stream: &S,
+    ) -> std::io::Result<Self> {
+        let (initial_fg, initial_bg) = match stream.get_colors() {
+            Ok(ok) => ok,
+            Err(err) => {
+                return Err(err);
+            }
+        };
+        Ok(Self {
+            initial_fg,
+            initial_bg,
+            last_fg: initial_fg,
+            last_bg: initial_bg,
+        })
+    }
+
+    pub(crate) fn write<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        self.apply(stream, fg, bg)?;
+        let written = stream.write(data)?;
+        Ok(written)
+    }
+
+    pub(crate) fn reset<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+    ) -> std::io::Result<()> {
+        self.apply(stream, self.initial_fg, self.initial_bg)
+    }
+
+    fn apply<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        let fg = fg.or(self.initial_fg);
+        let bg = bg.or(self.initial_bg);
+        if fg == self.last_fg && bg == self.last_bg {
+            return Ok(());
+        }
+
+        // Ensure everything is written with the last set of colors before applying the next set
+        stream.flush()?;
+
+        stream.set_colors(fg, bg)?;
+        self.last_fg = fg;
+        self.last_bg = bg;
+
+        Ok(())
+    }
+}
+
 #[cfg(windows)]
 mod wincon {
     use std::os::windows::io::AsHandle;
