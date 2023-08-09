@@ -13,7 +13,7 @@ include.workspace = true
 
 [package.metadata.docs.rs]
 rustdoc-args = ["--cfg", "docsrs"]
-features = ["unstable-doc"]
+features = []
 targets = ["x86_64-pc-windows-msvc"]
 
 [package.metadata.release]
