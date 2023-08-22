@@ -36,7 +36,7 @@ impl Lockable for anstyle_wincon::Console<std::io::Stdout> {
 
     #[inline]
     fn lock(self) -> Self::Locked {
-        self.map(|s| s.lock())
+        self.lock()
     }
 }
 
@@ -46,6 +46,6 @@ impl Lockable for anstyle_wincon::Console<std::io::Stderr> {
 
     #[inline]
     fn lock(self) -> Self::Locked {
-        self.map(|s| s.lock())
+        self.lock()
     }
 }
