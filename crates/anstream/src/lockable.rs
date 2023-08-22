@@ -1,6 +1,3 @@
-#[cfg(all(windows, feature = "wincon"))]
-use crate::RawStream;
-
 /// Explicitly lock a [`std::io::Write`]able
 pub trait Lockable {
     type Locked;
