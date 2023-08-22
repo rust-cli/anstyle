@@ -79,7 +79,7 @@ where
 }
 
 impl Lockable for WinconStream<std::io::Stdout> {
-    type Locked = WinconStream<<std::io::Stdout as Lockable>::Locked>;
+    type Locked = WinconStream<std::io::StdoutLock<'static>>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
@@ -91,7 +91,7 @@ impl Lockable for WinconStream<std::io::Stdout> {
 }
 
 impl Lockable for WinconStream<std::io::Stderr> {
-    type Locked = WinconStream<<std::io::Stderr as Lockable>::Locked>;
+    type Locked = WinconStream<std::io::StderrLock<'static>>;
 
     #[inline]
     fn lock(self) -> Self::Locked {

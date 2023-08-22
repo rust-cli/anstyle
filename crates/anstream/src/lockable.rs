@@ -32,7 +32,7 @@ impl Lockable for std::io::Stderr {
 
 #[cfg(all(windows, feature = "wincon"))]
 impl Lockable for anstyle_wincon::Console<std::io::Stdout> {
-    type Locked = anstyle_wincon::Console<<std::io::Stdout as Lockable>::Locked>;
+    type Locked = anstyle_wincon::Console<std::io::StdoutLock<'static>>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
@@ -42,7 +42,7 @@ impl Lockable for anstyle_wincon::Console<std::io::Stdout> {
 
 #[cfg(all(windows, feature = "wincon"))]
 impl Lockable for anstyle_wincon::Console<std::io::Stderr> {
-    type Locked = anstyle_wincon::Console<<std::io::Stderr as Lockable>::Locked>;
+    type Locked = anstyle_wincon::Console<std::io::StderrLock<'static>>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
