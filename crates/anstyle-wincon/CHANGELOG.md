@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Removed support for non-static locked streams
+- Removed `Console::map`
+- Exposed lower level get/set color APIs
+
+### Features
+
 ## [1.0.2] - 2023-08-09
 
 ## [1.0.1] - 2023-04-24

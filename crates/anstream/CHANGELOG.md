@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Switched from being generic over types to explicit `impl`s for expected types
+
 ## [0.3.2] - 2023-05-01
 
 ### Fixes
