@@ -34,7 +34,7 @@ impl WinconStream for std::io::Stdout {
     }
 }
 
-impl<'s> WinconStream for std::io::StdoutLock<'s> {
+impl WinconStream for std::io::StdoutLock<'static> {
     fn set_colors(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
@@ -66,7 +66,7 @@ impl WinconStream for std::io::Stderr {
     }
 }
 
-impl<'s> WinconStream for std::io::StderrLock<'s> {
+impl WinconStream for std::io::StderrLock<'static> {
     fn set_colors(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
