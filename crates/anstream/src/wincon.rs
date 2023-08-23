@@ -78,12 +78,20 @@ where
     }
 }
 
-impl<S> Lockable for WinconStream<S>
-where
-    S: RawStream + Lockable,
-    <S as Lockable>::Locked: RawStream,
-{
-    type Locked = WinconStream<<S as Lockable>::Locked>;
+impl Lockable for WinconStream<std::io::Stdout> {
+    type Locked = WinconStream<std::io::StdoutLock<'static>>;
+
+    #[inline]
+    fn lock(self) -> Self::Locked {
+        Self::Locked {
+            console: self.console.lock(),
+            state: self.state,
+        }
+    }
+}
+
+impl Lockable for WinconStream<std::io::Stderr> {
+    type Locked = WinconStream<std::io::StderrLock<'static>>;
 
     #[inline]
     fn lock(self) -> Self::Locked {
