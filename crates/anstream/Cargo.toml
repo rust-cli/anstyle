@@ -38,7 +38,7 @@ is-terminal = { version = "0.4.4", optional = true }
 utf8parse = "0.2.1"
 
 [target.'cfg(windows)'.dependencies]
-anstyle-wincon = { version = "1.0.1", path = "../anstyle-wincon", optional = true }
+anstyle-wincon = { version = "2.0.0", path = "../anstyle-wincon", optional = true }
 
 [dev-dependencies]
 criterion = "0.4.0"
