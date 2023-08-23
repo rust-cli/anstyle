@@ -106,6 +106,18 @@ where
     }
 }
 
+impl<S> Drop for Console<S>
+where
+    S: crate::WinconStream + std::io::Write,
+{
+    fn drop(&mut self) {
+        // Otherwise `Console::lock` took it
+        if self.stream.is_some() {
+            let _ = self.reset();
+        }
+    }
+}
+
 impl<S> Console<S>
 where
     S: crate::WinconStream + std::io::Write,
@@ -140,17 +152,5 @@ where
     #[inline]
     fn lock(self) -> Self::Locked {
         self.lock()
-    }
-}
-
-impl<S> Drop for Console<S>
-where
-    S: crate::WinconStream + std::io::Write,
-{
-    fn drop(&mut self) {
-        // Otherwise `Console::lock` took it
-        if self.stream.is_some() {
-            let _ = self.reset();
-        }
     }
 }

@@ -130,7 +130,7 @@ where
             StreamInner::PassThrough(w) => w.is_terminal(),
             StreamInner::Strip(w) => w.is_terminal(),
             #[cfg(all(windows, feature = "wincon"))]
-            StreamInner::Wincon(w) => true,
+            StreamInner::Wincon(_) => true, // its only ever a terminal
         }
     }
 }
