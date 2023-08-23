@@ -1,6 +1,6 @@
 [package]
 name = "colorchoice-clap"
-version = "1.0.1"
+version = "1.0.2"
 description = "Clap mixin to override console colors"
 repository = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
