@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update MSRV to 1.70.0
 
+### Breaking Change
+
+- Removed implementations and use of `is_terminal::IsTerminal`
+
+### Performance
+
+- Improved build times by dropping `is_terminal`
+
 ## [0.4.0] - 2023-08-23
 
 ### Breaking Change
