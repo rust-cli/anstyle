@@ -1,6 +1,6 @@
 [package]
 name = "anstream"
-version = "0.4.0"
+version = "0.5.0"
 description = "A simple cross platform library for writing colored text to a terminal."
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
