@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update MSRV to 1.70.0
 
+### Features
+
+- Allow querying `is_terminal`
+
 ## [2.0.0] - 2023-08-23
 
 ### Breaking Change
