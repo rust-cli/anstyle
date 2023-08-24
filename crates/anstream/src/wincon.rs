@@ -1,4 +1,5 @@
 use crate::adapter::WinconBytes;
+use crate::IsTerminal;
 use crate::Lockable;
 use crate::RawStream;
 
@@ -36,7 +37,6 @@ where
     }
 
     #[inline]
-    #[cfg(feature = "auto")]
     pub fn is_terminal(&self) -> bool {
         // HACK: We can't get the console's stream to check but if there is a console, it likely is
         // a terminal
@@ -44,8 +44,7 @@ where
     }
 }
 
-#[cfg(feature = "auto")]
-impl<S> is_terminal::IsTerminal for WinconStream<S>
+impl<S> IsTerminal for WinconStream<S>
 where
     S: RawStream,
 {

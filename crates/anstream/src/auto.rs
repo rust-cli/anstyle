@@ -1,5 +1,6 @@
 #[cfg(feature = "auto")]
 use crate::ColorChoice;
+use crate::IsTerminal;
 use crate::Lockable;
 use crate::RawStream;
 use crate::StripStream;
@@ -161,7 +162,7 @@ fn choice(raw: &dyn RawStream) -> ColorChoice {
 }
 
 #[cfg(feature = "auto")]
-impl<S> is_terminal::IsTerminal for AutoStream<S>
+impl<S> IsTerminal for AutoStream<S>
 where
     S: RawStream,
 {

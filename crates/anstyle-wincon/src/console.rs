@@ -87,8 +87,21 @@ where
         Ok(())
     }
 
+    fn as_stream(&self) -> &S {
+        self.stream.as_ref().unwrap()
+    }
+
     fn as_stream_mut(&mut self) -> &mut S {
         self.stream.as_mut().unwrap()
+    }
+}
+
+impl<S> Console<S>
+where
+    S: crate::WinconStream + std::io::Write + std::io::IsTerminal,
+{
+    pub fn is_terminal(&self) -> bool {
+        std::io::IsTerminal::is_terminal(self.as_stream())
     }
 }
 
