@@ -105,29 +105,26 @@ impl WinconStream for std::fs::File {
 
 /// Write colored text to the screen
 #[derive(Clone, Debug)]
-pub(crate) struct ConsoleState {
-    initial_fg: Option<anstyle::AnsiColor>,
-    initial_bg: Option<anstyle::AnsiColor>,
-    last_fg: Option<anstyle::AnsiColor>,
-    last_bg: Option<anstyle::AnsiColor>,
+pub(crate) enum ConsoleState {
+    Wincon(WinconAdapter),
+    Pass(PassThroughAdapter),
 }
 
 impl ConsoleState {
     pub(crate) fn new<S: crate::WinconStream + std::io::Write>(
         stream: &S,
     ) -> std::io::Result<Self> {
-        let (initial_fg, initial_bg) = match stream.get_colors() {
-            Ok(ok) => ok,
+        let adapter = match stream.get_colors() {
+            Ok((Some(initial_fg), Some(initial_bg))) => {
+                Self::Wincon(WinconAdapter::new(initial_fg, initial_bg))
+            }
+            // Can only happen on non-wincon systems
+            Ok(_) => Self::Pass(PassThroughAdapter::new()),
             Err(err) => {
                 return Err(err);
             }
         };
-        Ok(Self {
-            initial_fg,
-            initial_bg,
-            last_fg: initial_fg,
-            last_bg: initial_bg,
-        })
+        Ok(adapter)
     }
 
     pub(crate) fn write<S: crate::WinconStream + std::io::Write>(
@@ -146,7 +143,7 @@ impl ConsoleState {
         &mut self,
         stream: &mut S,
     ) -> std::io::Result<()> {
-        self.apply(stream, self.initial_fg, self.initial_bg)
+        self.apply(stream, None, None)
     }
 
     fn apply<S: crate::WinconStream + std::io::Write>(
@@ -155,8 +152,70 @@ impl ConsoleState {
         fg: Option<anstyle::AnsiColor>,
         bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        let fg = fg.or(self.initial_fg);
-        let bg = bg.or(self.initial_bg);
+        match self {
+            Self::Wincon(adapter) => adapter.apply(stream, fg, bg),
+            Self::Pass(adapter) => adapter.apply(stream, fg, bg),
+        }
+    }
+}
+
+#[derive(Default, Clone, Debug)]
+pub(crate) struct PassThroughAdapter {
+    last_fg: Option<anstyle::AnsiColor>,
+    last_bg: Option<anstyle::AnsiColor>,
+}
+
+impl PassThroughAdapter {
+    fn new() -> Self {
+        Default::default()
+    }
+
+    fn apply<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        // Avoid writing out no-op resets
+        if fg == self.last_fg && bg == self.last_bg {
+            return Ok(());
+        }
+
+        stream.set_colors(fg, bg)?;
+
+        self.last_fg = fg;
+        self.last_bg = bg;
+
+        Ok(())
+    }
+}
+
+#[derive(Clone, Debug)]
+pub(crate) struct WinconAdapter {
+    initial_fg: anstyle::AnsiColor,
+    initial_bg: anstyle::AnsiColor,
+    last_fg: anstyle::AnsiColor,
+    last_bg: anstyle::AnsiColor,
+}
+
+impl WinconAdapter {
+    fn new(initial_fg: anstyle::AnsiColor, initial_bg: anstyle::AnsiColor) -> Self {
+        Self {
+            initial_fg,
+            initial_bg,
+            last_fg: initial_fg,
+            last_bg: initial_bg,
+        }
+    }
+
+    fn apply<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        let fg = fg.unwrap_or(self.initial_fg);
+        let bg = bg.unwrap_or(self.initial_bg);
         if fg == self.last_fg && bg == self.last_bg {
             return Ok(());
         }
@@ -164,7 +223,7 @@ impl ConsoleState {
         // Ensure everything is written with the last set of colors before applying the next set
         stream.flush()?;
 
-        stream.set_colors(fg, bg)?;
+        stream.set_colors(Some(fg), Some(bg))?;
         self.last_fg = fg;
         self.last_bg = bg;
 
@@ -216,6 +275,7 @@ mod ansi {
     pub(super) fn get_colors<S>(
         _stream: &S,
     ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
+        // No idea what state the stream was left in, so just assume default
         Ok((None, None))
     }
 }
