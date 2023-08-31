@@ -1,3 +1,8 @@
+#[cfg(not(windows))]
+use ansi as inner;
+#[cfg(windows)]
+use wincon as inner;
+
 /// Extend `std::io::Write` with wincon styling
 ///
 /// Generally, you will want to use [`Console`][crate::Console] instead
@@ -145,8 +150,3 @@ mod ansi {
         Ok((None, None))
     }
 }
-
-#[cfg(not(windows))]
-use ansi as inner;
-#[cfg(windows)]
-use wincon as inner;
