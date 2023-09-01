@@ -42,7 +42,7 @@ anstyle-wincon = { version = "2.0.0", path = "../anstyle-wincon", optional = tru
 [dev-dependencies]
 criterion = "0.5.1"
 owo-colors = "3.5.0"
-proptest = "1.1.0"
+proptest = "1.2.0"
 strip-ansi-escapes = "0.2.0"
 
 [[bench]]
