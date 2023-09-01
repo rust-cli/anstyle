@@ -40,7 +40,7 @@ utf8parse = "0.2.1"
 anstyle-wincon = { version = "2.0.0", path = "../anstyle-wincon", optional = true }
 
 [dev-dependencies]
-criterion = "0.4.0"
+criterion = "0.5.1"
 owo-colors = "3.5.0"
 proptest = "1.1.0"
 strip-ansi-escapes = "0.1.1"
