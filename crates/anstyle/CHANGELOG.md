@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update MSRV to 1.70.0
 
+### Features
+
+- Make `Color::on_default` `const`
+
 ## [1.0.2] - 2023-08-23
 
 ## [1.0.1] - 2023-06-20
