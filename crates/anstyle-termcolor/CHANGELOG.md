@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update MSRV to 1.70.0
 
+### Fixes
+
+- Correctly apply text styles
+
 ## [1.0.0] - 2023-04-13
 
 ### Breaking Change
