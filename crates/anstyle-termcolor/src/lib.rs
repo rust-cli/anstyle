@@ -22,18 +22,10 @@ pub fn to_termcolor_spec(style: anstyle::Style) -> termcolor::ColorSpec {
     let mut style = termcolor::ColorSpec::new();
     style.set_fg(fg);
     style.set_bg(bg);
-    if effects.contains(anstyle::Effects::BOLD) {
-        style.bold();
-    }
-    if effects.contains(anstyle::Effects::DIMMED) {
-        style.dimmed();
-    }
-    if effects.contains(anstyle::Effects::ITALIC) {
-        style.italic();
-    }
-    if effects.contains(anstyle::Effects::UNDERLINE) {
-        style.underline();
-    }
+    style.set_bold(effects.contains(anstyle::Effects::BOLD));
+    style.set_dimmed(effects.contains(anstyle::Effects::DIMMED));
+    style.set_italic(effects.contains(anstyle::Effects::ITALIC));
+    style.set_underline(effects.contains(anstyle::Effects::UNDERLINE));
     style
 }
 
