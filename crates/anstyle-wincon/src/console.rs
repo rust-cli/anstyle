@@ -5,10 +5,7 @@ where
     S: crate::WinconStream + std::io::Write,
 {
     stream: Option<S>,
-    initial_fg: Option<anstyle::AnsiColor>,
-    initial_bg: Option<anstyle::AnsiColor>,
-    last_fg: Option<anstyle::AnsiColor>,
-    last_bg: Option<anstyle::AnsiColor>,
+    state: crate::stream::ConsoleState,
 }
 
 impl<S> Console<S>
@@ -16,21 +13,13 @@ where
     S: crate::WinconStream + std::io::Write,
 {
     pub fn new(stream: S) -> Result<Self, S> {
-        // HACK: Assuming the error from `get_colors()` will be present on `write` and doing basic
-        // ops on the stream will cause the same result
-        let (initial_fg, initial_bg) = match stream.get_colors() {
-            Ok(ok) => ok,
-            Err(_) => {
-                return Err(stream);
-            }
-        };
-        Ok(Self {
-            stream: Some(stream),
-            initial_fg,
-            initial_bg,
-            last_fg: initial_fg,
-            last_bg: initial_bg,
-        })
+        match crate::stream::ConsoleState::new(&stream) {
+            Ok(state) => Ok(Self {
+                stream: Some(stream),
+                state,
+            }),
+            Err(_err) => Err(stream),
+        }
     }
 
     /// Write colored text to the screen
@@ -40,18 +29,17 @@ where
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        self.apply(fg, bg)?;
-        let written = self.as_stream_mut().write(data)?;
-        Ok(written)
+        self.state
+            .write(self.stream.as_mut().unwrap(), fg, bg, data)
     }
 
     pub fn flush(&mut self) -> std::io::Result<()> {
-        self.as_stream_mut().flush()
+        self.stream.as_mut().unwrap().flush()
     }
 
     /// Change the terminal back to the initial colors
     pub fn reset(&mut self) -> std::io::Result<()> {
-        self.apply(self.initial_fg, self.initial_bg)
+        self.state.reset(self.stream.as_mut().unwrap())
     }
 
     /// Close the stream, reporting any errors
@@ -65,35 +53,6 @@ where
         let _ = self.reset();
         self.stream.take().unwrap()
     }
-
-    fn apply(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-    ) -> std::io::Result<()> {
-        let fg = fg.or(self.initial_fg);
-        let bg = bg.or(self.initial_bg);
-        if fg == self.last_fg && bg == self.last_bg {
-            return Ok(());
-        }
-
-        // Ensure everything is written with the last set of colors before applying the next set
-        self.as_stream_mut().flush()?;
-
-        self.as_stream_mut().set_colors(fg, bg)?;
-        self.last_fg = fg;
-        self.last_bg = bg;
-
-        Ok(())
-    }
-
-    fn as_stream(&self) -> &S {
-        self.stream.as_ref().unwrap()
-    }
-
-    fn as_stream_mut(&mut self) -> &mut S {
-        self.stream.as_mut().unwrap()
-    }
 }
 
 impl<S> Console<S>
@@ -101,7 +60,7 @@ where
     S: crate::WinconStream + std::io::Write + std::io::IsTerminal,
 {
     pub fn is_terminal(&self) -> bool {
-        std::io::IsTerminal::is_terminal(self.as_stream())
+        std::io::IsTerminal::is_terminal(self.stream.as_ref().unwrap())
     }
 }
 
@@ -132,10 +91,7 @@ where
     pub fn lock(mut self) -> <Self as crate::Lockable>::Locked {
         Console {
             stream: Some(self.stream.take().unwrap().lock()),
-            initial_fg: self.initial_fg,
-            initial_bg: self.initial_bg,
-            last_fg: self.last_fg,
-            last_bg: self.last_bg,
+            state: self.state.clone(),
         }
     }
 }
