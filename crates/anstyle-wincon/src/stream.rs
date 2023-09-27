@@ -116,7 +116,7 @@ impl ConsoleState {
     ) -> std::io::Result<Self> {
         let adapter = match stream.get_colors() {
             Ok((Some(initial_fg), Some(initial_bg))) => {
-                Self::Wincon(WinconAdapter::new(initial_fg, initial_bg))
+                Self::Wincon(WinconAdapter::with_initial(initial_fg, initial_bg))
             }
             // Can only happen on non-wincon systems
             Ok(_) => Self::Pass(PassThroughAdapter::new()),
@@ -194,7 +194,7 @@ pub(crate) struct WinconAdapter {
 }
 
 impl WinconAdapter {
-    fn new(initial_fg: anstyle::AnsiColor, initial_bg: anstyle::AnsiColor) -> Self {
+    fn with_initial(initial_fg: anstyle::AnsiColor, initial_bg: anstyle::AnsiColor) -> Self {
         Self {
             initial_fg,
             initial_bg,
