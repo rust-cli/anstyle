@@ -1,6 +1,5 @@
 use crate::adapter::WinconBytes;
 use crate::IsTerminal;
-use crate::Lockable;
 use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
@@ -42,6 +41,36 @@ where
     }
 }
 
+impl WinconStream<std::io::Stdout> {
+    /// Get exclusive access to the `WinconStream`
+    ///
+    /// Why?
+    /// - Faster performance when writing in a loop
+    /// - Avoid other threads interleaving output with the current thread
+    #[inline]
+    pub fn lock(self) -> WinconStream<std::io::StdoutLock<'static>> {
+        WinconStream {
+            raw: self.raw.lock(),
+            state: self.state,
+        }
+    }
+}
+
+impl WinconStream<std::io::Stderr> {
+    /// Get exclusive access to the `WinconStream`
+    ///
+    /// Why?
+    /// - Faster performance when writing in a loop
+    /// - Avoid other threads interleaving output with the current thread
+    #[inline]
+    pub fn lock(self) -> WinconStream<std::io::StderrLock<'static>> {
+        WinconStream {
+            raw: self.raw.lock(),
+            state: self.state,
+        }
+    }
+}
+
 impl<S> IsTerminal for WinconStream<S>
 where
     S: RawStream,
@@ -72,30 +101,6 @@ where
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
         self.raw.flush()
-    }
-}
-
-impl Lockable for WinconStream<std::io::Stdout> {
-    type Locked = WinconStream<std::io::StdoutLock<'static>>;
-
-    #[inline]
-    fn lock(self) -> Self::Locked {
-        Self::Locked {
-            raw: self.raw.lock(),
-            state: self.state,
-        }
-    }
-}
-
-impl Lockable for WinconStream<std::io::Stderr> {
-    type Locked = WinconStream<std::io::StderrLock<'static>>;
-
-    #[inline]
-    fn lock(self) -> Self::Locked {
-        Self::Locked {
-            raw: self.raw.lock(),
-            state: self.state,
-        }
     }
 }
 
