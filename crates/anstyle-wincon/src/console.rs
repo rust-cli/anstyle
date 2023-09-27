@@ -43,14 +43,14 @@ where
     }
 
     /// Close the stream, reporting any errors
+    #[allow(unused)]
     pub fn close(mut self) -> std::io::Result<()> {
-        self.reset()
+        Ok(())
     }
 
     /// Get the inner writer
     #[inline]
     pub fn into_inner(mut self) -> S {
-        let _ = self.reset();
         self.stream.take().unwrap()
     }
 }
@@ -61,18 +61,6 @@ where
 {
     pub fn is_terminal(&self) -> bool {
         std::io::IsTerminal::is_terminal(self.stream.as_ref().unwrap())
-    }
-}
-
-impl<S> Drop for Console<S>
-where
-    S: crate::WinconStream + std::io::Write,
-{
-    fn drop(&mut self) {
-        // Otherwise `Console::lock` took it
-        if self.stream.is_some() {
-            let _ = self.reset();
-        }
     }
 }
 
