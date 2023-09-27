@@ -25,7 +25,7 @@ where
     pub fn new(raw: S) -> Self {
         Self {
             raw,
-            state: Box::default(),
+            state: Default::default(),
         }
     }
 

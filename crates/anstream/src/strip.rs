@@ -4,7 +4,10 @@ use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[derive(Debug)]
-pub struct StripStream<S> {
+pub struct StripStream<S>
+where
+    S: RawStream,
+{
     raw: S,
     state: StripBytes,
 }
