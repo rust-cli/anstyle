@@ -1,6 +1,5 @@
 use crate::adapter::StripBytes;
 use crate::IsTerminal;
-use crate::Lockable;
 use crate::RawStream;
 
 /// Only pass printable data to the inner `Write`
@@ -32,6 +31,36 @@ where
     #[inline]
     pub fn is_terminal(&self) -> bool {
         self.raw.is_terminal()
+    }
+}
+
+impl StripStream<std::io::Stdout> {
+    /// Get exclusive access to the `StripStream`
+    ///
+    /// Why?
+    /// - Faster performance when writing in a loop
+    /// - Avoid other threads interleaving output with the current thread
+    #[inline]
+    pub fn lock(self) -> StripStream<std::io::StdoutLock<'static>> {
+        StripStream {
+            raw: self.raw.lock(),
+            state: self.state,
+        }
+    }
+}
+
+impl StripStream<std::io::Stderr> {
+    /// Get exclusive access to the `StripStream`
+    ///
+    /// Why?
+    /// - Faster performance when writing in a loop
+    /// - Avoid other threads interleaving output with the current thread
+    #[inline]
+    pub fn lock(self) -> StripStream<std::io::StderrLock<'static>> {
+        StripStream {
+            raw: self.raw.lock(),
+            state: self.state,
+        }
     }
 }
 
@@ -114,21 +143,6 @@ fn offset_to(total: &[u8], subslice: &[u8]) -> usize {
         "`Offset::offset_to` only accepts slices of `self`"
     );
     subslice as usize - total as usize
-}
-
-impl<S> Lockable for StripStream<S>
-where
-    S: Lockable,
-{
-    type Locked = StripStream<<S as Lockable>::Locked>;
-
-    #[inline]
-    fn lock(self) -> Self::Locked {
-        Self::Locked {
-            raw: self.raw.lock(),
-            state: self.state,
-        }
-    }
 }
 
 #[cfg(test)]

@@ -1,7 +1,6 @@
 #[cfg(feature = "auto")]
 use crate::ColorChoice;
 use crate::IsTerminal;
-use crate::Lockable;
 use crate::RawStream;
 use crate::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
@@ -178,7 +177,7 @@ impl AutoStream<std::io::Stdout> {
     /// - Faster performance when writing in a loop
     /// - Avoid other threads interleaving output with the current thread
     #[inline]
-    pub fn lock(self) -> <Self as Lockable>::Locked {
+    pub fn lock(self) -> AutoStream<std::io::StdoutLock<'static>> {
         let inner = match self.inner {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
@@ -196,7 +195,7 @@ impl AutoStream<std::io::Stderr> {
     /// - Faster performance when writing in a loop
     /// - Avoid other threads interleaving output with the current thread
     #[inline]
-    pub fn lock(self) -> <Self as Lockable>::Locked {
+    pub fn lock(self) -> AutoStream<std::io::StderrLock<'static>> {
         let inner = match self.inner {
             StreamInner::PassThrough(w) => StreamInner::PassThrough(w.lock()),
             StreamInner::Strip(w) => StreamInner::Strip(w.lock()),
@@ -246,22 +245,4 @@ where
     }
 
     // Not bothering with `write_fmt` as it just calls `write_all`
-}
-
-impl Lockable for AutoStream<std::io::Stdout> {
-    type Locked = AutoStream<<std::io::Stdout as Lockable>::Locked>;
-
-    #[inline]
-    fn lock(self) -> Self::Locked {
-        self.lock()
-    }
-}
-
-impl Lockable for AutoStream<std::io::Stderr> {
-    type Locked = AutoStream<<std::io::Stderr as Lockable>::Locked>;
-
-    #[inline]
-    fn lock(self) -> Self::Locked {
-        self.lock()
-    }
 }
