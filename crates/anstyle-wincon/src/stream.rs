@@ -175,6 +175,7 @@ impl PassThroughAdapter {
         Self {}
     }
 
+    #[allow(dead_code)]
     fn with_initial(_initial_fg: anstyle::AnsiColor, _initial_bg: anstyle::AnsiColor) -> Self {
         // Should be fine to ignore the initial as that only happens on windows when this shouldn't
         // actually be called
@@ -193,41 +194,10 @@ impl PassThroughAdapter {
     }
 }
 
-#[derive(Clone, Debug)]
-pub(crate) struct WinconAdapter {
-    initial_fg: anstyle::AnsiColor,
-    initial_bg: anstyle::AnsiColor,
-}
-
-impl WinconAdapter {
-    fn with_initial(initial_fg: anstyle::AnsiColor, initial_bg: anstyle::AnsiColor) -> Self {
-        Self {
-            initial_fg,
-            initial_bg,
-        }
-    }
-
-    fn apply<S: crate::WinconStream + std::io::Write>(
-        &mut self,
-        stream: &mut S,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-    ) -> std::io::Result<()> {
-        let fg = fg.unwrap_or(self.initial_fg);
-        let bg = bg.unwrap_or(self.initial_bg);
-
-        // Ensure everything is written with the last set of colors before applying the next set
-        stream.flush()?;
-        stream.set_colors(Some(fg), Some(bg))?;
-
-        Ok(())
-    }
-}
-
+#[cfg(windows)]
+use crate::windows::WinconAdapter as StdioAdapter;
 #[cfg(not(windows))]
 use PassThroughAdapter as StdioAdapter;
-#[cfg(windows)]
-use WinconAdapter as StdioAdapter;
 
 #[cfg(windows)]
 mod wincon {

@@ -22,6 +22,40 @@ pub fn get_colors<S: AsHandle>(
     Ok((fg, bg))
 }
 
+#[derive(Clone, Debug)]
+pub(crate) struct WinconAdapter {
+    initial_fg: anstyle::AnsiColor,
+    initial_bg: anstyle::AnsiColor,
+}
+
+impl WinconAdapter {
+    pub(crate) fn with_initial(
+        initial_fg: anstyle::AnsiColor,
+        initial_bg: anstyle::AnsiColor,
+    ) -> Self {
+        Self {
+            initial_fg,
+            initial_bg,
+        }
+    }
+
+    pub(crate) fn apply<S: crate::WinconStream + std::io::Write>(
+        &mut self,
+        stream: &mut S,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+    ) -> std::io::Result<()> {
+        let fg = fg.unwrap_or(self.initial_fg);
+        let bg = bg.unwrap_or(self.initial_bg);
+
+        // Ensure everything is written with the last set of colors before applying the next set
+        stream.flush()?;
+        stream.set_colors(Some(fg), Some(bg))?;
+
+        Ok(())
+    }
+}
+
 mod inner {
     use windows_sys::Win32::System::Console::CONSOLE_CHARACTER_ATTRIBUTES;
     use windows_sys::Win32::System::Console::CONSOLE_SCREEN_BUFFER_INFO;
