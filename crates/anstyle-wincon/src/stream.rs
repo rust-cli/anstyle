@@ -106,7 +106,7 @@ impl WinconStream for std::fs::File {
 /// Write colored text to the screen
 #[derive(Clone, Debug)]
 pub(crate) enum ConsoleState {
-    Wincon(WinconAdapter),
+    Wincon(StdioAdapter),
     Pass(PassThroughAdapter),
 }
 
@@ -116,7 +116,7 @@ impl ConsoleState {
     ) -> std::io::Result<Self> {
         let adapter = match stream.get_colors() {
             Ok((Some(initial_fg), Some(initial_bg))) => {
-                Self::Wincon(WinconAdapter::with_initial(initial_fg, initial_bg))
+                Self::Wincon(StdioAdapter::with_initial(initial_fg, initial_bg))
             }
             // Can only happen on non-wincon systems
             Ok(_) => Self::Pass(PassThroughAdapter::new()),
@@ -175,6 +175,12 @@ impl PassThroughAdapter {
         Self {}
     }
 
+    fn with_initial(_initial_fg: anstyle::AnsiColor, _initial_bg: anstyle::AnsiColor) -> Self {
+        // Should be fine to ignore the initial as that only happens on windows when this shouldn't
+        // actually be called
+        Self::new()
+    }
+
     fn apply<S: crate::WinconStream + std::io::Write>(
         &mut self,
         stream: &mut S,
@@ -217,6 +223,11 @@ impl WinconAdapter {
         Ok(())
     }
 }
+
+#[cfg(not(windows))]
+use PassThroughAdapter as StdioAdapter;
+#[cfg(windows)]
+use WinconAdapter as StdioAdapter;
 
 #[cfg(windows)]
 mod wincon {
