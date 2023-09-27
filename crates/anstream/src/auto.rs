@@ -102,9 +102,8 @@ where
     fn wincon(raw: S) -> Result<Self, S> {
         #[cfg(all(windows, feature = "wincon"))]
         {
-            let console = anstyle_wincon::Console::new(raw)?;
             Ok(Self {
-                inner: StreamInner::Wincon(WinconStream::new(console)),
+                inner: StreamInner::Wincon(WinconStream::new(raw)),
             })
         }
         #[cfg(not(all(windows, feature = "wincon")))]
@@ -120,7 +119,7 @@ where
             StreamInner::PassThrough(w) => w,
             StreamInner::Strip(w) => w.into_inner(),
             #[cfg(all(windows, feature = "wincon"))]
-            StreamInner::Wincon(w) => w.into_inner().into_inner(),
+            StreamInner::Wincon(w) => w.into_inner(),
         }
     }
 
