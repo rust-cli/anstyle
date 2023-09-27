@@ -50,28 +50,12 @@ impl std::io::Write for Buffer {
 
 #[cfg(all(windows, feature = "wincon"))]
 impl anstyle_wincon::WinconStream for Buffer {
-    fn set_colors(
+    fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
         bg: Option<anstyle::AnsiColor>,
-    ) -> std::io::Result<()> {
-        use std::io::Write as _;
-
-        if let Some(fg) = fg {
-            write!(self, "{}", fg.render_fg())?;
-        }
-        if let Some(bg) = bg {
-            write!(self, "{}", bg.render_bg())?;
-        }
-        if fg.is_none() && bg.is_none() {
-            write!(self, "{}", anstyle::Reset.render())?;
-        }
-        Ok(())
-    }
-
-    fn get_colors(
-        &self,
-    ) -> std::io::Result<(Option<anstyle::AnsiColor>, Option<anstyle::AnsiColor>)> {
-        Ok((None, None))
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        self.0.write_colored(fg, bg, data)
     }
 }

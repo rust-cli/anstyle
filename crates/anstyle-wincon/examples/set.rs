@@ -7,15 +7,16 @@ fn main() {
 
 #[cfg(windows)]
 fn main() -> Result<(), lexopt::Error> {
+    use anstyle_wincon::WinconStream as _;
+
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock())
-        .map_err(|_err| lexopt::Error::from("could not open `stdout` for color control"))?;
+    let mut stdout = stdout.lock();
 
     let fg = args.fg.and_then(|c| c.into_ansi());
     let bg = args.bg.and_then(|c| c.into_ansi());
 
-    let _ = stdout.write(fg, bg, "".as_bytes());
+    let _ = stdout.write_colored(fg, bg, "".as_bytes());
 
     std::mem::forget(stdout);
 

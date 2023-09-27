@@ -1,32 +1,33 @@
+use anstyle_wincon::WinconStream as _;
+
 fn main() -> Result<(), lexopt::Error> {
     let args = Args::parse()?;
     let stdout = std::io::stdout();
-    let mut stdout = anstyle_wincon::Console::new(stdout.lock())
-        .map_err(|_err| lexopt::Error::from("could not open `stdout` for color control"))?;
+    let mut stdout = stdout.lock();
 
     for fixed in 0..16 {
         let style = style(fixed, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
         if fixed == 7 || fixed == 15 {
-            let _ = stdout.write(None, None, &b"\n"[..]);
+            let _ = stdout.write_colored(None, None, &b"\n"[..]);
         }
     }
 
     for r in 0..6 {
-        let _ = stdout.write(None, None, &b"\n"[..]);
+        let _ = stdout.write_colored(None, None, &b"\n"[..]);
         for g in 0..6 {
             for b in 0..6 {
                 let fixed = r * 36 + g * 6 + b + 16;
                 let style = style(fixed, args.layer, args.effects);
                 let _ = print_number(&mut stdout, fixed, style);
             }
-            let _ = stdout.write(None, None, &b"\n"[..]);
+            let _ = stdout.write_colored(None, None, &b"\n"[..]);
         }
     }
 
     for c in 0..24 {
         if 0 == c % 8 {
-            let _ = stdout.write(None, None, &b"\n"[..]);
+            let _ = stdout.write_colored(None, None, &b"\n"[..]);
         }
         let fixed = 232 + c;
         let style = style(fixed, args.layer, args.effects);
@@ -46,7 +47,7 @@ fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
 }
 
 fn print_number(
-    stdout: &mut anstyle_wincon::Console<std::io::StdoutLock<'static>>,
+    stdout: &mut std::io::StdoutLock<'static>,
     fixed: u8,
     style: anstyle::Style,
 ) -> std::io::Result<()> {
@@ -62,7 +63,7 @@ fn print_number(
     });
 
     stdout
-        .write(fg, bg, format!("{:>4}", fixed).as_bytes())
+        .write_colored(fg, bg, format!("{:>4}", fixed).as_bytes())
         .map(|_| ())
 }
 
