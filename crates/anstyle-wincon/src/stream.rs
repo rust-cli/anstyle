@@ -134,8 +134,15 @@ impl ConsoleState {
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        self.apply(stream, fg, bg)?;
+        let non_default = fg.is_some() || bg.is_some();
+
+        if non_default {
+            self.apply(stream, fg, bg)?;
+        }
         let written = stream.write(data)?;
+        if non_default {
+            self.apply(stream, None, None)?;
+        }
         Ok(written)
     }
 
@@ -160,14 +167,12 @@ impl ConsoleState {
 }
 
 #[derive(Default, Clone, Debug)]
-pub(crate) struct PassThroughAdapter {
-    last_fg: Option<anstyle::AnsiColor>,
-    last_bg: Option<anstyle::AnsiColor>,
-}
+#[non_exhaustive]
+pub(crate) struct PassThroughAdapter {}
 
 impl PassThroughAdapter {
     fn new() -> Self {
-        Default::default()
+        Self {}
     }
 
     fn apply<S: crate::WinconStream + std::io::Write>(
@@ -176,15 +181,7 @@ impl PassThroughAdapter {
         fg: Option<anstyle::AnsiColor>,
         bg: Option<anstyle::AnsiColor>,
     ) -> std::io::Result<()> {
-        // Avoid writing out no-op resets
-        if fg == self.last_fg && bg == self.last_bg {
-            return Ok(());
-        }
-
         stream.set_colors(fg, bg)?;
-
-        self.last_fg = fg;
-        self.last_bg = bg;
 
         Ok(())
     }
@@ -194,8 +191,6 @@ impl PassThroughAdapter {
 pub(crate) struct WinconAdapter {
     initial_fg: anstyle::AnsiColor,
     initial_bg: anstyle::AnsiColor,
-    last_fg: anstyle::AnsiColor,
-    last_bg: anstyle::AnsiColor,
 }
 
 impl WinconAdapter {
@@ -203,8 +198,6 @@ impl WinconAdapter {
         Self {
             initial_fg,
             initial_bg,
-            last_fg: initial_fg,
-            last_bg: initial_bg,
         }
     }
 
@@ -216,16 +209,10 @@ impl WinconAdapter {
     ) -> std::io::Result<()> {
         let fg = fg.unwrap_or(self.initial_fg);
         let bg = bg.unwrap_or(self.initial_bg);
-        if fg == self.last_fg && bg == self.last_bg {
-            return Ok(());
-        }
 
         // Ensure everything is written with the last set of colors before applying the next set
         stream.flush()?;
-
         stream.set_colors(Some(fg), Some(bg))?;
-        self.last_fg = fg;
-        self.last_bg = bg;
 
         Ok(())
     }
