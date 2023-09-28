@@ -197,6 +197,7 @@ impl<S> std::io::Write for AutoStream<S>
 where
     S: RawStream,
 {
+    // Must forward all calls to ensure locking happens appropriately
     #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
         match &mut self.inner {
@@ -206,7 +207,16 @@ where
             StreamInner::Wincon(w) => w.write(buf),
         }
     }
-
+    #[inline]
+    fn write_vectored(&mut self, bufs: &[std::io::IoSlice<'_>]) -> std::io::Result<usize> {
+        match &mut self.inner {
+            StreamInner::PassThrough(w) => w.write_vectored(bufs),
+            StreamInner::Strip(w) => w.write_vectored(bufs),
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(w) => w.write_vectored(bufs),
+        }
+    }
+    // is_write_vectored: nightly only
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
         match &mut self.inner {
@@ -216,11 +226,6 @@ where
             StreamInner::Wincon(w) => w.flush(),
         }
     }
-
-    // Provide explicit implementations of trait methods
-    // - To reduce bookkeeping
-    // - Avoid acquiring / releasing locks in a loop
-
     #[inline]
     fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
         match &mut self.inner {
@@ -230,6 +235,14 @@ where
             StreamInner::Wincon(w) => w.write_all(buf),
         }
     }
-
-    // Not bothering with `write_fmt` as it just calls `write_all`
+    // write_all_vectored: nightly only
+    #[inline]
+    fn write_fmt(&mut self, args: std::fmt::Arguments<'_>) -> std::io::Result<()> {
+        match &mut self.inner {
+            StreamInner::PassThrough(w) => w.write_fmt(args),
+            StreamInner::Strip(w) => w.write_fmt(args),
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(w) => w.write_fmt(args),
+        }
+    }
 }
