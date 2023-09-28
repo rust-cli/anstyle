@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [2.0.0] - 2023-09-28
+
 ### Breaking Change
 
 - Update crossterm to 0.27
@@ -30,7 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v1.0.0...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v2.0.0...HEAD
+[2.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v1.0.0...anstyle-crossterm-v2.0.0
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v0.2.0...anstyle-crossterm-v1.0.0
 [0.2.0]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v0.1.1...anstyle-crossterm-v0.2.0
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/08f1895103116a5c4bd25e3514463467f997fd71...anstyle-crossterm-v0.1.1
