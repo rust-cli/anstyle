@@ -1,6 +1,6 @@
+use crate::stream::RawStream;
 #[cfg(feature = "auto")]
 use crate::ColorChoice;
-use crate::RawStream;
 use crate::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
 use crate::WinconStream;

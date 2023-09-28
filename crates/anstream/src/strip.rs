@@ -1,5 +1,5 @@
 use crate::adapter::StripBytes;
-use crate::RawStream;
+use crate::stream::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[derive(Debug)]

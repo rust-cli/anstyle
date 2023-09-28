@@ -1,5 +1,5 @@
 use crate::adapter::WinconBytes;
-use crate::RawStream;
+use crate::stream::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[cfg(feature = "wincon")] // here mostly for documentation purposes

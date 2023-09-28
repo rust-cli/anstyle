@@ -1,6 +1,6 @@
-use crate::IsTerminal;
+use crate::stream::IsTerminal;
 
-/// In-memory [`RawStream`][crate::RawStream]
+/// In-memory [`RawStream`][crate::stream::RawStream]
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct Buffer(Vec<u8>);
 

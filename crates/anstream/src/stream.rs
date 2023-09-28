@@ -1,3 +1,5 @@
+//! Higher-level traits to describe writeable streams
+
 /// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(not(all(windows, feature = "wincon")))]
 pub trait RawStream: std::io::Write + IsTerminal + private::Sealed {}
