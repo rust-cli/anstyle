@@ -1,4 +1,5 @@
 use crate::adapter::StripBytes;
+use crate::stream::AsLockedWrite;
 use crate::stream::RawStream;
 
 /// Only pass printable data to the inner `Write`
@@ -68,28 +69,35 @@ impl StripStream<std::io::Stderr> {
 
 impl<S> std::io::Write for StripStream<S>
 where
-    S: RawStream,
+    S: RawStream + AsLockedWrite,
 {
+    // Must forward all calls to ensure locking happens appropriately
     #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        write(&mut self.raw, &mut self.state, buf)
+        write(&mut self.raw.as_locked_write(), &mut self.state, buf)
     }
-
+    #[inline]
+    fn write_vectored(&mut self, bufs: &[std::io::IoSlice<'_>]) -> std::io::Result<usize> {
+        let buf = bufs
+            .iter()
+            .find(|b| !b.is_empty())
+            .map_or(&[][..], |b| &**b);
+        self.write(buf)
+    }
+    // is_write_vectored: nightly only
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
-        self.raw.flush()
+        self.raw.as_locked_write().flush()
     }
-
-    // Provide explicit implementations of trait methods
-    // - To reduce bookkeeping
-    // - Avoid acquiring / releasing locks in a loop
-
     #[inline]
     fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
-        write_all(&mut self.raw, &mut self.state, buf)
+        write_all(&mut self.raw.as_locked_write(), &mut self.state, buf)
     }
-
-    // Not bothering with `write_fmt` as it just calls `write_all`
+    // write_all_vectored: nightly only
+    #[inline]
+    fn write_fmt(&mut self, args: std::fmt::Arguments<'_>) -> std::io::Result<()> {
+        write_fmt(&mut self.raw.as_locked_write(), &mut self.state, args)
+    }
 }
 
 fn write(
@@ -123,6 +131,15 @@ fn write_all(
         raw.write_all(printable)?;
     }
     Ok(())
+}
+
+fn write_fmt(
+    raw: &mut dyn std::io::Write,
+    state: &mut StripBytes,
+    args: std::fmt::Arguments<'_>,
+) -> std::io::Result<()> {
+    let write_all = |buf: &[u8]| write_all(raw, state, buf);
+    crate::fmt::Adapter::new(write_all).write_fmt(args)
 }
 
 #[inline]

@@ -105,6 +105,68 @@ impl IsTerminal for &'_ mut crate::Buffer {
     }
 }
 
+pub trait AsLockedWrite: private::Sealed {
+    type Write<'w>: RawStream + 'w
+    where
+        Self: 'w;
+
+    fn as_locked_write(&mut self) -> Self::Write<'_>;
+}
+
+impl AsLockedWrite for std::io::Stdout {
+    type Write<'w> = std::io::StdoutLock<'w>;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self.lock()
+    }
+}
+
+impl AsLockedWrite for std::io::StdoutLock<'static> {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
+impl AsLockedWrite for std::io::Stderr {
+    type Write<'w> = std::io::StderrLock<'w>;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self.lock()
+    }
+}
+
+impl AsLockedWrite for std::io::StderrLock<'static> {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
+impl AsLockedWrite for std::fs::File {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
+impl AsLockedWrite for crate::Buffer {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
 mod private {
     pub trait Sealed {}
 
