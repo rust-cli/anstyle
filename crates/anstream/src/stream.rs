@@ -13,11 +13,11 @@ pub trait RawStream:
 
 impl RawStream for std::io::Stdout {}
 
-impl RawStream for std::io::StdoutLock<'static> {}
+impl RawStream for std::io::StdoutLock<'_> {}
 
 impl RawStream for std::io::Stderr {}
 
-impl RawStream for std::io::StderrLock<'static> {}
+impl RawStream for std::io::StderrLock<'_> {}
 
 impl RawStream for std::fs::File {}
 
@@ -34,7 +34,7 @@ impl IsTerminal for std::io::Stdout {
     }
 }
 
-impl IsTerminal for std::io::StdoutLock<'static> {
+impl IsTerminal for std::io::StdoutLock<'_> {
     #[inline]
     fn is_terminal(&self) -> bool {
         std::io::IsTerminal::is_terminal(self)
@@ -48,7 +48,7 @@ impl IsTerminal for std::io::Stderr {
     }
 }
 
-impl IsTerminal for std::io::StderrLock<'static> {
+impl IsTerminal for std::io::StderrLock<'_> {
     #[inline]
     fn is_terminal(&self) -> bool {
         std::io::IsTerminal::is_terminal(self)
@@ -74,11 +74,11 @@ mod private {
 
     impl Sealed for std::io::Stdout {}
 
-    impl Sealed for std::io::StdoutLock<'static> {}
+    impl Sealed for std::io::StdoutLock<'_> {}
 
     impl Sealed for std::io::Stderr {}
 
-    impl Sealed for std::io::StderrLock<'static> {}
+    impl Sealed for std::io::StderrLock<'_> {}
 
     impl Sealed for std::fs::File {}
 
