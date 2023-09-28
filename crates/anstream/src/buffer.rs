@@ -1,5 +1,3 @@
-use crate::stream::IsTerminal;
-
 /// In-memory [`RawStream`][crate::stream::RawStream]
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct Buffer(Vec<u8>);
@@ -25,13 +23,6 @@ impl AsRef<[u8]> for Buffer {
     #[inline]
     fn as_ref(&self) -> &[u8] {
         self.as_bytes()
-    }
-}
-
-impl IsTerminal for Buffer {
-    #[inline]
-    fn is_terminal(&self) -> bool {
-        false
     }
 }
 

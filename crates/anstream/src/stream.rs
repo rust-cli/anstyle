@@ -62,6 +62,13 @@ impl IsTerminal for std::fs::File {
     }
 }
 
+impl IsTerminal for crate::Buffer {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
 mod private {
     pub trait Sealed {}
 
