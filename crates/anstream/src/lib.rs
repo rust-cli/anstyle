@@ -41,6 +41,7 @@ mod buffer;
 #[macro_use]
 mod macros;
 mod auto;
+mod fmt;
 mod strip;
 #[cfg(all(windows, feature = "wincon"))]
 mod wincon;

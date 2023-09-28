@@ -20,6 +20,17 @@ impl WinconStream for std::fs::File {
     }
 }
 
+impl WinconStream for &'_ mut std::fs::File {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
+    }
+}
+
 impl WinconStream for Vec<u8> {
     fn write_colored(
         &mut self,
@@ -59,7 +70,7 @@ impl WinconStream for std::io::Stderr {
 mod platform {
     use super::*;
 
-    impl WinconStream for std::io::StdoutLock<'static> {
+    impl WinconStream for std::io::StdoutLock<'_> {
         fn write_colored(
             &mut self,
             fg: Option<anstyle::AnsiColor>,
@@ -70,7 +81,7 @@ mod platform {
         }
     }
 
-    impl WinconStream for std::io::StderrLock<'static> {
+    impl WinconStream for std::io::StderrLock<'_> {
         fn write_colored(
             &mut self,
             fg: Option<anstyle::AnsiColor>,
@@ -86,7 +97,7 @@ mod platform {
 mod platform {
     use super::*;
 
-    impl WinconStream for std::io::StdoutLock<'static> {
+    impl WinconStream for std::io::StdoutLock<'_> {
         fn write_colored(
             &mut self,
             fg: Option<anstyle::AnsiColor>,
@@ -98,7 +109,7 @@ mod platform {
         }
     }
 
-    impl WinconStream for std::io::StderrLock<'static> {
+    impl WinconStream for std::io::StderrLock<'_> {
         fn write_colored(
             &mut self,
             fg: Option<anstyle::AnsiColor>,
@@ -108,5 +119,27 @@ mod platform {
             let initial = crate::windows::stderr_initial_colors();
             crate::windows::write_colored(self, fg, bg, data, initial)
         }
+    }
+}
+
+impl WinconStream for &'_ mut std::io::StdoutLock<'_> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
+    }
+}
+
+impl WinconStream for &'_ mut std::io::StderrLock<'_> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
     }
 }

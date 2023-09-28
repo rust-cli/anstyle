@@ -1,5 +1,3 @@
-use crate::stream::IsTerminal;
-
 /// In-memory [`RawStream`][crate::stream::RawStream]
 #[derive(Clone, Default, Debug, PartialEq, Eq)]
 pub struct Buffer(Vec<u8>);
@@ -28,13 +26,6 @@ impl AsRef<[u8]> for Buffer {
     }
 }
 
-impl IsTerminal for Buffer {
-    #[inline]
-    fn is_terminal(&self) -> bool {
-        false
-    }
-}
-
 impl std::io::Write for Buffer {
     #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
@@ -57,5 +48,17 @@ impl anstyle_wincon::WinconStream for Buffer {
         data: &[u8],
     ) -> std::io::Result<usize> {
         self.0.write_colored(fg, bg, data)
+    }
+}
+
+#[cfg(all(windows, feature = "wincon"))]
+impl anstyle_wincon::WinconStream for &'_ mut Buffer {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
     }
 }
