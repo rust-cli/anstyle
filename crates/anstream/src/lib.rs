@@ -40,14 +40,14 @@ mod buffer;
 mod macros;
 mod auto;
 mod is_terminal;
-mod raw;
+mod stream;
 mod strip;
 #[cfg(all(windows, feature = "wincon"))]
 mod wincon;
 
 pub use auto::AutoStream;
 pub use is_terminal::IsTerminal;
-pub use raw::RawStream;
+pub use stream::RawStream;
 pub use strip::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
 pub use wincon::WinconStream;
