@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add `AutoStream::current_choice`
+
 ## [0.6.0] - 2023-09-28
 
 ### Breaking Change
