@@ -1,6 +1,5 @@
 use crate::adapter::WinconBytes;
-use crate::IsTerminal;
-use crate::RawStream;
+use crate::stream::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[cfg(feature = "wincon")] // here mostly for documentation purposes
@@ -68,16 +67,6 @@ impl WinconStream<std::io::Stderr> {
             raw: self.raw.lock(),
             state: self.state,
         }
-    }
-}
-
-impl<S> IsTerminal for WinconStream<S>
-where
-    S: RawStream,
-{
-    #[inline]
-    fn is_terminal(&self) -> bool {
-        self.is_terminal()
     }
 }
 

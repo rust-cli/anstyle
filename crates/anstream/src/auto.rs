@@ -1,7 +1,6 @@
+use crate::stream::RawStream;
 #[cfg(feature = "auto")]
 use crate::ColorChoice;
-use crate::IsTerminal;
-use crate::RawStream;
 use crate::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
 use crate::WinconStream;
@@ -155,16 +154,6 @@ fn choice(raw: &dyn RawStream) -> ColorChoice {
             }
         }
         ColorChoice::AlwaysAnsi | ColorChoice::Always | ColorChoice::Never => choice,
-    }
-}
-
-impl<S> IsTerminal for AutoStream<S>
-where
-    S: RawStream,
-{
-    #[inline]
-    fn is_terminal(&self) -> bool {
-        self.is_terminal()
     }
 }
 

@@ -1,6 +1,5 @@
 use crate::adapter::StripBytes;
-use crate::IsTerminal;
-use crate::RawStream;
+use crate::stream::RawStream;
 
 /// Only pass printable data to the inner `Write`
 #[derive(Debug)]
@@ -64,16 +63,6 @@ impl StripStream<std::io::Stderr> {
             raw: self.raw.lock(),
             state: self.state,
         }
-    }
-}
-
-impl<S> IsTerminal for StripStream<S>
-where
-    S: RawStream,
-{
-    #[inline]
-    fn is_terminal(&self) -> bool {
-        self.is_terminal()
     }
 }
 

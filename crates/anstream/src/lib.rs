@@ -35,19 +35,17 @@
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 pub mod adapter;
+pub mod stream;
+
 mod buffer;
 #[macro_use]
 mod macros;
 mod auto;
-mod is_terminal;
-mod raw;
 mod strip;
 #[cfg(all(windows, feature = "wincon"))]
 mod wincon;
 
 pub use auto::AutoStream;
-pub use is_terminal::IsTerminal;
-pub use raw::RawStream;
 pub use strip::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
 pub use wincon::WinconStream;
