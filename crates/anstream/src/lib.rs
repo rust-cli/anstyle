@@ -39,14 +39,13 @@ mod buffer;
 #[macro_use]
 mod macros;
 mod auto;
-mod is_terminal;
 mod stream;
 mod strip;
 #[cfg(all(windows, feature = "wincon"))]
 mod wincon;
 
 pub use auto::AutoStream;
-pub use is_terminal::IsTerminal;
+pub use stream::IsTerminal;
 pub use stream::RawStream;
 pub use strip::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
