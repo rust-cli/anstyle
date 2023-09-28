@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Allow `Display` types to be copied
+
 ## [1.0.3] - 2023-09-11
 
 ### Compatibility
