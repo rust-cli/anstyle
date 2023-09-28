@@ -22,7 +22,7 @@ name = "anstream"
 version = "0.5.0"
 dependencies = [
  "anstyle 1.0.3",
- "anstyle-parse 0.2.1",
+ "anstyle-parse 0.2.2",
  "anstyle-query 1.0.0",
  "anstyle-wincon 2.1.0",
  "colorchoice 1.0.0",
@@ -116,7 +116,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-parse"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "arrayvec",
  "codegenrs",
