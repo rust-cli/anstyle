@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.1] - 2023-09-28
+
 ### Features
 
 - Add `AutoStream::current_choice`
@@ -148,7 +150,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.0...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.1...HEAD
+[0.6.1]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.0...anstream-v0.6.1
 [0.6.0]: https://github.com/rust-cli/anstyle/compare/anstream-v0.5.0...anstream-v0.6.0
 [0.5.0]: https://github.com/rust-cli/anstyle/compare/anstream-v0.4.0...anstream-v0.5.0
 [0.4.0]: https://github.com/rust-cli/anstyle/compare/anstream-v0.3.2...anstream-v0.4.0
