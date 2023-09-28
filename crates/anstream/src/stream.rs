@@ -21,7 +21,7 @@ impl RawStream for std::fs::File {}
 
 impl RawStream for crate::Buffer {}
 
-pub trait IsTerminal {
+pub trait IsTerminal: private::Sealed {
     fn is_terminal(&self) -> bool;
 }
 
