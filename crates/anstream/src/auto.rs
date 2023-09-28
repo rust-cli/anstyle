@@ -131,6 +131,19 @@ where
             StreamInner::Wincon(_) => true, // its only ever a terminal
         }
     }
+
+    /// Prefer [`AutoStream::choice`]
+    ///
+    /// This doesn't report what is requested but what is currently active.
+    #[inline]
+    pub fn current_choice(&self) -> ColorChoice {
+        match &self.inner {
+            StreamInner::PassThrough(_) => ColorChoice::AlwaysAnsi,
+            StreamInner::Strip(_) => ColorChoice::Never,
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(_) => ColorChoice::Always,
+        }
+    }
 }
 
 #[cfg(feature = "auto")]
