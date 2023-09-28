@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Internal traits moved to `stream` mod
+- Shift focus from traits to methods for locking / terminal checks
+
+### Fixes
+
+- Capture `print!` et all in tests
+- Hold locks over multi-part writes
+
 ## [0.5.0] - 2023-08-24
 
 ### Compatibility
