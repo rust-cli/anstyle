@@ -28,6 +28,8 @@ pre-release-replacements = [
 default = ["auto", "wincon"]
 auto = ["dep:anstyle-query", "dep:colorchoice"]
 wincon = ["dep:anstyle-wincon"]
+# Enable in `dev-dependencies` to make sure output is captured for tests
+test = []
 
 [dependencies]
 anstyle = { version = "1.0.0", path = "../anstyle" }
