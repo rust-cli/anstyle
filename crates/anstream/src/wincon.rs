@@ -74,23 +74,62 @@ impl<S> std::io::Write for WinconStream<S>
 where
     S: RawStream,
 {
+    #[inline]
     fn write(&mut self, buf: &[u8]) -> std::io::Result<usize> {
-        for (style, printable) in self.state.extract_next(buf) {
-            let fg = style.get_fg_color().and_then(cap_wincon_color);
-            let bg = style.get_bg_color().and_then(cap_wincon_color);
-            let written = self.raw.write_colored(fg, bg, printable.as_bytes())?;
-            let possible = printable.len();
-            if possible != written {
-                // HACK: Unsupported atm
-                break;
-            }
-        }
-        Ok(buf.len())
+        write(&mut self.raw, &mut self.state, buf)
     }
+
     #[inline]
     fn flush(&mut self) -> std::io::Result<()> {
         self.raw.flush()
     }
+
+    // Provide explicit implementations of trait methods
+    // - To reduce bookkeeping
+    // - Avoid acquiring / releasing locks in a loop
+
+    #[inline]
+    fn write_all(&mut self, buf: &[u8]) -> std::io::Result<()> {
+        write_all(&mut self.raw, &mut self.state, buf)
+    }
+
+    // Not bothering with `write_fmt` as it just calls `write_all`
+}
+
+fn write(raw: &mut dyn RawStream, state: &mut WinconBytes, buf: &[u8]) -> std::io::Result<usize> {
+    for (style, printable) in state.extract_next(buf) {
+        let fg = style.get_fg_color().and_then(cap_wincon_color);
+        let bg = style.get_bg_color().and_then(cap_wincon_color);
+        let written = raw.write_colored(fg, bg, printable.as_bytes())?;
+        let possible = printable.len();
+        if possible != written {
+            // HACK: Unsupported atm
+            break;
+        }
+    }
+    Ok(buf.len())
+}
+
+fn write_all(raw: &mut dyn RawStream, state: &mut WinconBytes, buf: &[u8]) -> std::io::Result<()> {
+    for (style, printable) in state.extract_next(buf) {
+        let mut buf = printable.as_bytes();
+        let fg = style.get_fg_color().and_then(cap_wincon_color);
+        let bg = style.get_bg_color().and_then(cap_wincon_color);
+        while !buf.is_empty() {
+            match raw.write_colored(fg, bg, buf) {
+                Ok(0) => {
+                    return Err(std::io::Error::new(
+                        std::io::ErrorKind::WriteZero,
+                        "failed to write whole buffer",
+                    ));
+                }
+                Ok(n) => buf = &buf[n..],
+                Err(ref e) if e.kind() == std::io::ErrorKind::Interrupted => {}
+                Err(e) => return Err(e),
+            }
+        }
+    }
+    Ok(())
 }
 
 fn cap_wincon_color(color: anstyle::Color) -> Option<anstyle::AnsiColor> {
