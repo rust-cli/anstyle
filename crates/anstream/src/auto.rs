@@ -123,7 +123,6 @@ where
     }
 
     #[inline]
-    #[cfg(feature = "auto")]
     pub fn is_terminal(&self) -> bool {
         match &self.inner {
             StreamInner::PassThrough(w) => w.is_terminal(),
@@ -159,7 +158,6 @@ fn choice(raw: &dyn RawStream) -> ColorChoice {
     }
 }
 
-#[cfg(feature = "auto")]
 impl<S> IsTerminal for AutoStream<S>
 where
     S: RawStream,
