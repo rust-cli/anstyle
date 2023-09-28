@@ -15,13 +15,21 @@ impl RawStream for std::io::Stdout {}
 
 impl RawStream for std::io::StdoutLock<'_> {}
 
+impl RawStream for &'_ mut std::io::StdoutLock<'_> {}
+
 impl RawStream for std::io::Stderr {}
 
 impl RawStream for std::io::StderrLock<'_> {}
 
+impl RawStream for &'_ mut std::io::StderrLock<'_> {}
+
 impl RawStream for std::fs::File {}
 
+impl RawStream for &'_ mut std::fs::File {}
+
 impl RawStream for crate::Buffer {}
+
+impl RawStream for &'_ mut crate::Buffer {}
 
 pub trait IsTerminal: private::Sealed {
     fn is_terminal(&self) -> bool;
@@ -41,6 +49,13 @@ impl IsTerminal for std::io::StdoutLock<'_> {
     }
 }
 
+impl IsTerminal for &'_ mut std::io::StdoutLock<'_> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        (**self).is_terminal()
+    }
+}
+
 impl IsTerminal for std::io::Stderr {
     #[inline]
     fn is_terminal(&self) -> bool {
@@ -55,10 +70,24 @@ impl IsTerminal for std::io::StderrLock<'_> {
     }
 }
 
+impl IsTerminal for &'_ mut std::io::StderrLock<'_> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        (**self).is_terminal()
+    }
+}
+
 impl IsTerminal for std::fs::File {
     #[inline]
     fn is_terminal(&self) -> bool {
         std::io::IsTerminal::is_terminal(self)
+    }
+}
+
+impl IsTerminal for &'_ mut std::fs::File {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        (**self).is_terminal()
     }
 }
 
@@ -69,6 +98,13 @@ impl IsTerminal for crate::Buffer {
     }
 }
 
+impl IsTerminal for &'_ mut crate::Buffer {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        (**self).is_terminal()
+    }
+}
+
 mod private {
     pub trait Sealed {}
 
@@ -76,11 +112,19 @@ mod private {
 
     impl Sealed for std::io::StdoutLock<'_> {}
 
+    impl Sealed for &'_ mut std::io::StdoutLock<'_> {}
+
     impl Sealed for std::io::Stderr {}
 
     impl Sealed for std::io::StderrLock<'_> {}
 
+    impl Sealed for &'_ mut std::io::StderrLock<'_> {}
+
     impl Sealed for std::fs::File {}
 
+    impl Sealed for &'_ mut std::fs::File {}
+
     impl Sealed for crate::Buffer {}
+
+    impl Sealed for &'_ mut crate::Buffer {}
 }
