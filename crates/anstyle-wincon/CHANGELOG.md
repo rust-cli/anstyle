@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- API is rewritten from scratch, just being a `WinconStream::write_colored`
+
 ## [2.1.0] - 2023-08-24
 
 ### Compatibility
