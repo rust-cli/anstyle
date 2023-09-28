@@ -85,7 +85,8 @@ where
         let buf = bufs
             .iter()
             .find(|b| !b.is_empty())
-            .map_or(&[][..], |b| &**b);
+            .map(|b| &**b)
+            .unwrap_or(&[][..]);
         self.write(buf)
     }
     // is_write_vectored: nightly only
