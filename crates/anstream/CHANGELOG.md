@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Compile again when `auto` is disabled
+
 ## [0.6.3] - 2023-09-29
+
+### Fixes
+
+- Ensure correct `anstyle-wincon` version is used
 
 ## [0.6.2] - 2023-09-29
 
