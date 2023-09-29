@@ -65,13 +65,13 @@ macro_rules! print {
 
             let stdio = std::io::stdout();
             let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = $crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = $crate::AutoStream::new(buffer, choice);
             // Ignore errors rather than panic
             let _ = ::std::write!(&mut stream, $($arg)*);
             let buffer = stream.into_inner();
             // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(buffer.as_bytes());
+            let buffer = String::from_utf8_lossy(&buffer);
             ::std::print!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -146,13 +146,13 @@ macro_rules! println {
 
             let stdio = std::io::stdout();
             let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = $crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = $crate::AutoStream::new(buffer, choice);
             // Ignore errors rather than panic
             let _ = ::std::write!(&mut stream, $($arg)*);
             let buffer = stream.into_inner();
             // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(buffer.as_bytes());
+            let buffer = String::from_utf8_lossy(&buffer);
             ::std::println!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -206,13 +206,13 @@ macro_rules! eprint {
 
             let stdio = std::io::stderr();
             let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = $crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = $crate::AutoStream::new(buffer, choice);
             // Ignore errors rather than panic
             let _ = ::std::write!(&mut stream, $($arg)*);
             let buffer = stream.into_inner();
             // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(buffer.as_bytes());
+            let buffer = String::from_utf8_lossy(&buffer);
             ::std::eprint!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -269,13 +269,13 @@ macro_rules! eprintln {
 
             let stdio = std::io::stderr();
             let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = $crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = $crate::AutoStream::new(buffer, choice);
             // Ignore errors rather than panic
             let _ = ::std::write!(&mut stream, $($arg)*);
             let buffer = stream.into_inner();
             // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(buffer.as_bytes());
+            let buffer = String::from_utf8_lossy(&buffer);
             ::std::eprintln!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -377,13 +377,13 @@ macro_rules! panic {
 
         let panic_stream = std::io::stderr();
         let choice = $crate::AutoStream::choice(&panic_stream);
-        let buffer = $crate::Buffer::new();
+        let buffer = Vec::new();
         let mut stream = $crate::AutoStream::new(buffer, choice);
         // Ignore errors rather than panic
         let _ = ::std::write!(&mut stream, $($arg)*);
         let buffer = stream.into_inner();
         // Should be UTF-8 but not wanting to panic
-        let buffer = String::from_utf8_lossy(buffer.as_bytes()).into_owned();
+        let buffer = String::from_utf8_lossy(&buffer).into_owned();
         ::std::panic!("{}", buffer)
     }};
 }

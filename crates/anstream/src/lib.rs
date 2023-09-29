@@ -51,6 +51,7 @@ pub use strip::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
 pub use wincon::WinconStream;
 
+#[allow(deprecated)]
 pub use buffer::Buffer;
 
 /// Create an ANSI escape code compatible stdout

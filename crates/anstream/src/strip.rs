@@ -165,7 +165,7 @@ mod test {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_all_no_escapes(s in "\\PC*") {
-            let buffer = crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = StripStream::new(buffer);
             stream.write_all(s.as_bytes()).unwrap();
             let buffer = stream.into_inner();
@@ -176,7 +176,7 @@ mod test {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_byte_no_escapes(s in "\\PC*") {
-            let buffer = crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = StripStream::new(buffer);
             for byte in s.as_bytes() {
                 stream.write_all(&[*byte]).unwrap();
@@ -189,7 +189,7 @@ mod test {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_all_random(s in any::<Vec<u8>>()) {
-            let buffer = crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = StripStream::new(buffer);
             stream.write_all(s.as_slice()).unwrap();
             let buffer = stream.into_inner();
@@ -203,7 +203,7 @@ mod test {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
         fn write_byte_random(s in any::<Vec<u8>>()) {
-            let buffer = crate::Buffer::new();
+            let buffer = Vec::new();
             let mut stream = StripStream::new(buffer);
             for byte in s.as_slice() {
                 stream.write_all(&[*byte]).unwrap();
