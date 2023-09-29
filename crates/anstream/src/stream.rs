@@ -35,8 +35,10 @@ impl RawStream for std::fs::File {}
 
 impl RawStream for &'_ mut std::fs::File {}
 
+#[allow(deprecated)]
 impl RawStream for crate::Buffer {}
 
+#[allow(deprecated)]
 impl RawStream for &'_ mut crate::Buffer {}
 
 pub trait IsTerminal: private::Sealed {
@@ -127,6 +129,7 @@ impl IsTerminal for &'_ mut std::fs::File {
     }
 }
 
+#[allow(deprecated)]
 impl IsTerminal for crate::Buffer {
     #[inline]
     fn is_terminal(&self) -> bool {
@@ -134,6 +137,7 @@ impl IsTerminal for crate::Buffer {
     }
 }
 
+#[allow(deprecated)]
 impl IsTerminal for &'_ mut crate::Buffer {
     #[inline]
     fn is_terminal(&self) -> bool {
@@ -212,6 +216,7 @@ impl AsLockedWrite for std::fs::File {
     }
 }
 
+#[allow(deprecated)]
 impl AsLockedWrite for crate::Buffer {
     type Write<'w> = &'w mut Self;
 
@@ -248,7 +253,9 @@ mod private {
 
     impl Sealed for &'_ mut std::fs::File {}
 
+    #[allow(deprecated)]
     impl Sealed for crate::Buffer {}
 
+    #[allow(deprecated)]
     impl Sealed for &'_ mut crate::Buffer {}
 }
