@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Impl `WinconStream` for `Box<dyn Write>`
+
 ## [3.0.0] - 2023-09-28
 
 ### Breaking Change

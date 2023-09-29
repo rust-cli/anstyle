@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Compatibility
+
+- Deprecated `Buffer` in favor of `Vec<u8>`
+
+### Features
+
+- Support `AutoStream` for `Vec<u8>` and `Box<dyn Write>`
+
 ## [0.6.1] - 2023-09-28
 
 ### Features
