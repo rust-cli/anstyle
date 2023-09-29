@@ -136,6 +136,7 @@ where
     ///
     /// This doesn't report what is requested but what is currently active.
     #[inline]
+    #[cfg(feature = "auto")]
     pub fn current_choice(&self) -> ColorChoice {
         match &self.inner {
             StreamInner::PassThrough(_) => ColorChoice::AlwaysAnsi,
