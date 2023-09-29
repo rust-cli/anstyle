@@ -27,6 +27,10 @@ impl RawStream for Box<dyn std::io::Write> {}
 
 impl RawStream for &'_ mut Box<dyn std::io::Write> {}
 
+impl RawStream for Vec<u8> {}
+
+impl RawStream for &'_ mut Vec<u8> {}
+
 impl RawStream for std::fs::File {}
 
 impl RawStream for &'_ mut std::fs::File {}
@@ -89,6 +93,20 @@ impl IsTerminal for Box<dyn std::io::Write> {
 }
 
 impl IsTerminal for &'_ mut Box<dyn std::io::Write> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
+impl IsTerminal for Vec<u8> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
+impl IsTerminal for &'_ mut Vec<u8> {
     #[inline]
     fn is_terminal(&self) -> bool {
         false
@@ -176,6 +194,15 @@ impl AsLockedWrite for Box<dyn std::io::Write> {
     }
 }
 
+impl AsLockedWrite for Vec<u8> {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
 impl AsLockedWrite for std::fs::File {
     type Write<'w> = &'w mut Self;
 
@@ -212,6 +239,10 @@ mod private {
     impl Sealed for Box<dyn std::io::Write> {}
 
     impl Sealed for &'_ mut Box<dyn std::io::Write> {}
+
+    impl Sealed for Vec<u8> {}
+
+    impl Sealed for &'_ mut Vec<u8> {}
 
     impl Sealed for std::fs::File {}
 

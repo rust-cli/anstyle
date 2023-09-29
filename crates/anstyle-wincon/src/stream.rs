@@ -64,6 +64,17 @@ impl WinconStream for Vec<u8> {
     }
 }
 
+impl WinconStream for &'_ mut Vec<u8> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
+    }
+}
+
 impl WinconStream for std::io::Stdout {
     fn write_colored(
         &mut self,
