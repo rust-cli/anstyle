@@ -33,12 +33,12 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "anstyle 1.0.4",
  "anstyle-parse 0.2.2",
  "anstyle-query 1.0.0",
- "anstyle-wincon 3.0.0",
+ "anstyle-wincon 3.0.1",
  "colorchoice 1.0.0",
  "criterion",
  "owo-colors",
@@ -182,7 +182,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "3.0.0"
+version = "3.0.1"
 dependencies = [
  "anstyle 1.0.4",
  "lexopt",
@@ -364,7 +364,7 @@ checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 name = "colorchoice-clap"
 version = "1.0.3"
 dependencies = [
- "anstream 0.6.1",
+ "anstream 0.6.2",
  "clap",
  "colorchoice 1.0.0",
  "owo-colors",
