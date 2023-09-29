@@ -9,6 +9,28 @@ pub trait WinconStream {
     ) -> std::io::Result<usize>;
 }
 
+impl WinconStream for Box<dyn std::io::Write> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        crate::ansi::write_colored(self, fg, bg, data)
+    }
+}
+
+impl WinconStream for &'_ mut Box<dyn std::io::Write> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
+    }
+}
+
 impl WinconStream for std::fs::File {
     fn write_colored(
         &mut self,

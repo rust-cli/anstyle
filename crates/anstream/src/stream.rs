@@ -23,6 +23,10 @@ impl RawStream for std::io::StderrLock<'_> {}
 
 impl RawStream for &'_ mut std::io::StderrLock<'_> {}
 
+impl RawStream for Box<dyn std::io::Write> {}
+
+impl RawStream for &'_ mut Box<dyn std::io::Write> {}
+
 impl RawStream for std::fs::File {}
 
 impl RawStream for &'_ mut std::fs::File {}
@@ -74,6 +78,20 @@ impl IsTerminal for &'_ mut std::io::StderrLock<'_> {
     #[inline]
     fn is_terminal(&self) -> bool {
         (**self).is_terminal()
+    }
+}
+
+impl IsTerminal for Box<dyn std::io::Write> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
+impl IsTerminal for &'_ mut Box<dyn std::io::Write> {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
     }
 }
 
@@ -149,6 +167,15 @@ impl AsLockedWrite for std::io::StderrLock<'static> {
     }
 }
 
+impl AsLockedWrite for Box<dyn std::io::Write> {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
 impl AsLockedWrite for std::fs::File {
     type Write<'w> = &'w mut Self;
 
@@ -181,6 +208,10 @@ mod private {
     impl Sealed for std::io::StderrLock<'_> {}
 
     impl Sealed for &'_ mut std::io::StderrLock<'_> {}
+
+    impl Sealed for Box<dyn std::io::Write> {}
+
+    impl Sealed for &'_ mut Box<dyn std::io::Write> {}
 
     impl Sealed for std::fs::File {}
 
