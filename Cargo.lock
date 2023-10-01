@@ -341,9 +341,9 @@ checksum = "2da6da31387c7e4ef160ffab6d5e7f00c42626fe39aea70a7b0f1773f7dd6c1b"
 
 [[package]]
 name = "codegenrs"
-version = "2.0.0"
+version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d7ecb55fae620b95dc3586f10bf6d93d4bfc73b34b0adddf18445b9291458dd6"
+checksum = "bdd9df7bf4b13db9f290fa2adba3c6e68beb842aa6b1ab44bd51a504ee2d5942"
 dependencies = [
  "derive_more",
  "difference",
