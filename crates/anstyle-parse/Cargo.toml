@@ -30,7 +30,7 @@ core = ["dep:arrayvec"]
 utf8 = ["dep:utf8parse"]
 
 [dev-dependencies]
-codegenrs = { version = "2.0.0", default-features = false }
+codegenrs = { version = "3.0.1", default-features = false }
 criterion = "0.5.1"
 proptest = "1.2.0"
 snapbox = { version = "0.4.12", features = ["path"] }
