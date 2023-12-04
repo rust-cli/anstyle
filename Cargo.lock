@@ -22,9 +22,9 @@ name = "anstream"
 version = "0.6.4"
 dependencies = [
  "anstyle 1.0.4",
- "anstyle-parse 0.2.2",
- "anstyle-query 1.0.0",
- "anstyle-wincon 3.0.1",
+ "anstyle-parse 0.2.3",
+ "anstyle-query 1.0.1",
+ "anstyle-wincon 3.0.2",
  "colorchoice 1.0.0",
  "criterion",
  "lexopt",
@@ -42,8 +42,8 @@ checksum = "2ab91ebe16eb252986481c5b62f6098f3b698a45e34b5b98200cf20dd2484a44"
 dependencies = [
  "anstyle 1.0.0",
  "anstyle-parse 0.2.0",
- "anstyle-query 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "anstyle-wincon 3.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-query 1.0.0",
+ "anstyle-wincon 3.0.1",
  "colorchoice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "utf8parse",
 ]
@@ -117,7 +117,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-parse"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "arrayvec",
  "codegenrs",
@@ -131,17 +131,17 @@ dependencies = [
 [[package]]
 name = "anstyle-query"
 version = "1.0.0"
-dependencies = [
- "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "anstyle-query"
-version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5ca11d4be1bab0c8bc8734a9aa7bf4ee8316d462a08c6ac5052f888fef5b494b"
 dependencies = [
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "anstyle-query"
+version = "1.0.1"
+dependencies = [
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -174,20 +174,20 @@ dependencies = [
 [[package]]
 name = "anstyle-wincon"
 version = "3.0.1"
-dependencies = [
- "anstyle 1.0.4",
- "lexopt",
- "windows-sys 0.52.0",
-]
-
-[[package]]
-name = "anstyle-wincon"
-version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f0699d10d2f4d628a98ee7b57b289abbc98ff3bad977cb3152709d4bf2330628"
 dependencies = [
  "anstyle 1.0.0",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "anstyle-wincon"
+version = "3.0.2"
+dependencies = [
+ "anstyle 1.0.4",
+ "lexopt",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

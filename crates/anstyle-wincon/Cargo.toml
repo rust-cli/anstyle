@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-wincon"
-version = "3.0.1"
+version = "3.0.2"
 description = "Styling legacy Windows terminals"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"

@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-parse"
-version = "0.2.2"
+version = "0.2.3"
 description = "Parse ANSI Style Escapes"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
