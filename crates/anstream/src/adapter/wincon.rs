@@ -244,7 +244,7 @@ mod test {
             .collect::<Vec<_>>();
         let mut state = WinconBytes::new();
         let actual = state.extract_next(input.as_bytes()).collect::<Vec<_>>();
-        assert_eq!(expected, actual);
+        assert_eq!(expected, actual, "{input:?}");
     }
 
     #[test]
