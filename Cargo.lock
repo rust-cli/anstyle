@@ -20,6 +20,20 @@ dependencies = [
 [[package]]
 name = "anstream"
 version = "0.6.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2ab91ebe16eb252986481c5b62f6098f3b698a45e34b5b98200cf20dd2484a44"
+dependencies = [
+ "anstyle 1.0.0",
+ "anstyle-parse 0.2.0",
+ "anstyle-query 1.0.0",
+ "anstyle-wincon 3.0.1",
+ "colorchoice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "utf8parse",
+]
+
+[[package]]
+name = "anstream"
+version = "0.6.5"
 dependencies = [
  "anstyle 1.0.4",
  "anstyle-parse 0.2.3",
@@ -31,20 +45,6 @@ dependencies = [
  "owo-colors",
  "proptest",
  "strip-ansi-escapes",
- "utf8parse",
-]
-
-[[package]]
-name = "anstream"
-version = "0.6.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ab91ebe16eb252986481c5b62f6098f3b698a45e34b5b98200cf20dd2484a44"
-dependencies = [
- "anstyle 1.0.0",
- "anstyle-parse 0.2.0",
- "anstyle-query 1.0.0",
- "anstyle-wincon 3.0.1",
- "colorchoice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "utf8parse",
 ]
 
@@ -310,7 +310,7 @@ version = "4.4.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "63361bae7eef3771745f02d8d892bec2fee5f6e34af316ba556e7f97a7069ff1"
 dependencies = [
- "anstream 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstream 0.6.4",
  "anstyle 1.0.0",
  "clap_lex",
  "strsim",
@@ -359,7 +359,7 @@ checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 name = "colorchoice-clap"
 version = "1.0.3"
 dependencies = [
- "anstream 0.6.4",
+ "anstream 0.6.5",
  "clap",
  "colorchoice 1.0.0",
  "owo-colors",
@@ -1099,7 +1099,7 @@ version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4b377c0b6e4715c116473d8e40d51e3fa5b0a2297ca9b2a931ba800667b259ed"
 dependencies = [
- "anstream 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstream 0.6.4",
  "anstyle 1.0.0",
  "content_inspector",
  "dunce",
@@ -1117,7 +1117,7 @@ version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed1559baff8a696add3322b9be3e940d433e7bb4e38d79017205fd37ff28b28e"
 dependencies = [
- "anstream 0.6.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstream 0.6.4",
 ]
 
 [[package]]
