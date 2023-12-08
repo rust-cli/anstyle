@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Expose `windows::enable_virtual_terminal_processing`
+
 ## [1.0.1] - 2023-12-04
 
 ### Compatibility
