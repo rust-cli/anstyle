@@ -287,6 +287,17 @@ mod test {
         verify(&input, expected);
     }
 
+    #[test]
+    fn ansi256_colors() {
+        // termcolor only supports "brights" via these
+        let input = format!(
+            "Hello {}!",
+            "world".color(owo_colors::XtermColors::UserBrightYellow)
+        );
+        let expected = vec![(anstyle::Style::default(), "Hello world!")];
+        verify(&input, expected);
+    }
+
     proptest! {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
