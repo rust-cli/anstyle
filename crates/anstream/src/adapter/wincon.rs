@@ -105,11 +105,12 @@ impl anstyle_parse::Perform for WinconCapture {
         }
 
         let mut style = self.style;
+        // param/value differences are dependent on the escape code
+        let mut state = State::Normal;
+        let mut r = None;
+        let mut g = None;
+        let mut is_bg = false;
         for param in params {
-            let mut state = State::Normal;
-            let mut r = None;
-            let mut g = None;
-            let mut is_bg = false;
             for value in param {
                 match (state, *value) {
                     (State::Normal, 0) => {
@@ -294,7 +295,11 @@ mod test {
             "Hello {}!",
             "world".color(owo_colors::XtermColors::UserBrightYellow)
         );
-        let expected = vec![(anstyle::Style::default(), "Hello world!")];
+        let expected = vec![
+            (anstyle::Style::default(), "Hello "),
+            (anstyle::Ansi256Color(11).on_default(), "world"),
+            (anstyle::Style::default(), "!"),
+        ];
         verify(&input, expected);
     }
 
