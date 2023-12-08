@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- *(windows)* Adapt ANSI-256 colors that map to ANSI colors
+
 ## [0.6.4] - 2023-09-29
 
 ### Fixes
