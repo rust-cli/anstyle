@@ -23,4 +23,4 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "1.0.0", path = "../anstyle" }
-owo-colors = "3.5.0"
+owo-colors = "4.0.0"

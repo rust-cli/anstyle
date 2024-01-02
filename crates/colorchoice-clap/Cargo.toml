@@ -26,4 +26,4 @@ clap = { version = "4.3.5", default-features = false, features = ["std", "derive
 [dev-dependencies]
 anstream = { path = "../anstream" }
 clap = "4.4.12"
-owo-colors = "3.5.0"
+owo-colors = "4.0.0"
