@@ -6,6 +6,11 @@ use crate::StripStream;
 use crate::WinconStream;
 
 /// [`std::io::Write`] that adapts ANSI escape codes to the underlying `Write`s capabilities
+///
+/// This includes
+/// - Stripping colors for non-terminals
+/// - Respecting env variables like [NO_COLOR](https://no-color.org/) or [CLICOLOR](https://bixense.com/clicolors/)
+/// - *(windows)* Falling back to the wincon API where [ENABLE_VIRTUAL_TERMINAL_PROCESSING](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#output-sequences) is unsupported
 #[derive(Debug)]
 pub struct AutoStream<S: RawStream> {
     inner: StreamInner<S>,
