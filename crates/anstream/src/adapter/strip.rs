@@ -160,15 +160,21 @@ fn is_printable_str(action: Action, byte: u8) -> bool {
     const DEL: u8 = 0x7f;
     (action == Action::Print && byte != DEL)
         || action == Action::BeginUtf8
-        // since we know the input is valid UTF-8, the only thing  we can do with
-        // continuations is to print them
-        || is_utf8_continuation(byte)
+        // Since we know the input is valid UTF-8, the only thing  we can do with
+        // continuations is to print them.
+        // Also, the parser may have gotten confused by multi-byte sequence begin,
+        // so we work around it here order to preserve integrity and prevent UB.
+        || is_utf8_begin_or_continuation(byte)
         || (action == Action::Execute && byte.is_ascii_whitespace())
 }
 
 #[inline]
-fn is_utf8_continuation(b: u8) -> bool {
-    matches!(b, 0x80..=0xbf)
+fn is_utf8_begin_or_continuation(b: u8) -> bool {
+    matches!(b,
+        0b10000000..=0b10111111    // continuation 0x80..=0xbf
+        | 0b11000000..=0b11011111  // begin two bytes sequence
+        | 0b11100000..=0b11101111  // begin three bytes sequence
+        | 0b11110000..=0b11110111) // begin four bytes sequence
 }
 
 /// Strip ANSI escapes from bytes, returning the printable content
@@ -471,6 +477,15 @@ mod test {
         let expected = "";
         let actual = String::from_utf8(strip_byte(&bytes).to_vec()).unwrap();
         assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn test_strip_handles_broken_sequence() {
+        // valid utf8: \xc3\xb6 then \x1b then \xf0\x9f\x98\x80
+        let s = "ö\x1b😀";
+        let mut it = strip_str(s);
+        assert_eq!("ö", it.next().unwrap());
+        assert_eq!("😀", it.next().unwrap());
     }
 
     proptest! {
