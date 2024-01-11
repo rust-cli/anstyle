@@ -473,6 +473,16 @@ mod test {
         assert_eq!(expected, actual);
     }
 
+    #[test]
+    #[should_panic]
+    fn test_strip_str_handles_broken_sequence() {
+        // valid utf8: \xc3\xb6 then \x1b then \xf0\x9f\x98\x80
+        let s = "ö\x1b😀hello😀goodbye";
+        let mut it = strip_str(s);
+        assert_eq!("ö", it.next().unwrap());
+        assert_eq!("😀hello😀goodbye", it.next().unwrap());
+    }
+
     proptest! {
         #[test]
         #[cfg_attr(miri, ignore)]  // See https://github.com/AltSysrq/proptest/issues/253
