@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Fix soundness issue where invalid escape sequences can break up UTF-8 characters
+
 ## [0.6.5] - 2023-12-08
 
 ### Fixes
