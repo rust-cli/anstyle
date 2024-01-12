@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.7] - 2024-01-12
+
 ### Fixes
 
 - Remove stray `dbg`
@@ -188,7 +190,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.6...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.7...HEAD
+[0.6.7]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.6...anstream-v0.6.7
 [0.6.6]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.5...anstream-v0.6.6
 [0.6.5]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.4...anstream-v0.6.5
 [0.6.4]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.3...anstream-v0.6.4
