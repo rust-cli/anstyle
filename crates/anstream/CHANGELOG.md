@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Remove stray `dbg`
+
 ## [0.6.6] - 2024-01-12
 
 ### Fixes
