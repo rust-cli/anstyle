@@ -114,7 +114,7 @@ impl<'s> Iterator for StripStrIter<'s> {
 #[inline]
 fn next_str<'s>(bytes: &mut &'s [u8], state: &mut State) -> Option<&'s str> {
     let offset = bytes.iter().copied().position(|b| {
-        let (next_state, action) = dbg!(state_change(*state, b));
+        let (next_state, action) = state_change(*state, b);
         if next_state != State::Anywhere {
             *state = next_state;
         }
