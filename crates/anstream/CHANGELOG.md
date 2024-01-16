@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.8] - 2024-01-16
+
 ### Fixes
 
 - Loosen `WinconStream` and `StripStream` trait bounds
@@ -194,7 +196,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.7...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.8...HEAD
+[0.6.8]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.7...anstream-v0.6.8
 [0.6.7]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.6...anstream-v0.6.7
 [0.6.6]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.5...anstream-v0.6.6
 [0.6.5]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.4...anstream-v0.6.5
