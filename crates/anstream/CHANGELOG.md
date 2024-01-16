@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Loosen `WinconStream` and `StripStream` trait bounds
+
 ## [0.6.7] - 2024-01-12
 
 ### Fixes
