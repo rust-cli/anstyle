@@ -1,6 +1,5 @@
 use crate::stream::AsLockedWrite;
 use crate::stream::RawStream;
-#[cfg(feature = "auto")]
 use crate::ColorChoice;
 use crate::StripStream;
 #[cfg(all(windows, feature = "wincon"))]
