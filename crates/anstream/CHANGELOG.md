@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.11] - 2024-01-18
+
 ### Fixes
 
 - Ensure we build without `auto` (regression from 0.6.10)
@@ -213,7 +215,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.10...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.11...HEAD
+[0.6.11]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.10...anstream-v0.6.11
 [0.6.10]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.9...anstream-v0.6.10
 [0.6.9]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.8...anstream-v0.6.9
 [0.6.8]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.7...anstream-v0.6.8
