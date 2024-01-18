@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Always expose `ColorChoice`
+- Always expose `AutoStream::new`
+
 ## [0.6.9] - 2024-01-18
 
 ### Features
