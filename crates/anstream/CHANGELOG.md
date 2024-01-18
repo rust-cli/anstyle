@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Ensure we build without `auto` (regression from 0.6.10)
+
 ## [0.6.10] - 2024-01-18
 
 ### Features
