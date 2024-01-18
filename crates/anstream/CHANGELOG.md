@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.9] - 2024-01-18
+
 ### Features
 
 - Expose `Stdout` / `Stderr` types
@@ -200,7 +202,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.8...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.9...HEAD
+[0.6.9]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.8...anstream-v0.6.9
 [0.6.8]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.7...anstream-v0.6.8
 [0.6.7]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.6...anstream-v0.6.7
 [0.6.6]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.5...anstream-v0.6.6
