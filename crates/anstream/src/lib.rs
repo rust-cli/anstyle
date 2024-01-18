@@ -78,5 +78,4 @@ pub fn stderr() -> Stderr {
 }
 
 /// Selection for overriding color output
-#[cfg(feature = "auto")]
 pub use colorchoice::ColorChoice;
