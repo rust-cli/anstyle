@@ -34,6 +34,8 @@ fn main() -> Result<(), lexopt::Error> {
         let _ = print_number(&mut stdout, fixed, style);
     }
 
+    let _ = writeln!(stdout);
+
     Ok(())
 }
 
