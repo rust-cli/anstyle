@@ -2,10 +2,17 @@ use crate::reset::RESET;
 
 /// ANSI Text styling
 ///
+/// You can print a `Style` to render the corresponding ANSI code.
+/// Using the alternate flag `#` will render the ANSI reset code, if needed.
+/// Together, this makes it convenient to render styles using inline format arguments.
+///
 /// # Examples
 ///
 /// ```rust
 /// let style = anstyle::Style::new().bold();
+///
+/// let value = 42;
+/// println!("{style}{value}{style:#}");
 /// ```
 #[derive(Copy, Clone, Default, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Style {
