@@ -91,6 +91,8 @@ impl Style {
     }
 
     /// Render the ANSI code
+    ///
+    /// `Style` also implements `Display` directly, so calling this method is optional.
     #[inline]
     pub fn render(self) -> impl core::fmt::Display + Copy + Clone {
         StyleDisplay(self)
@@ -391,6 +393,12 @@ impl core::cmp::PartialEq<crate::Effects> for Style {
     fn eq(&self, other: &crate::Effects) -> bool {
         let other = Self::from(*other);
         *self == other
+    }
+}
+
+impl core::fmt::Display for Style {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        self.fmt_to(f)
     }
 }
 
