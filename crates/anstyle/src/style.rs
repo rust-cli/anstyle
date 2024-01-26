@@ -397,8 +397,13 @@ impl core::cmp::PartialEq<crate::Effects> for Style {
 }
 
 impl core::fmt::Display for Style {
+    #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.fmt_to(f)
+        if f.alternate() {
+            self.render_reset().fmt(f)
+        } else {
+            self.fmt_to(f)
+        }
     }
 }
 
