@@ -25,21 +25,31 @@ repository:
   merge_commit_message: "PR_BODY"
 
 labels:
+  - name: "A-style"
+    description: "Area: anstyle"
+    color: '#f7e101'
+  - name: "A-stream"
+    description: "Area: anstream"
+    color: '#f7e101'
   # Type
-  - name: bug
-    color: '#b60205'
-    description: "Not as expected"
-  - name: enhancement
-    color: '#1d76db'
-    description: "Improve the expected"
-  # Flavor
-  - name: question
-    color: "#cc317c"
-    description: "Uncertainty is involved"
-  - name: breaking-change
-    color: "#e99695"
-  - name: good first issue
-    color: '#c2e0c6'
+  - name: "C-bug"
+    color: '#f5f1fd'
+    description: "Category: Things not working as expected"
+  - name: "C-enhancement"
+    color: '#f5f1fd'
+    description: "Category: Raise on the bar on expectations"
+  # Status
+  - name: "S-triage"
+    description: "Status: New; needs maintainer attention."
+    color: '#D3DDDD'
+  - name: "S-blocked"
+    description: "Status: Blocked on something else such as an RFC or other implementation work."
+    color: '#D3DDDD'
+  # Meta
+  - name: "breaking-change"
+    color: '#E10C02'
+  - name: "E-help-wanted"
+    color: '#02E10C'
     description: "Help wanted!"
 
 branches:
