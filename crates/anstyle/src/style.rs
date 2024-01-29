@@ -96,6 +96,26 @@ impl Style {
         StyleDisplay(self)
     }
 
+    fn fmt_to(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        use core::fmt::Display as _;
+
+        self.effects.render().fmt(f)?;
+
+        if let Some(fg) = self.fg {
+            fg.render_fg().fmt(f)?;
+        }
+
+        if let Some(bg) = self.bg {
+            bg.render_bg().fmt(f)?;
+        }
+
+        if let Some(underline) = self.underline {
+            underline.render_underline().fmt(f)?;
+        }
+
+        Ok(())
+    }
+
     /// Write the ANSI code
     #[inline]
     #[cfg(feature = "std")]
@@ -379,21 +399,7 @@ struct StyleDisplay(Style);
 
 impl core::fmt::Display for StyleDisplay {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.0.effects.render().fmt(f)?;
-
-        if let Some(fg) = self.0.fg {
-            fg.render_fg().fmt(f)?;
-        }
-
-        if let Some(bg) = self.0.bg {
-            bg.render_bg().fmt(f)?;
-        }
-
-        if let Some(underline) = self.0.underline {
-            underline.render_underline().fmt(f)?;
-        }
-
-        Ok(())
+        self.0.fmt_to(f)
     }
 }
 
