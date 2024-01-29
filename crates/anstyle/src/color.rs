@@ -546,9 +546,11 @@ impl From<(u8, u8, u8)> for RgbColor {
     }
 }
 
+const DISPLAY_BUFFER_CAPACITY: usize = 19;
+
 #[derive(Copy, Clone, Default, Debug)]
 struct DisplayBuffer {
-    buffer: [u8; 19],
+    buffer: [u8; DISPLAY_BUFFER_CAPACITY],
     len: usize,
 }
 
@@ -617,5 +619,6 @@ mod test {
         let c = RgbColor(255, 255, 255);
         let actual = c.render_fg().to_string();
         assert_eq!(actual, "\u{1b}[38;2;255;255;255m");
+        assert_eq!(actual.len(), DISPLAY_BUFFER_CAPACITY);
     }
 }
