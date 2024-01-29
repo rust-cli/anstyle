@@ -33,6 +33,31 @@ where
     S: RawStream,
 {
     /// Runtime control over styling behavior
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # #[cfg(feature = "auto")] {
+    /// # use std::io::IsTerminal as _;
+    /// // Like `AutoStream::choice` but without `NO_COLOR`, `CLICOLOR_FORCE`, `CI`
+    /// fn choice(raw: &dyn anstream::stream::RawStream) -> anstream::ColorChoice {
+    ///     let choice = anstream::ColorChoice::global();
+    ///     if choice == anstream::ColorChoice::Auto {
+    ///         if raw.is_terminal() && anstyle_query::term_supports_color() {
+    ///             anstream::ColorChoice::Always
+    ///         } else {
+    ///             anstream::ColorChoice::Never
+    ///         }
+    ///     } else {
+    ///         choice
+    ///     }
+    /// }
+    ///
+    /// let stream = std::io::stdout();
+    /// let choice = choice(&stream);
+    /// let auto = anstream::AutoStream::new(stream, choice);
+    /// # }
+    /// ```
     #[inline]
     pub fn new(raw: S, choice: ColorChoice) -> Self {
         match choice {
