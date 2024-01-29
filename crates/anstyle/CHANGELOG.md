@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+- Implement `Display` for `Style` where the alternate flag is for reset
+- Implement `Display` for `Reset`
+
 ## [1.0.4] - 2023-09-28
 
 ### Features
