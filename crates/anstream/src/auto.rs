@@ -11,6 +11,10 @@ use crate::WinconStream;
 /// - Stripping colors for non-terminals
 /// - Respecting env variables like [NO_COLOR](https://no-color.org/) or [CLICOLOR](https://bixense.com/clicolors/)
 /// - *(windows)* Falling back to the wincon API where [ENABLE_VIRTUAL_TERMINAL_PROCESSING](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#output-sequences) is unsupported
+///
+/// You can customize auto-detection by calling into
+/// [anstyle_query](https://docs.rs/anstyle-query/latest/anstyle_query/)
+/// to get a [`ColorChoice`] and then calling [`AutoStream::new(stream, choice()`].
 #[derive(Debug)]
 pub struct AutoStream<S: RawStream> {
     inner: StreamInner<S>,
