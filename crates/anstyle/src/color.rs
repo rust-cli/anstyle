@@ -25,7 +25,7 @@ impl Color {
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display + Copy + Clone {
         match self {
-            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_fg_str()),
+            Self::Ansi(color) => color.as_fg_buffer(),
             Self::Ansi256(color) => color.as_fg_buffer(),
             Self::Rgb(color) => color.as_fg_buffer(),
         }
@@ -35,7 +35,7 @@ impl Color {
     #[cfg(feature = "std")]
     pub(crate) fn write_fg_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
         let buffer = match self {
-            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_fg_str()),
+            Self::Ansi(color) => color.as_fg_buffer(),
             Self::Ansi256(color) => color.as_fg_buffer(),
             Self::Rgb(color) => color.as_fg_buffer(),
         };
@@ -46,7 +46,7 @@ impl Color {
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display + Copy + Clone {
         match self {
-            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_bg_str()),
+            Self::Ansi(color) => color.as_bg_buffer(),
             Self::Ansi256(color) => color.as_bg_buffer(),
             Self::Rgb(color) => color.as_bg_buffer(),
         }
@@ -56,7 +56,7 @@ impl Color {
     #[cfg(feature = "std")]
     pub(crate) fn write_bg_to(self, write: &mut dyn std::io::Write) -> std::io::Result<()> {
         let buffer = match self {
-            Self::Ansi(color) => DisplayBuffer::default().write_str(color.as_bg_str()),
+            Self::Ansi(color) => color.as_bg_buffer(),
             Self::Ansi256(color) => color.as_bg_buffer(),
             Self::Rgb(color) => color.as_bg_buffer(),
         };
@@ -217,6 +217,11 @@ impl AnsiColor {
         }
     }
 
+    #[inline]
+    fn as_fg_buffer(&self) -> DisplayBuffer {
+        DisplayBuffer::default().write_str(self.as_fg_str())
+    }
+
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display + Copy + Clone {
@@ -243,6 +248,11 @@ impl AnsiColor {
             Self::BrightCyan => escape!("10", "6"),
             Self::BrightWhite => escape!("10", "7"),
         }
+    }
+
+    #[inline]
+    fn as_bg_buffer(&self) -> DisplayBuffer {
+        DisplayBuffer::default().write_str(self.as_bg_str())
     }
 
     #[inline]
