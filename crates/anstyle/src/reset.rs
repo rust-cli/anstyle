@@ -20,3 +20,10 @@ impl core::fmt::Display for ResetDisplay {
 }
 
 pub(crate) const RESET: &str = "\x1B[0m";
+
+#[test]
+fn print_size_of() {
+    use std::mem::size_of;
+    dbg!(size_of::<Reset>());
+    dbg!(size_of::<ResetDisplay>());
+}

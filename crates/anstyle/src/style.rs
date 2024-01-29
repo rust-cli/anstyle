@@ -396,3 +396,10 @@ impl core::fmt::Display for StyleDisplay {
         Ok(())
     }
 }
+
+#[test]
+fn print_size_of() {
+    use std::mem::size_of;
+    dbg!(size_of::<Style>());
+    dbg!(size_of::<StyleDisplay>());
+}

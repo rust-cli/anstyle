@@ -621,4 +621,14 @@ mod test {
         assert_eq!(actual, "\u{1b}[38;2;255;255;255m");
         assert_eq!(actual.len(), DISPLAY_BUFFER_CAPACITY);
     }
+
+    #[test]
+    fn print_size_of() {
+        use std::mem::size_of;
+        dbg!(size_of::<Color>());
+        dbg!(size_of::<AnsiColor>());
+        dbg!(size_of::<Ansi256Color>());
+        dbg!(size_of::<RgbColor>());
+        dbg!(size_of::<DisplayBuffer>());
+    }
 }
