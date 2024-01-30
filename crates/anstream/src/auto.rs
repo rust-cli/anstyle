@@ -14,7 +14,7 @@ use crate::WinconStream;
 ///
 /// You can customize auto-detection by calling into
 /// [anstyle_query](https://docs.rs/anstyle-query/latest/anstyle_query/)
-/// to get a [`ColorChoice`] and then calling [`AutoStream::new(stream, choice()`].
+/// to get a [`ColorChoice`] and then calling [`AutoStream::new(stream, choice)`].
 #[derive(Debug)]
 pub struct AutoStream<S: RawStream> {
     inner: StreamInner<S>,
