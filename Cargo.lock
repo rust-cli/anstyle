@@ -19,20 +19,6 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ab91ebe16eb252986481c5b62f6098f3b698a45e34b5b98200cf20dd2484a44"
-dependencies = [
- "anstyle 1.0.0",
- "anstyle-parse 0.2.0",
- "anstyle-query 1.0.0",
- "anstyle-wincon 3.0.1",
- "colorchoice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "utf8parse",
-]
-
-[[package]]
-name = "anstream"
 version = "0.6.11"
 dependencies = [
  "anstyle 1.0.5",
@@ -45,6 +31,20 @@ dependencies = [
  "owo-colors",
  "proptest",
  "strip-ansi-escapes",
+ "utf8parse",
+]
+
+[[package]]
+name = "anstream"
+version = "0.6.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6e2e1ebcb11de5c03c67de28a7df593d32191b44939c482e97702baaaa6ab6a5"
+dependencies = [
+ "anstyle 1.0.0",
+ "anstyle-parse 0.2.0",
+ "anstyle-query 1.0.0",
+ "anstyle-wincon 3.0.1",
+ "colorchoice 1.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "utf8parse",
 ]
 
@@ -296,9 +296,9 @@ dependencies = [
 
 [[package]]
 name = "clap"
-version = "4.4.12"
+version = "4.4.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcfab8ba68f3668e89f6ff60f5b205cea56aa7b769451a59f34b8682f51c056d"
+checksum = "1e578d6ec4194633722ccf9544794b71b1385c3c027efe0c55db226fc880865c"
 dependencies = [
  "clap_builder",
  "clap_derive",
@@ -306,11 +306,11 @@ dependencies = [
 
 [[package]]
 name = "clap_builder"
-version = "4.4.12"
+version = "4.4.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fb7fb5e4e979aec3be7791562fcba452f94ad85e954da024396433e0e25a79e9"
+checksum = "4df4df40ec50c46000231c914968278b1eb05098cf8f1b3a518a95030e71d1c7"
 dependencies = [
- "anstream 0.6.4",
+ "anstream 0.6.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "anstyle 1.0.0",
  "clap_lex",
  "strsim",
@@ -1095,11 +1095,11 @@ checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
 
 [[package]]
 name = "snapbox"
-version = "0.4.15"
+version = "0.4.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4f1976ee8fd1be27d5f72c98be0aac4397a882a4736935d47418a5fbbd12042"
+checksum = "73145a30df4935f50a7b13c1882bce7d194d7071ad0bcc36e7cacbf9ef16e3ec"
 dependencies = [
- "anstream 0.6.4",
+ "anstream 0.6.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "anstyle 1.0.0",
  "content_inspector",
  "dunce",
@@ -1113,11 +1113,11 @@ dependencies = [
 
 [[package]]
 name = "snapbox-macros"
-version = "0.3.6"
+version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed1559baff8a696add3322b9be3e940d433e7bb4e38d79017205fd37ff28b28e"
+checksum = "78ccde059aad940984ff696fe8c280900f7ea71a6fb45fce65071a3f2c40b667"
 dependencies = [
- "anstream 0.6.4",
+ "anstream 0.6.11 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
