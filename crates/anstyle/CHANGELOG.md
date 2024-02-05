@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Ignore `Display` settings like padding (we were inconsistent about that and generally wrong when we did it)
+
 ## [1.0.5] - 2024-01-29
+
+### Features
 
 - Implement `Display` for `Style` where the alternate flag is for reset
 - Implement `Display` for `Reset`
