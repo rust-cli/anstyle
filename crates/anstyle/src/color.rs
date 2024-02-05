@@ -192,7 +192,7 @@ impl AnsiColor {
     /// Render the ANSI code for a foreground color
     #[inline]
     pub fn render_fg(self) -> impl core::fmt::Display + Copy + Clone {
-        self.as_fg_str()
+        NullFormatter(self.as_fg_str())
     }
 
     #[inline]
@@ -225,7 +225,7 @@ impl AnsiColor {
     /// Render the ANSI code for a background color
     #[inline]
     pub fn render_bg(self) -> impl core::fmt::Display + Copy + Clone {
-        self.as_bg_str()
+        NullFormatter(self.as_bg_str())
     }
 
     #[inline]
@@ -605,7 +605,19 @@ impl DisplayBuffer {
 impl core::fmt::Display for DisplayBuffer {
     #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        self.as_str().fmt(f)
+        let s = self.as_str();
+        write!(f, "{s}")
+    }
+}
+
+#[derive(Copy, Clone, Default, Debug)]
+struct NullFormatter<D: core::fmt::Display>(D);
+
+impl<D: core::fmt::Display> core::fmt::Display for NullFormatter<D> {
+    #[inline]
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        let d = &self.0;
+        write!(f, "{d}")
     }
 }
 
@@ -635,26 +647,19 @@ mod test {
     #[test]
     fn no_align() {
         #[track_caller]
-        fn assert_align(d: impl core::fmt::Display) {
-            let expected = format!("{d:<10}");
-            let actual = format!("{d:<10}");
-            assert_eq!(expected, actual);
-        }
-
-        #[track_caller]
         fn assert_no_align(d: impl core::fmt::Display) {
             let expected = format!("{d}");
             let actual = format!("{d:<10}");
             assert_eq!(expected, actual);
         }
 
-        assert_align(AnsiColor::White.render_fg());
-        assert_align(AnsiColor::White.render_bg());
+        assert_no_align(AnsiColor::White.render_fg());
+        assert_no_align(AnsiColor::White.render_bg());
         assert_no_align(Ansi256Color(0).render_fg());
         assert_no_align(Ansi256Color(0).render_bg());
         assert_no_align(RgbColor(0, 0, 0).render_fg());
         assert_no_align(RgbColor(0, 0, 0).render_bg());
-        assert_align(Color::Ansi(AnsiColor::White).render_fg());
-        assert_align(Color::Ansi(AnsiColor::White).render_bg());
+        assert_no_align(Color::Ansi(AnsiColor::White).render_fg());
+        assert_no_align(Color::Ansi(AnsiColor::White).render_bg());
     }
 }

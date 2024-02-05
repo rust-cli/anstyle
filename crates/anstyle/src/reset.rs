@@ -14,7 +14,7 @@ impl Reset {
 
 impl core::fmt::Display for Reset {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        RESET.fmt(f)
+        write!(f, "{RESET}")
     }
 }
 
@@ -34,13 +34,13 @@ mod test {
     #[test]
     fn no_align() {
         #[track_caller]
-        fn assert_align(d: impl core::fmt::Display) {
-            let expected = format!("{d:<10}");
+        fn assert_no_align(d: impl core::fmt::Display) {
+            let expected = format!("{d}");
             let actual = format!("{d:<10}");
             assert_eq!(expected, actual);
         }
 
-        assert_align(Reset);
-        assert_align(Reset.render());
+        assert_no_align(Reset);
+        assert_no_align(Reset.render());
     }
 }

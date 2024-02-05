@@ -314,7 +314,8 @@ impl core::fmt::Display for EffectsDisplay {
     #[inline]
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         for index in self.0.index_iter() {
-            METADATA[index].escape.fmt(f)?;
+            let escape = METADATA[index].escape;
+            write!(f, "{escape}")?;
         }
         Ok(())
     }
@@ -383,12 +384,12 @@ mod test {
     #[test]
     fn no_align() {
         #[track_caller]
-        fn assert_align(d: impl core::fmt::Display) {
-            let expected = format!("{d:<10}");
+        fn assert_no_align(d: impl core::fmt::Display) {
+            let expected = format!("{d}");
             let actual = format!("{d:<10}");
             assert_eq!(expected, actual);
         }
 
-        assert_align(Effects::BOLD.render());
+        assert_no_align(Effects::BOLD.render());
     }
 }
