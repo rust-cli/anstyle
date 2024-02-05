@@ -20,8 +20,27 @@ impl core::fmt::Display for Reset {
 
 pub(crate) const RESET: &str = "\x1B[0m";
 
-#[test]
-fn print_size_of() {
-    use std::mem::size_of;
-    dbg!(size_of::<Reset>());
+#[cfg(test)]
+#[cfg(feature = "std")]
+mod test {
+    use super::*;
+
+    #[test]
+    fn print_size_of() {
+        use std::mem::size_of;
+        dbg!(size_of::<Reset>());
+    }
+
+    #[test]
+    fn no_align() {
+        #[track_caller]
+        fn assert_align(d: impl core::fmt::Display) {
+            let expected = format!("{d:<10}");
+            let actual = format!("{d:<10}");
+            assert_eq!(expected, actual);
+        }
+
+        assert_align(Reset);
+        assert_align(Reset.render());
+    }
 }

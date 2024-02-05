@@ -631,4 +631,30 @@ mod test {
         dbg!(size_of::<RgbColor>());
         dbg!(size_of::<DisplayBuffer>());
     }
+
+    #[test]
+    fn no_align() {
+        #[track_caller]
+        fn assert_align(d: impl core::fmt::Display) {
+            let expected = format!("{d:<10}");
+            let actual = format!("{d:<10}");
+            assert_eq!(expected, actual);
+        }
+
+        #[track_caller]
+        fn assert_no_align(d: impl core::fmt::Display) {
+            let expected = format!("{d}");
+            let actual = format!("{d:<10}");
+            assert_eq!(expected, actual);
+        }
+
+        assert_align(AnsiColor::White.render_fg());
+        assert_align(AnsiColor::White.render_bg());
+        assert_no_align(Ansi256Color(0).render_fg());
+        assert_no_align(Ansi256Color(0).render_bg());
+        assert_no_align(RgbColor(0, 0, 0).render_fg());
+        assert_no_align(RgbColor(0, 0, 0).render_bg());
+        assert_align(Color::Ansi(AnsiColor::White).render_fg());
+        assert_align(Color::Ansi(AnsiColor::White).render_bg());
+    }
 }
