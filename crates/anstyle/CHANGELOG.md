@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.6] - 2024-02-05
+
 ### Fixes
 
 - Ignore `Display` settings like padding (we were inconsistent about that and generally wrong when we did it)
@@ -160,7 +162,8 @@ MSRV updated to 1.64.0
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/v1.0.5...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/v1.0.6...HEAD
+[1.0.6]: https://github.com/rust-cli/anstyle/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/rust-cli/anstyle/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/rust-cli/anstyle/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/rust-cli/anstyle/compare/v1.0.2...v1.0.3

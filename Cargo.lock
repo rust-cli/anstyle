@@ -21,7 +21,7 @@ dependencies = [
 name = "anstream"
 version = "0.6.11"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "anstyle-parse 0.2.3",
  "anstyle-query 1.0.2",
  "anstyle-wincon 3.0.2",
@@ -56,7 +56,7 @@ checksum = "41ed9a86bf92ae6580e0a31281f65a1b1d867c0cc68d5346e2ae128dddfa6a7d"
 
 [[package]]
 name = "anstyle"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "lexopt",
 ]
@@ -66,14 +66,14 @@ name = "anstyle-ansi-term"
 version = "1.0.0"
 dependencies = [
  "ansi_term",
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
 ]
 
 [[package]]
 name = "anstyle-crossterm"
 version = "2.0.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "crossterm",
 ]
 
@@ -81,28 +81,28 @@ dependencies = [
 name = "anstyle-git"
 version = "1.0.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
 ]
 
 [[package]]
 name = "anstyle-lossy"
 version = "1.0.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
 ]
 
 [[package]]
 name = "anstyle-ls"
 version = "1.0.1"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
 version = "1.0.1"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "owo-colors",
 ]
 
@@ -148,7 +148,7 @@ dependencies = [
 name = "anstyle-roff"
 version = "0.3.2"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "anstyle-lossy",
  "cansi",
  "roff",
@@ -159,7 +159,7 @@ dependencies = [
 name = "anstyle-syntect"
 version = "1.0.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "syntect",
 ]
 
@@ -167,7 +167,7 @@ dependencies = [
 name = "anstyle-termcolor"
 version = "1.1.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "termcolor",
 ]
 
@@ -185,7 +185,7 @@ dependencies = [
 name = "anstyle-wincon"
 version = "3.0.2"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "lexopt",
  "windows-sys 0.52.0",
 ]
@@ -194,7 +194,7 @@ dependencies = [
 name = "anstyle-yansi"
 version = "1.0.0"
 dependencies = [
- "anstyle 1.0.5",
+ "anstyle 1.0.6",
  "yansi",
 ]
 
