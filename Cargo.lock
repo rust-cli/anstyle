@@ -156,6 +156,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-svg"
+version = "0.1.0"
+dependencies = [
+ "anstyle 1.0.6",
+ "anstyle-parse 0.2.3",
+ "snapbox",
+]
+
+[[package]]
 name = "anstyle-syntect"
 version = "1.0.0"
 dependencies = [
