@@ -109,7 +109,8 @@ impl Term {
             .unwrap();
         }
         let mut text_y = line_height;
-        write!(&mut buffer, r#"  <text y="{text_y}px" class="container">"#).unwrap();
+        write!(&mut buffer, r#"  <text class="container">"#).unwrap();
+        write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
         for (style, string) in &styled {
             if string.is_empty() {
                 continue;
@@ -118,13 +119,16 @@ impl Term {
             while let Some((fragment, remains)) = remaining.split_once('\n') {
                 write_span(&mut buffer, style, fragment);
                 text_y += line_height;
-                writeln!(&mut buffer, r#"</text>"#).unwrap();
-                write!(&mut buffer, r#"  <text y="{text_y}px" class="container">"#).unwrap();
+                // HACK: must close tspan on newline to include them in copy/paste
+                writeln!(&mut buffer).unwrap();
+                writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
                 remaining = remains;
             }
             write_span(&mut buffer, style, remaining)
         }
-        writeln!(&mut buffer, r#"</text>"#).unwrap();
+        writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
+        writeln!(&mut buffer, r#"  </text>"#).unwrap();
         writeln!(&mut buffer, r#"</svg>"#).unwrap();
         buffer
     }
