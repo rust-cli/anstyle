@@ -13,26 +13,23 @@ fn main() -> Result<(), lexopt::Error> {
         }
     }
 
-    for r in 0..6 {
-        let _ = writeln!(stdout);
-        for g in 0..6 {
-            for b in 0..6 {
-                let fixed = r * 36 + g * 6 + b + 16;
-                let style = style(fixed, args.layer, args.effects);
-                let _ = print_number(&mut stdout, fixed, style);
-            }
+    for fixed in 16..232 {
+        let col = (fixed - 16) % 36;
+        if col == 0 {
             let _ = writeln!(stdout);
         }
-    }
-
-    for c in 0..24 {
-        if 0 == c % 8 {
-            let _ = writeln!(stdout);
-        }
-        let fixed = 232 + c;
         let style = style(fixed, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
     }
+
+    let _ = writeln!(stdout);
+    let _ = writeln!(stdout);
+    for fixed in 232..=255 {
+        let style = style(fixed, args.layer, args.effects);
+        let _ = print_number(&mut stdout, fixed, style);
+    }
+
+    let _ = writeln!(stdout);
 
     Ok(())
 }
@@ -47,13 +44,7 @@ fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
 }
 
 fn print_number(stdout: &mut impl Write, fixed: u8, style: anstyle::Style) -> std::io::Result<()> {
-    write!(
-        stdout,
-        "{}{:>4}{}",
-        style.render(),
-        fixed,
-        anstyle::Reset.render()
-    )
+    write!(stdout, "{style}{fixed:>3X}{style:#}",)
 }
 
 #[derive(Default)]
