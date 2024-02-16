@@ -27,6 +27,7 @@
     .bold { font-weight: bold; }
     .italic { font-style: italic; }
     .underline { text-decoration: underline; }
+    .strikethrough { text-decoration: line-through; }
     .dimmed { opacity: 0.7; }
     tspan {
       font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;

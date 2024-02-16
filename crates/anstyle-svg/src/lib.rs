@@ -93,6 +93,11 @@ impl Term {
             r#"    .underline {{ text-decoration: underline; }}"#
         )
         .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"    .strikethrough {{ text-decoration: line-through; }}"#
+        )
+        .unwrap();
         writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
@@ -142,6 +147,7 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let bg_color = style.get_bg_color().map(render_color);
     let effects = style.get_effects();
     let underline = effects.contains(anstyle::Effects::UNDERLINE);
+    let strikethrough = effects.contains(anstyle::Effects::STRIKETHROUGH);
     let bold = effects.contains(anstyle::Effects::BOLD);
     let italic = effects.contains(anstyle::Effects::ITALIC);
     let dimmed = effects.contains(anstyle::Effects::DIMMED);
@@ -165,6 +171,12 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let mut classes = String::new();
     if underline {
         classes.push_str("underline");
+    }
+    if strikethrough {
+        if !classes.is_empty() {
+            classes.push_str(" ");
+        }
+        classes.push_str("strikethrough");
     }
     if bold {
         if !classes.is_empty() {
