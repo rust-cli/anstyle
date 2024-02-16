@@ -23,7 +23,7 @@ impl Palette {
 
     pub(crate) const fn rgb_from_index(&self, index: u8) -> Option<anstyle::RgbColor> {
         let index = index as usize;
-        if index <= self.0.len() {
+        if index < self.0.len() {
             Some(self.0[index])
         } else {
             None
