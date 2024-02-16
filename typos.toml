@@ -1,3 +1,6 @@
 [type.vte]
 extend-glob = ["*.vte"]
 check-file = false
+
+[type.svg]
+check-file = false
