@@ -6,7 +6,8 @@ fn main() -> Result<(), lexopt::Error> {
     let mut stdout = stdout.lock();
 
     for fixed in 0..16 {
-        let style = style(fixed, args.layer, args.effects);
+        let color = anstyle::Ansi256Color(fixed).into_ansi().unwrap();
+        let style = style(color, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
         if fixed == 7 || fixed == 15 {
             let _ = writeln!(&mut stdout);
@@ -18,14 +19,16 @@ fn main() -> Result<(), lexopt::Error> {
         if col == 0 {
             let _ = writeln!(stdout);
         }
-        let style = style(fixed, args.layer, args.effects);
+        let color = anstyle::Ansi256Color(fixed);
+        let style = style(color, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
     }
 
     let _ = writeln!(stdout);
     let _ = writeln!(stdout);
     for fixed in 232..=255 {
-        let style = style(fixed, args.layer, args.effects);
+        let color = anstyle::Ansi256Color(fixed);
+        let style = style(color, args.layer, args.effects);
         let _ = print_number(&mut stdout, fixed, style);
     }
 
@@ -34,8 +37,12 @@ fn main() -> Result<(), lexopt::Error> {
     Ok(())
 }
 
-fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
-    let color = anstyle::Ansi256Color(fixed).into();
+fn style(
+    color: impl Into<anstyle::Color>,
+    layer: Layer,
+    effects: anstyle::Effects,
+) -> anstyle::Style {
+    let color = color.into();
     (match layer {
         Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
         Layer::Bg => anstyle::Style::new().bg_color(Some(color)),

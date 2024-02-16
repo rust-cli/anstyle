@@ -34,8 +34,12 @@ fn main() -> Result<(), lexopt::Error> {
     Ok(())
 }
 
-fn style(fixed: u8, layer: Layer, effects: anstyle::Effects) -> anstyle::Style {
-    let color = anstyle::Ansi256Color(fixed).into();
+fn style(
+    color: impl Into<anstyle::Color>,
+    layer: Layer,
+    effects: anstyle::Effects,
+) -> anstyle::Style {
+    let color = color.into();
     (match layer {
         Layer::Fg => anstyle::Style::new().fg_color(Some(color)),
         Layer::Bg => anstyle::Style::new().bg_color(Some(color)),
