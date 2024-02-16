@@ -51,7 +51,16 @@ impl Term {
         use unicode_width::UnicodeWidthStr as _;
 
         let mut styled = anstream::adapter::WinconBytes::new();
-        let styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        let mut styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        // Pre-process INVERT to make fg/bg calculations easier
+        for (style, _) in &mut styled {
+            if style.get_effects().contains(anstyle::Effects::INVERT) {
+                *style = style
+                    .fg_color(Some(style.get_bg_color().unwrap_or(self.bg_color)))
+                    .bg_color(Some(style.get_fg_color().unwrap_or(self.fg_color)))
+                    .effects(style.get_effects().remove(anstyle::Effects::INVERT));
+            }
+        }
 
         const FG: &str = "--fg";
         let fg_color = render_rgb(anstyle_lossy::color_to_rgb(self.fg_color, self.palette));
@@ -172,6 +181,7 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let dotted_underline = effects.contains(anstyle::Effects::DOTTED_UNDERLINE);
     let dashed_underline = effects.contains(anstyle::Effects::DASHED_UNDERLINE);
     let strikethrough = effects.contains(anstyle::Effects::STRIKETHROUGH);
+    // skipping INVERT as that was handled earlier
     let bold = effects.contains(anstyle::Effects::BOLD);
     let italic = effects.contains(anstyle::Effects::ITALIC);
     let dimmed = effects.contains(anstyle::Effects::DIMMED);
