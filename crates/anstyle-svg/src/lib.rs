@@ -95,6 +95,26 @@ impl Term {
         .unwrap();
         writeln!(
             &mut buffer,
+            r#"    .double-underline {{ text-decoration: underline; text-decoration-style: double; }}"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"    .curly-underline {{ text-decoration: underline; text-decoration-style: wavy; }}"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"    .dotted-underline {{ text-decoration: underline; text-decoration-style: dotted; }}"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"    .dashed-underline {{ text-decoration: underline; text-decoration-style: dashed; }}"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
             r#"    .strikethrough {{ text-decoration: line-through; }}"#
         )
         .unwrap();
@@ -147,6 +167,10 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let bg_color = style.get_bg_color().map(render_color);
     let effects = style.get_effects();
     let underline = effects.contains(anstyle::Effects::UNDERLINE);
+    let double_underline = effects.contains(anstyle::Effects::DOUBLE_UNDERLINE);
+    let curly_underline = effects.contains(anstyle::Effects::CURLY_UNDERLINE);
+    let dotted_underline = effects.contains(anstyle::Effects::DOTTED_UNDERLINE);
+    let dashed_underline = effects.contains(anstyle::Effects::DASHED_UNDERLINE);
     let strikethrough = effects.contains(anstyle::Effects::STRIKETHROUGH);
     let bold = effects.contains(anstyle::Effects::BOLD);
     let italic = effects.contains(anstyle::Effects::ITALIC);
@@ -168,38 +192,39 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
             write!(&mut style, "background: {color};").unwrap();
         }
     }
-    let mut classes = String::new();
+    let mut classes = Vec::new();
     if underline {
-        classes.push_str("underline");
+        classes.push("underline");
+    }
+    if double_underline {
+        classes.push("double-underline");
+    }
+    if curly_underline {
+        classes.push("curly-underline");
+    }
+    if dotted_underline {
+        classes.push("dotted-underline");
+    }
+    if dashed_underline {
+        classes.push("dashed-underline");
     }
     if strikethrough {
-        if !classes.is_empty() {
-            classes.push_str(" ");
-        }
-        classes.push_str("strikethrough");
+        classes.push("strikethrough");
     }
     if bold {
-        if !classes.is_empty() {
-            classes.push_str(" ");
-        }
-        classes.push_str("bold");
+        classes.push("bold");
     }
     if italic {
-        if !classes.is_empty() {
-            classes.push_str(" ");
-        }
-        classes.push_str("italic");
+        classes.push("italic");
     }
     if dimmed {
-        if !classes.is_empty() {
-            classes.push_str(" ");
-        }
-        classes.push_str("dimmed");
+        classes.push("dimmed");
     }
 
     use std::fmt::Write as _;
     write!(buffer, r#"<tspan xml:space="preserve""#).unwrap();
     if !classes.is_empty() {
+        let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
     if !style.is_empty() {
