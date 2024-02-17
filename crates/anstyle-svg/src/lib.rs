@@ -88,7 +88,11 @@ impl Term {
                 writeln!(&mut buffer, r#"    .{name} {{ fill: {rgb} }}"#).unwrap();
             }
             if name.starts_with(BG_PREFIX) {
-                writeln!(&mut buffer, r#"    .{name} {{ background: {rgb} }}"#).unwrap();
+                writeln!(
+                    &mut buffer,
+                    r#"    .{name} {{ stroke: {rgb}; fill: {rgb}; user-select: none;  }}"#
+                )
+                .unwrap();
             }
             if name.starts_with(UNDERLINE_PREFIX) {
                 writeln!(
@@ -149,8 +153,11 @@ impl Term {
             )
             .unwrap();
         }
+        writeln!(&mut buffer).unwrap();
+
         let mut text_y = line_height;
-        write!(&mut buffer, r#"  <text class="container {FG} {BG}">"#).unwrap();
+        writeln!(&mut buffer, r#"  <!-- background -->"#).unwrap();
+        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
         write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
         for (style, string) in &styled {
             if string.is_empty() {
@@ -158,7 +165,7 @@ impl Term {
             }
             let mut remaining = string.as_str();
             while let Some((fragment, remains)) = remaining.split_once('\n') {
-                write_span(&mut buffer, style, fragment);
+                write_bg_span(&mut buffer, style, fragment);
                 text_y += line_height;
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -166,10 +173,36 @@ impl Term {
                 write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
                 remaining = remains;
             }
-            write_span(&mut buffer, style, remaining)
+            write_bg_span(&mut buffer, style, remaining)
         }
         writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
         writeln!(&mut buffer, r#"  </text>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
+        let mut text_y = line_height;
+        writeln!(&mut buffer, r#"  <!-- foreground -->"#).unwrap();
+        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
+        write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+        for (style, string) in &styled {
+            if string.is_empty() {
+                continue;
+            }
+            let mut remaining = string.as_str();
+            while let Some((fragment, remains)) = remaining.split_once('\n') {
+                write_fg_span(&mut buffer, style, fragment);
+                text_y += line_height;
+                // HACK: must close tspan on newline to include them in copy/paste
+                writeln!(&mut buffer).unwrap();
+                writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+                remaining = remains;
+            }
+            write_fg_span(&mut buffer, style, remaining)
+        }
+        writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
+        writeln!(&mut buffer, r#"  </text>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
         writeln!(&mut buffer, r#"</svg>"#).unwrap();
         buffer
     }
@@ -178,9 +211,8 @@ impl Term {
 const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White);
 const BG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::Black);
 
-fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
-    let bg_color = style.get_bg_color().map(|c| color_name(BG_PREFIX, c));
     let underline_color = style
         .get_underline_color()
         .map(|c| color_name(UNDERLINE_PREFIX, c));
@@ -200,9 +232,6 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let fragment = html_escape::encode_text(fragment);
     let mut classes = Vec::new();
     if let Some(class) = fg_color.as_deref() {
-        classes.push(class);
-    }
-    if let Some(class) = bg_color.as_deref() {
         classes.push(class);
     }
     if let Some(class) = underline_color.as_deref() {
@@ -239,6 +268,31 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
         classes.push("hidden");
     }
 
+    use std::fmt::Write as _;
+    write!(buffer, r#"<tspan xml:space="preserve""#).unwrap();
+    if !classes.is_empty() {
+        let classes = classes.join(" ");
+        write!(buffer, r#" class="{classes}""#).unwrap();
+    }
+    write!(buffer, r#">"#).unwrap();
+    write!(buffer, "{fragment}").unwrap();
+    write!(buffer, r#"</tspan>"#).unwrap();
+}
+
+fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+    use unicode_width::UnicodeWidthStr;
+
+    let bg_color = style.get_bg_color().map(|c| color_name(BG_PREFIX, c));
+
+    let fill = if bg_color.is_some() { "█" } else { " " };
+
+    let fragment = html_escape::encode_text(fragment);
+    let width = fragment.width();
+    let fragment = fill.repeat(width);
+    let mut classes = Vec::new();
+    if let Some(class) = bg_color.as_deref() {
+        classes.push(class);
+    }
     use std::fmt::Write as _;
     write!(buffer, r#"<tspan xml:space="preserve""#).unwrap();
     if !classes.is_empty() {
