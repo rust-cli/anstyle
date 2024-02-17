@@ -155,29 +155,31 @@ impl Term {
         }
         writeln!(&mut buffer).unwrap();
 
-        let mut text_y = line_height;
-        writeln!(&mut buffer, r#"  <!-- background -->"#).unwrap();
-        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
-        write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-        for (style, string) in &styled {
-            if string.is_empty() {
-                continue;
+        if styled.iter().any(|(s, _)| s.get_bg_color().is_some()) {
+            let mut text_y = line_height;
+            writeln!(&mut buffer, r#"  <!-- background -->"#).unwrap();
+            writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
+            write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+            for (style, string) in &styled {
+                if string.is_empty() {
+                    continue;
+                }
+                let mut remaining = string.as_str();
+                while let Some((fragment, remains)) = remaining.split_once('\n') {
+                    write_bg_span(&mut buffer, style, fragment);
+                    text_y += line_height;
+                    // HACK: must close tspan on newline to include them in copy/paste
+                    writeln!(&mut buffer).unwrap();
+                    writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+                    write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+                    remaining = remains;
+                }
+                write_bg_span(&mut buffer, style, remaining)
             }
-            let mut remaining = string.as_str();
-            while let Some((fragment, remains)) = remaining.split_once('\n') {
-                write_bg_span(&mut buffer, style, fragment);
-                text_y += line_height;
-                // HACK: must close tspan on newline to include them in copy/paste
-                writeln!(&mut buffer).unwrap();
-                writeln!(&mut buffer, r#"</tspan>"#).unwrap();
-                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-                remaining = remains;
-            }
-            write_bg_span(&mut buffer, style, remaining)
+            writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
+            writeln!(&mut buffer, r#"  </text>"#).unwrap();
+            writeln!(&mut buffer).unwrap();
         }
-        writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
-        writeln!(&mut buffer, r#"  </text>"#).unwrap();
-        writeln!(&mut buffer).unwrap();
 
         let mut text_y = line_height;
         writeln!(&mut buffer, r#"  <!-- foreground -->"#).unwrap();
