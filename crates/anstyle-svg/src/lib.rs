@@ -135,6 +135,7 @@ impl Term {
         )
         .unwrap();
         writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
+        writeln!(&mut buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
@@ -194,6 +195,7 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     let bold = effects.contains(anstyle::Effects::BOLD);
     let italic = effects.contains(anstyle::Effects::ITALIC);
     let dimmed = effects.contains(anstyle::Effects::DIMMED);
+    let hidden = effects.contains(anstyle::Effects::HIDDEN);
 
     let fragment = html_escape::encode_text(fragment);
     let mut classes = Vec::new();
@@ -232,6 +234,9 @@ fn write_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     }
     if dimmed {
         classes.push("dimmed");
+    }
+    if hidden {
+        classes.push("hidden");
     }
 
     use std::fmt::Write as _;
