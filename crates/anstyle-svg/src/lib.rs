@@ -78,12 +78,13 @@ impl Term {
             .map(|l| l.iter().map(|(_, t)| t.width()).sum())
             .max()
             .unwrap_or(20);
+        let width_px = max_width as f64 * 8.4;
 
         use std::fmt::Write as _;
         let mut buffer = String::new();
         writeln!(
             &mut buffer,
-            r#"<svg width="{max_width}em" height="{height}px" xmlns="http://www.w3.org/2000/svg">"#
+            r#"<svg width="{width_px}px" height="{height}px" xmlns="http://www.w3.org/2000/svg">"#
         )
         .unwrap();
         writeln!(&mut buffer, r#"  <style>"#).unwrap();
