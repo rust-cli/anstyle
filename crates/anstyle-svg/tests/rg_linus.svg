@@ -9,15 +9,6 @@
       line-height: 18px;
     }
     .bold { font-weight: bold; }
-    .italic { font-style: italic; }
-    .underline { text-decoration-line: underline; }
-    .double-underline { text-decoration-line: underline; text-decoration-style: double; }
-    .curly-underline { text-decoration-line: underline; text-decoration-style: wavy; }
-    .dotted-underline { text-decoration-line: underline; text-decoration-style: dotted; }
-    .dashed-underline { text-decoration-line: underline; text-decoration-style: dashed; }
-    .strikethrough { text-decoration-line: line-through; }
-    .dimmed { opacity: 0.7; }
-    .hidden { opacity: 0; }
     tspan {
       font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
       white-space: pre;

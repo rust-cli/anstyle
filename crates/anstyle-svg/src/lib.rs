@@ -52,14 +52,16 @@ impl Term {
 
         let mut styled = anstream::adapter::WinconBytes::new();
         let mut styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
-        // Pre-process INVERT to make fg/bg calculations easier
+        let mut effects_in_use = anstyle::Effects::new();
         for (style, _) in &mut styled {
+            // Pre-process INVERT to make fg/bg calculations easier
             if style.get_effects().contains(anstyle::Effects::INVERT) {
                 *style = style
                     .fg_color(Some(style.get_bg_color().unwrap_or(self.bg_color)))
                     .bg_color(Some(style.get_fg_color().unwrap_or(self.fg_color)))
                     .effects(style.get_effects().remove(anstyle::Effects::INVERT));
             }
+            effects_in_use |= style.get_effects();
         }
 
         const FG: &str = "fg";
@@ -106,40 +108,60 @@ impl Term {
         writeln!(&mut buffer, r#"      padding: 0 10px;"#).unwrap();
         writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .underline {{ text-decoration-line: underline; }}"#
-        )
-        .unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
-        )
-        .unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
-        )
-        .unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
-        )
-        .unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
-        )
-        .unwrap();
-        writeln!(
-            &mut buffer,
-            r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
-        )
-        .unwrap();
-        writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
+        if effects_in_use.contains(anstyle::Effects::BOLD) {
+            writeln!(&mut buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::ITALIC) {
+            writeln!(&mut buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::UNDERLINE) {
+            writeln!(
+                &mut buffer,
+                r#"    .underline {{ text-decoration-line: underline; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::DOUBLE_UNDERLINE) {
+            writeln!(
+                &mut buffer,
+                r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::CURLY_UNDERLINE) {
+            writeln!(
+                &mut buffer,
+                r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::DOTTED_UNDERLINE) {
+            writeln!(
+                &mut buffer,
+                r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::DASHED_UNDERLINE) {
+            writeln!(
+                &mut buffer,
+                r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::STRIKETHROUGH) {
+            writeln!(
+                &mut buffer,
+                r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
+            )
+            .unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::DIMMED) {
+            writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
+        }
+        if effects_in_use.contains(anstyle::Effects::HIDDEN) {
+            writeln!(&mut buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
+        }
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
