@@ -73,8 +73,11 @@ impl Term {
 
         let line_height = 18;
         let height = styled_lines.len() * line_height;
-        let stripped = anstream::adapter::strip_str(ansi).to_string();
-        let max_width = stripped.lines().map(|s| s.width()).max().unwrap_or(20);
+        let max_width = styled_lines
+            .iter()
+            .map(|l| l.iter().map(|(_, t)| t.width()).sum())
+            .max()
+            .unwrap_or(20);
 
         use std::fmt::Write as _;
         let mut buffer = String::new();
