@@ -178,11 +178,10 @@ impl Term {
         }
         writeln!(&mut buffer).unwrap();
 
-        if styled.iter().any(|(s, _)| s.get_bg_color().is_some()) {
-            let mut text_y = line_height;
-            writeln!(&mut buffer, r#"  <!-- background -->"#).unwrap();
-            writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
-            for line in &styled_lines {
+        let mut text_y = line_height;
+        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
+        for line in &styled_lines {
+            if line.iter().any(|(s, _)| s.get_bg_color().is_some()) {
                 write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
                 for (style, fragment) in line {
                     if fragment.is_empty() {
@@ -193,16 +192,8 @@ impl Term {
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
                 writeln!(&mut buffer, r#"</tspan>"#).unwrap();
-                text_y += line_height;
             }
-            writeln!(&mut buffer, r#"  </text>"#).unwrap();
-            writeln!(&mut buffer).unwrap();
-        }
 
-        let mut text_y = line_height;
-        writeln!(&mut buffer, r#"  <!-- foreground -->"#).unwrap();
-        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
-        for line in &styled_lines {
             write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
             for (style, fragment) in line {
                 if fragment.is_empty() {
@@ -213,6 +204,7 @@ impl Term {
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
             writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+
             text_y += line_height;
         }
         writeln!(&mut buffer, r#"  </text>"#).unwrap();

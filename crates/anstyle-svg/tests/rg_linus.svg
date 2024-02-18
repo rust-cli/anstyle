@@ -17,7 +17,6 @@
   </style>
   <rect width="100%" height="100%" y="0" rx="4.5" class="bg" />
 
-  <!-- foreground -->
   <text class="container fg">
     <tspan x="0px" y="18px"><tspan xml:space="preserve" class="fg-magenta">kernel/sys.c</tspan><tspan xml:space="preserve">: *  Copyright (C) 1991, 1992  </tspan><tspan xml:space="preserve" class="fg-red bold">Linus</tspan><tspan xml:space="preserve"> Torvalds</tspan>
 </tspan>
