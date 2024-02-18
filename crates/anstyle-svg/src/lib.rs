@@ -63,6 +63,7 @@ impl Term {
             }
             effects_in_use |= style.get_effects();
         }
+        let styled_lines = split_lines(&styled);
 
         const FG: &str = "fg";
         let fg_color = rgb_value(self.fg_color, self.palette);
@@ -71,7 +72,7 @@ impl Term {
         let font_family = self.font_family;
 
         let line_height = 18;
-        let height = (ansi.lines().count() + 1) * line_height;
+        let height = styled_lines.len() * line_height;
         let stripped = anstream::adapter::strip_str(ansi).to_string();
         let max_width = stripped.lines().map(|s| s.width()).max().unwrap_or(20);
 
@@ -181,24 +182,19 @@ impl Term {
             let mut text_y = line_height;
             writeln!(&mut buffer, r#"  <!-- background -->"#).unwrap();
             writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
-            write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-            for (style, string) in &styled {
-                if string.is_empty() {
-                    continue;
-                }
-                let mut remaining = string.as_str();
-                while let Some((fragment, remains)) = remaining.split_once('\n') {
+            for line in &styled_lines {
+                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+                for (style, fragment) in line {
+                    if fragment.is_empty() {
+                        continue;
+                    }
                     write_bg_span(&mut buffer, style, fragment);
-                    text_y += line_height;
-                    // HACK: must close tspan on newline to include them in copy/paste
-                    writeln!(&mut buffer).unwrap();
-                    writeln!(&mut buffer, r#"</tspan>"#).unwrap();
-                    write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-                    remaining = remains;
                 }
-                write_bg_span(&mut buffer, style, remaining)
+                // HACK: must close tspan on newline to include them in copy/paste
+                writeln!(&mut buffer).unwrap();
+                writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+                text_y += line_height;
             }
-            writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
             writeln!(&mut buffer, r#"  </text>"#).unwrap();
             writeln!(&mut buffer).unwrap();
         }
@@ -206,24 +202,19 @@ impl Term {
         let mut text_y = line_height;
         writeln!(&mut buffer, r#"  <!-- foreground -->"#).unwrap();
         writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
-        write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-        for (style, string) in &styled {
-            if string.is_empty() {
-                continue;
-            }
-            let mut remaining = string.as_str();
-            while let Some((fragment, remains)) = remaining.split_once('\n') {
+        for line in &styled_lines {
+            write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+            for (style, fragment) in line {
+                if fragment.is_empty() {
+                    continue;
+                }
                 write_fg_span(&mut buffer, style, fragment);
-                text_y += line_height;
-                // HACK: must close tspan on newline to include them in copy/paste
-                writeln!(&mut buffer).unwrap();
-                writeln!(&mut buffer, r#"</tspan>"#).unwrap();
-                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
-                remaining = remains;
             }
-            write_fg_span(&mut buffer, style, remaining)
+            // HACK: must close tspan on newline to include them in copy/paste
+            writeln!(&mut buffer).unwrap();
+            writeln!(&mut buffer, r#"</tspan>"#).unwrap();
+            text_y += line_height;
         }
-        writeln!(&mut buffer, r#"    </tspan>"#).unwrap();
         writeln!(&mut buffer, r#"  </text>"#).unwrap();
         writeln!(&mut buffer).unwrap();
 
@@ -403,4 +394,22 @@ fn color_styles(
     }
 
     colors.into_iter()
+}
+
+fn split_lines(styled: &[(anstyle::Style, String)]) -> Vec<Vec<(anstyle::Style, &str)>> {
+    let mut lines = Vec::new();
+    let mut current_line = Vec::new();
+    for (style, mut next) in styled.iter().map(|(s, t)| (*s, t.as_str())) {
+        while let Some((current, remaining)) = next.split_once('\n') {
+            current_line.push((style, current));
+            lines.push(current_line);
+            current_line = Vec::new();
+            next = remaining;
+        }
+        current_line.push((style, next));
+    }
+    if !current_line.is_empty() {
+        lines.push(current_line);
+    }
+    lines
 }
