@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.0] - 2024-02-18
+
 ### Compatibility
 
 - Update MSRV to 1.70.0
@@ -34,7 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.0.0...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.0...HEAD
+[1.1.0]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.0.0...anstyle-lossy-v1.1.0
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v0.2.0...anstyle-lossy-v1.0.0
 [0.2.0]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v0.1.1...anstyle-lossy-v0.2.0
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/b31a85851f2104407bbbced9e24e0ca71021e3f8...anstyle-lossy-v0.1.1
