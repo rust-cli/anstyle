@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Compatibility
 
+- Update to owo-colors v4
 - Update MSRV to 1.70.0
 
 ## [1.0.1] - 2023-07-06
