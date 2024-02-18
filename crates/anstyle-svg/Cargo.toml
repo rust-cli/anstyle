@@ -1,0 +1,35 @@
+[package]
+name = "anstyle-svg"
+version = "0.1.0"
+description = "Convert ANSI escape codes to SVG"
+repository = "https://github.com/rust-cli/anstyle.git"
+homepage = "https://github.com/rust-cli/anstyle"
+categories = ["command-line-interface"]
+keywords = ["ansi", "terminal", "color", "svg"]
+license.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+include.workspace = true
+
+[package.metadata.docs.rs]
+rustdoc-args = ["--cfg", "docsrs"]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
+
+[package.metadata.release]
+pre-release-replacements = [
+  {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
+  {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
+  {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}", min=1},
+  {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n## [Unreleased] - ReleaseDate\n", exactly=1},
+  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/rust-cli/anstyle/compare/{{tag_name}}...HEAD", exactly=1},
+]
+
+[dependencies]
+anstyle = { version = "1.0.0", path = "../anstyle" }
+anstream = { version = "0.6", path = "../anstream", default-features = false }
+anstyle-lossy = { version = "1.0.0", path = "../anstyle-lossy" }
+html-escape = "0.2.13"
+unicode-width = "0.1.11"
+
+[dev-dependencies]
+snapbox = "0.5.1"

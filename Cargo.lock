@@ -156,6 +156,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-svg"
+version = "0.1.0"
+dependencies = [
+ "anstream 0.6.11",
+ "anstyle 1.0.6",
+ "anstyle-lossy",
+ "html-escape",
+ "snapbox",
+ "unicode-width",
+]
+
+[[package]]
 name = "anstyle-syntect"
 version = "1.0.0"
 dependencies = [
@@ -640,6 +652,15 @@ name = "hermit-abi"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fed44880c466736ef9a5c5b5facefb5ed0785676d0c02d612db14e54f0d84286"
+
+[[package]]
+name = "html-escape"
+version = "0.2.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6d1ad449764d627e22bfd7cd5e8868264fc9236e07c752972b4080cd351cb476"
+dependencies = [
+ "utf8-width",
+]
 
 [[package]]
 name = "instant"
@@ -1133,9 +1154,9 @@ checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
 
 [[package]]
 name = "snapbox"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8269b717f21b142c0377f1e617e80999e3ef6b1c010959b44fd93320722d2cba"
+checksum = "47d9a121ed3297bc4575fa774033a9f1084e0a0c8de8dff416df4eae834121b3"
 dependencies = [
  "anstream 0.6.11 (registry+https://github.com/rust-lang/crates.io-index)",
  "anstyle 1.0.0",
@@ -1284,6 +1305,18 @@ name = "unicode-ident"
 version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ceab39d59e4c9499d4e5a8ee0e2735b891bb7308ac83dfb4e80cad195c9f6f3"
+
+[[package]]
+name = "unicode-width"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e51733f11c9c4f72aa0c160008246859e340b00807569a0da0e7a1079b27ba85"
+
+[[package]]
+name = "utf8-width"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86bd8d4e895da8537e5315b8254664e6b769c4ff3db18321b297a1e7004392e3"
 
 [[package]]
 name = "utf8parse"
