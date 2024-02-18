@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- `WinconBytes` correctly converts more escape codes
+
 ## [0.6.11] - 2024-01-18
 
 ### Fixes
