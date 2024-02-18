@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.12] - 2024-02-18
+
 ### Fixes
 
 - `WinconBytes` correctly converts more escape codes
@@ -219,7 +221,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.11...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.12...HEAD
+[0.6.12]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.11...anstream-v0.6.12
 [0.6.11]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.10...anstream-v0.6.11
 [0.6.10]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.9...anstream-v0.6.10
 [0.6.9]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.8...anstream-v0.6.9
