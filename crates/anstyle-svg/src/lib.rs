@@ -393,6 +393,7 @@ fn split_lines(styled: &[(anstyle::Style, String)]) -> Vec<Vec<(anstyle::Style, 
     let mut current_line = Vec::new();
     for (style, mut next) in styled.iter().map(|(s, t)| (*s, t.as_str())) {
         while let Some((current, remaining)) = next.split_once('\n') {
+            let current = current.strip_suffix('\r').unwrap_or(current);
             current_line.push((style, current));
             lines.push(current_line);
             current_line = Vec::new();
