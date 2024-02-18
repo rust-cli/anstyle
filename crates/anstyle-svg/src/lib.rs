@@ -1,7 +1,22 @@
+//! Convert ANSI escape codes to SVG
+//!
+//! See [`Term`]
+//!
+//! # Example
+//!
+//! ```
+//! # use anstyle_svg::Term;
+//! let vte = std::fs::read_to_string("tests/rainbow.vte").unwrap();
+//! let svg = Term::new().render_svg(&vte);
+//! ```
+//!
+//! ![demo of supported styles](https://raw.githubusercontent.com/rust-cli/anstyle/main/crates/anstyle-svg/tests/rainbow.svg "Example output")
+
 pub use anstyle_lossy::palette::Palette;
 pub use anstyle_lossy::palette::VGA;
 pub use anstyle_lossy::palette::WIN10_CONSOLE;
 
+/// Define the terminal-like settings for rendering outpu
 #[derive(Copy, Clone, Debug)]
 pub struct Term {
     palette: Palette,
@@ -22,31 +37,40 @@ impl Term {
         }
     }
 
+    /// Select the color palette for [`anstyle::AnsiColor`]
     pub const fn palette(mut self, palette: Palette) -> Self {
         self.palette = palette;
         self
     }
 
+    /// Select the default foreground color
     pub const fn fg_color(mut self, color: anstyle::Color) -> Self {
         self.fg_color = color;
         self
     }
 
+    /// Select the default background color
     pub const fn bg_color(mut self, color: anstyle::Color) -> Self {
         self.bg_color = color;
         self
     }
 
+    /// Toggle default background off with `false`
     pub const fn background(mut self, yes: bool) -> Self {
         self.background = yes;
         self
     }
 
+    /// Select the font property
     pub const fn font_family(mut self, font: &'static str) -> Self {
         self.font_family = font;
         self
     }
 
+    /// Render the SVG with the terminal defined
+    ///
+    /// **Note:** Lines are not wrapped.  This is intentional as this attempts to convey the exact
+    /// output with escape codes translated to SVG elements.
     pub fn render_svg(&self, ansi: &str) -> String {
         use unicode_width::UnicodeWidthStr as _;
 
