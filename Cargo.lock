@@ -157,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-svg"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "anstream 0.6.12",
  "anstyle 1.0.6",

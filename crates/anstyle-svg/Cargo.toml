@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-svg"
-version = "0.1.0"
+version = "0.1.1"
 description = "Convert ANSI escape codes to SVG"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
