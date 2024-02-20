@@ -202,14 +202,16 @@ impl Term {
         writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
         if self.background {
             writeln!(
                 &mut buffer,
                 r#"  <rect width="100%" height="100%" y="0" rx="4.5" class="{BG}" />"#
             )
             .unwrap();
+            writeln!(&mut buffer).unwrap();
         }
-        writeln!(&mut buffer).unwrap();
 
         let text_x = self.padding_px;
         let mut text_y = self.padding_px + line_height;
