@@ -24,6 +24,7 @@ pub struct Term {
     bg_color: anstyle::Color,
     background: bool,
     font_family: &'static str,
+    min_width_px: usize,
 }
 
 impl Term {
@@ -34,6 +35,7 @@ impl Term {
             bg_color: BG_COLOR,
             background: true,
             font_family: "SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
+            min_width_px: 720,
         }
     }
 
@@ -61,9 +63,9 @@ impl Term {
         self
     }
 
-    /// Select the font property
-    pub const fn font_family(mut self, font: &'static str) -> Self {
-        self.font_family = font;
+    /// Minimum width for the text
+    pub const fn min_width_px(mut self, px: usize) -> Self {
+        self.min_width_px = px;
         self
     }
 
@@ -101,8 +103,9 @@ impl Term {
             .iter()
             .map(|l| l.iter().map(|(_, t)| t.width()).sum())
             .max()
-            .unwrap_or(20);
-        let width_px = (max_width as f64 * 8.4).ceil();
+            .unwrap_or(0);
+        let width_px = (max_width as f64 * 8.4).ceil() as usize;
+        let width_px = std::cmp::max(width_px, self.min_width_px);
 
         use std::fmt::Write as _;
         let mut buffer = String::new();
