@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Ensure each section has a blank line inbetween
+- Add configurable padding
+- Allow setting min width
+- Use round numbers for width
+
 ## [0.1.1] - 2024-02-18
 
 ### Documentation
