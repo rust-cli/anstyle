@@ -24,6 +24,8 @@ pub struct Term {
     bg_color: anstyle::Color,
     background: bool,
     font_family: &'static str,
+    min_width_px: usize,
+    padding_px: usize,
 }
 
 impl Term {
@@ -34,6 +36,8 @@ impl Term {
             bg_color: BG_COLOR,
             background: true,
             font_family: "SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
+            min_width_px: 720,
+            padding_px: 10,
         }
     }
 
@@ -61,9 +65,9 @@ impl Term {
         self
     }
 
-    /// Select the font property
-    pub const fn font_family(mut self, font: &'static str) -> Self {
-        self.font_family = font;
+    /// Minimum width for the text
+    pub const fn min_width_px(mut self, px: usize) -> Self {
+        self.min_width_px = px;
         self
     }
 
@@ -96,13 +100,14 @@ impl Term {
         let font_family = self.font_family;
 
         let line_height = 18;
-        let height = styled_lines.len() * line_height;
+        let height = styled_lines.len() * line_height + self.padding_px * 2;
         let max_width = styled_lines
             .iter()
             .map(|l| l.iter().map(|(_, t)| t.width()).sum())
             .max()
-            .unwrap_or(20);
-        let width_px = max_width as f64 * 8.4;
+            .unwrap_or(0);
+        let width_px = (max_width as f64 * 8.4).ceil() as usize;
+        let width_px = std::cmp::max(width_px, self.min_width_px) + self.padding_px * 2;
 
         use std::fmt::Write as _;
         let mut buffer = String::new();
@@ -197,20 +202,23 @@ impl Term {
         writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
         if self.background {
             writeln!(
                 &mut buffer,
                 r#"  <rect width="100%" height="100%" y="0" rx="4.5" class="{BG}" />"#
             )
             .unwrap();
+            writeln!(&mut buffer).unwrap();
         }
-        writeln!(&mut buffer).unwrap();
 
-        let mut text_y = line_height;
+        let text_x = self.padding_px;
+        let mut text_y = self.padding_px + line_height;
         writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
         for line in &styled_lines {
             if line.iter().any(|(s, _)| s.get_bg_color().is_some()) {
-                write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+                write!(&mut buffer, r#"    <tspan x="{text_x}px" y="{text_y}px">"#).unwrap();
                 for (style, fragment) in line {
                     if fragment.is_empty() {
                         continue;
@@ -222,7 +230,7 @@ impl Term {
                 writeln!(&mut buffer, r#"</tspan>"#).unwrap();
             }
 
-            write!(&mut buffer, r#"    <tspan x="0px" y="{text_y}px">"#).unwrap();
+            write!(&mut buffer, r#"    <tspan x="{text_x}px" y="{text_y}px">"#).unwrap();
             for (style, fragment) in line {
                 if fragment.is_empty() {
                     continue;
