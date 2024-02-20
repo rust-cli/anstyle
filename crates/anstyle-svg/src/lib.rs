@@ -102,7 +102,7 @@ impl Term {
             .map(|l| l.iter().map(|(_, t)| t.width()).sum())
             .max()
             .unwrap_or(20);
-        let width_px = max_width as f64 * 8.4;
+        let width_px = (max_width as f64 * 8.4).ceil();
 
         use std::fmt::Write as _;
         let mut buffer = String::new();
