@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.3] - 2024-02-22
+
 ### Fixes
 
 - Reduce noise in SVG
@@ -29,7 +31,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2024-02-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.2...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.3...HEAD
+[0.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.2...anstyle-svg-v0.1.3
 [0.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.1...anstyle-svg-v0.1.2
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.0...anstyle-svg-v0.1.1
 [0.1.0]: https://github.com/rust-cli/anstyle/compare/f6784b0002e4fbd4c3532dc66aad8b86fc3c7748...anstyle-svg-v0.1.0
