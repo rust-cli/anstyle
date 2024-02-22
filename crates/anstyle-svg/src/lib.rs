@@ -215,7 +215,11 @@ impl Term {
 
         let text_x = self.padding_px;
         let mut text_y = self.padding_px + line_height;
-        writeln!(&mut buffer, r#"  <text class="container {FG}">"#).unwrap();
+        writeln!(
+            &mut buffer,
+            r#"  <text xml:space="preserve" class="container {FG}">"#
+        )
+        .unwrap();
         for line in &styled_lines {
             if line.iter().any(|(s, _)| s.get_bg_color().is_some()) {
                 write!(&mut buffer, r#"    <tspan x="{text_x}px" y="{text_y}px">"#).unwrap();
@@ -312,7 +316,7 @@ fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     }
 
     use std::fmt::Write as _;
-    write!(buffer, r#"<tspan xml:space="preserve""#).unwrap();
+    write!(buffer, r#"<tspan"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
@@ -337,7 +341,7 @@ fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
         classes.push(class);
     }
     use std::fmt::Write as _;
-    write!(buffer, r#"<tspan xml:space="preserve""#).unwrap();
+    write!(buffer, r#"<tspan"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
