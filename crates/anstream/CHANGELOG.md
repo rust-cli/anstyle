@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.13] - 2024-02-27
+
 ### Fixes
 
 - Put `NO_COLOR` above `CLICOLOR_FORCE` according to latest spec
@@ -225,7 +227,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.12...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.13...HEAD
+[0.6.13]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.12...anstream-v0.6.13
 [0.6.12]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.11...anstream-v0.6.12
 [0.6.11]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.10...anstream-v0.6.11
 [0.6.10]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.9...anstream-v0.6.10
