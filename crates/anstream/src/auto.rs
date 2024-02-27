@@ -190,10 +190,10 @@ fn choice(raw: &dyn RawStream) -> ColorChoice {
             let clicolor = anstyle_query::clicolor();
             let clicolor_enabled = clicolor.unwrap_or(false);
             let clicolor_disabled = !clicolor.unwrap_or(true);
-            if anstyle_query::clicolor_force() {
-                ColorChoice::Always
-            } else if anstyle_query::no_color() {
+            if anstyle_query::no_color() {
                 ColorChoice::Never
+            } else if anstyle_query::clicolor_force() {
+                ColorChoice::Always
             } else if clicolor_disabled {
                 ColorChoice::Never
             } else if raw.is_terminal()
