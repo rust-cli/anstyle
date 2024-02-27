@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Put `NO_COLOR` above `CLICOLOR_FORCE` according to latest spec
+
 ## [0.6.12] - 2024-02-18
 
 ### Fixes
