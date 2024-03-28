@@ -12,6 +12,10 @@
 //!
 //! ![demo of supported styles](https://raw.githubusercontent.com/rust-cli/anstyle/main/crates/anstyle-svg/tests/rainbow.svg "Example output")
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 pub use anstyle_lossy::palette::Palette;
 pub use anstyle_lossy::palette::VGA;
 pub use anstyle_lossy::palette::WIN10_CONSOLE;

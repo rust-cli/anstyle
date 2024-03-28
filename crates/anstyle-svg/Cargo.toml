@@ -12,8 +12,8 @@ rust-version.workspace = true
 include.workspace = true
 
 [package.metadata.docs.rs]
+all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
-cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
 
 [package.metadata.release]
 pre-release-replacements = [
@@ -33,3 +33,6 @@ unicode-width = "0.1.11"
 
 [dev-dependencies]
 snapbox = "0.5.1"
+
+[lints]
+workspace = true

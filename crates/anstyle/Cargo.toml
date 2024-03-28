@@ -11,6 +11,10 @@ edition.workspace = true
 rust-version.workspace = true
 include.workspace = true
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.release]
 tag-prefix = ""
 pre-release-replacements = [
@@ -29,3 +33,6 @@ std = []
 
 [dev-dependencies]
 lexopt = "0.3.0"
+
+[lints]
+workspace = true

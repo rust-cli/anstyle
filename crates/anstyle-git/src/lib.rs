@@ -11,6 +11,10 @@
 //! assert_eq!(hyperlink_style, anstyle::RgbColor(0x00, 0x00, 0xee).on_default() | anstyle::Effects::UNDERLINE);
 //! ```
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 mod sealed {
     pub(crate) trait Sealed {}
 }

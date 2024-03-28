@@ -2,6 +2,10 @@
 //! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
 //! roff output.
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 mod styled_str;
 use anstyle::{Ansi256Color, AnsiColor, Color, RgbColor, Style};
 use anstyle_lossy::palette::Palette;

@@ -8,6 +8,10 @@
 //! assert_eq!(style, anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::ITALIC);
 //! ```
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 mod sealed {
     pub(crate) trait Sealed {}
 }

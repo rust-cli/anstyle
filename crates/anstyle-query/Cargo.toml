@@ -10,6 +10,10 @@ edition.workspace = true
 rust-version.workspace = true
 include.workspace = true
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.release]
 pre-release-replacements = [
   {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
@@ -21,3 +25,6 @@ pre-release-replacements = [
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.52.0", features = ["Win32_System_Console", "Win32_Foundation"] }
+
+[lints]
+workspace = true
