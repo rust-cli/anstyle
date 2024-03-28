@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 use criterion::{black_box, Criterion};
 
 fn wincon(c: &mut Criterion) {
@@ -17,7 +18,7 @@ fn wincon(c: &mut Criterion) {
                 let stripped = state.extract_next(content).collect::<Vec<_>>();
 
                 black_box(stripped)
-            })
+            });
         });
     }
 }

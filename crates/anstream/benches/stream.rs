@@ -1,3 +1,6 @@
+#![allow(missing_docs)]
+#![allow(clippy::unwrap_used)]
+
 use std::io::Write as _;
 
 use criterion::{black_box, Criterion};
@@ -21,7 +24,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
         group.bench_function("StripStream", |b| {
             b.iter(|| {
@@ -31,7 +34,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
         #[cfg(all(windows, feature = "wincon"))]
         group.bench_function("WinconStream", |b| {
@@ -42,7 +45,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
         group.bench_function("AutoStream::always_ansi", |b| {
             b.iter(|| {
@@ -52,7 +55,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
         group.bench_function("AutoStream::always", |b| {
             b.iter(|| {
@@ -62,7 +65,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
         group.bench_function("AutoStream::never", |b| {
             b.iter(|| {
@@ -72,7 +75,7 @@ fn stream(c: &mut Criterion) {
                 stream.write_all(content).unwrap();
 
                 black_box(stream)
-            })
+            });
         });
     }
 }

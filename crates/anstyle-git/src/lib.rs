@@ -15,24 +15,8 @@
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
 
-mod sealed {
-    pub(crate) trait Sealed {}
-}
-
-trait Ext: sealed::Sealed + Sized {
-    fn parse_git(s: &str) -> Result<Self, Error>;
-}
-
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn parse_git(s: &str) -> Result<Self, Error> {
-        parse(s)
-    }
-}
-
 /// Parse a string in Git's color configuration syntax into an
-/// `anstyle::Style`.
+/// [`anstyle::Style`].
 pub fn parse(s: &str) -> Result<anstyle::Style, Error> {
     let mut style = anstyle::Style::new();
     let mut num_colors = 0;
@@ -94,15 +78,15 @@ pub fn parse(s: &str) -> Result<anstyle::Style, Error> {
                         }
                         _ => {
                             return Err(Error::ExtraColor {
-                                style: s.to_string(),
-                                word: word.to_string(),
+                                style: s.to_owned(),
+                                word: word.to_owned(),
                             });
                         }
                     }
                 } else {
                     return Err(Error::UnknownWord {
-                        style: s.to_string(),
-                        word: word.to_string(),
+                        style: s.to_owned(),
+                        word: word.to_owned(),
                     });
                 }
             }
@@ -150,13 +134,23 @@ fn parse_color(word: &str) -> Result<Option<anstyle::Color>, ()> {
 #[non_exhaustive]
 pub enum Error {
     /// An extra color appeared after the foreground and background colors.
-    ExtraColor { style: String, word: String },
+    ExtraColor {
+        /// Original style
+        style: String,
+        /// Extra color
+        word: String,
+    },
     /// An unknown word appeared.
-    UnknownWord { style: String, word: String },
+    UnknownWord {
+        /// Original style
+        style: String,
+        /// Unknown word
+        word: String,
+    },
 }
 
 impl std::fmt::Display for Error {
-    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::ExtraColor { style, word } => {
                 write!(
@@ -235,8 +229,8 @@ mod tests {
                 assert_eq!(
                     parse($s),
                     Err($err {
-                        style: $s.to_string(),
-                        word: $word.to_string()
+                        style: $s.to_owned(),
+                        word: $word.to_owned()
                     })
                 );
             };
@@ -275,11 +269,5 @@ mod tests {
         test!("#bcdefg" => UnknownWord "#bcdefg");
         test!("#blue" => UnknownWord "#blue");
         test!("blue#123456" => UnknownWord "blue#123456");
-    }
-
-    #[test]
-    fn test_extension_trait() {
-        let style = anstyle::Style::parse_git("red blue");
-        assert_eq!(style.unwrap(), Red.on(Blue));
     }
 }

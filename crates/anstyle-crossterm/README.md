@@ -1,6 +1,6 @@
 # anstyle-crossterm
 
-> Convert from color styling types to [`crossterm`](https://lib.rs/crossterm) color types
+> Convert between [`crossterm`](https://lib.rs/crossterm) and generic styling types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-crossterm.svg)

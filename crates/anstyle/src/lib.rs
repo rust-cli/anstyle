@@ -25,11 +25,12 @@
 //!
 //! User-styling parsers:
 //! - [anstyle-git](https://docs.rs/anstyle-git): Parse Git style descriptions
-//! - [anstyle-ls](https://docs.rs/anstyle-ls): Parse LS_COLORS style descriptions
+//! - [anstyle-ls](https://docs.rs/anstyle-ls): Parse `LS_COLORS` style descriptions
 //!
 //! Convert to other formats
 //! - [anstream](https://docs.rs/anstream): A simple cross platform library for writing colored text to a terminal
 //! - [anstyle-roff](https://docs.rs/anstyle-roff): For converting to ROFF
+//! - [anstyle-syntect](https://docs.rs/anstyle-syntect): For working with syntax highlighting
 //!
 //! Utilities
 //! - [anstyle-lossy](https://docs.rs/anstyle-lossy): Convert between `anstyle::Color` types

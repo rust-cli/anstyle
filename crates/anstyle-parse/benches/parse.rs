@@ -1,6 +1,10 @@
+#![allow(missing_docs)]
 use std::hint::black_box;
 
-use anstyle_parse::*;
+use anstyle_parse::DefaultCharAccumulator;
+use anstyle_parse::Params;
+use anstyle_parse::Parser;
+use anstyle_parse::Perform;
 
 #[divan::bench(args = DATA)]
 fn advance(data: &Data) {
@@ -35,7 +39,7 @@ fn state_change(data: &Data) {
 }
 
 #[divan::bench(args = DATA)]
-fn state_change_strip_str(bencher: divan::Bencher, data: &Data) {
+fn state_change_strip_str(bencher: divan::Bencher<'_, '_>, data: &Data) {
     if let Ok(content) = std::str::from_utf8(data.content()) {
         bencher
             .with_inputs(|| content)
@@ -43,7 +47,7 @@ fn state_change_strip_str(bencher: divan::Bencher, data: &Data) {
                 let stripped = strip_str(content);
 
                 black_box(stripped)
-            })
+            });
     }
 }
 
@@ -141,6 +145,7 @@ fn strip_str(content: &str) -> String {
         bytes = next;
     }
 
+    #[allow(clippy::unwrap_used)]
     String::from_utf8(stripped).unwrap()
 }
 
@@ -162,14 +167,14 @@ const DATA: &[Data] = &[
 ];
 
 #[derive(Debug)]
-pub struct Data(&'static str, &'static [u8]);
+struct Data(&'static str, &'static [u8]);
 
 impl Data {
-    pub const fn name(&self) -> &'static str {
+    const fn name(&self) -> &'static str {
         self.0
     }
 
-    pub const fn content(&self) -> &'static [u8] {
+    const fn content(&self) -> &'static [u8] {
         self.1
     }
 }

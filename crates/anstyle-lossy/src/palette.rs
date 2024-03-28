@@ -3,11 +3,14 @@
 //! Based on [wikipedia](https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit)
 use anstyle::RgbColor as Rgb;
 
+/// A color palette for rendering 4-bit [`anstyle::AnsiColor`]
+#[allow(clippy::exhaustive_structs)]
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub struct Palette(pub RawPalette);
 type RawPalette = [Rgb; 16];
 
 impl Palette {
+    /// Look up the [`anstyle::RgbColor`] in the palette
     pub const fn get(&self, color: anstyle::AnsiColor) -> Rgb {
         let color = anstyle::Ansi256Color::from_ansi(color);
         *self.get_ansi256_ref(color)
@@ -45,15 +48,14 @@ impl Palette {
             index += 1;
         }
 
-        match anstyle::Ansi256Color(best_index as u8).into_ansi() {
-            Some(color) => color,
-            None => {
-                // Panic
-                #[allow(clippy::no_effect)]
-                ["best_index is out of bounds"][best_index];
-                // Make compiler happy
-                anstyle::AnsiColor::Black
-            }
+        if let Some(color) = anstyle::Ansi256Color(best_index as u8).into_ansi() {
+            color
+        } else {
+            // Panic
+            #[allow(clippy::no_effect)]
+            ["best_index is out of bounds"][best_index];
+            // Make compiler happy
+            anstyle::AnsiColor::Black
         }
     }
 }
@@ -80,12 +82,15 @@ impl From<RawPalette> for Palette {
     }
 }
 
+/// Platform-specific default
 #[cfg(not(windows))]
 pub use VGA as DEFAULT;
 
+/// Platform-specific default
 #[cfg(windows)]
 pub use WIN10_CONSOLE as DEFAULT;
 
+/// Typical colors that are used when booting PCs and leaving them in text mode
 pub const VGA: Palette = Palette([
     Rgb(0, 0, 0),
     Rgb(170, 0, 0),
@@ -105,6 +110,7 @@ pub const VGA: Palette = Palette([
     Rgb(255, 255, 255),
 ]);
 
+/// Campbell theme, used as of Windows 10 version 1709.
 pub const WIN10_CONSOLE: Palette = Palette([
     Rgb(12, 12, 12),
     Rgb(197, 15, 31),

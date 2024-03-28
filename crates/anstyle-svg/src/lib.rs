@@ -33,6 +33,7 @@ pub struct Term {
 }
 
 impl Term {
+    /// Default terminal settings
     pub const fn new() -> Self {
         Self {
             palette: VGA,
@@ -80,7 +81,11 @@ impl Term {
     /// **Note:** Lines are not wrapped.  This is intentional as this attempts to convey the exact
     /// output with escape codes translated to SVG elements.
     pub fn render_svg(&self, ansi: &str) -> String {
+        use std::fmt::Write as _;
         use unicode_width::UnicodeWidthStr as _;
+
+        const FG: &str = "fg";
+        const BG: &str = "bg";
 
         let mut styled = anstream::adapter::WinconBytes::new();
         let mut styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
@@ -97,9 +102,7 @@ impl Term {
         }
         let styled_lines = split_lines(&styled);
 
-        const FG: &str = "fg";
         let fg_color = rgb_value(self.fg_color, self.palette);
-        const BG: &str = "bg";
         let bg_color = rgb_value(self.bg_color, self.palette);
         let font_family = self.font_family;
 
@@ -113,7 +116,6 @@ impl Term {
         let width_px = (max_width as f64 * 8.4).ceil() as usize;
         let width_px = std::cmp::max(width_px, self.min_width_px) + self.padding_px * 2;
 
-        use std::fmt::Write as _;
         let mut buffer = String::new();
         writeln!(
             &mut buffer,
@@ -263,6 +265,7 @@ const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White)
 const BG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::Black);
 
 fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+    use std::fmt::Write as _;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
     let underline_color = style
         .get_underline_color()
@@ -319,7 +322,6 @@ fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
         classes.push("hidden");
     }
 
-    use std::fmt::Write as _;
     write!(buffer, r#"<tspan"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
@@ -331,6 +333,7 @@ fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
 }
 
 fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+    use std::fmt::Write as _;
     use unicode_width::UnicodeWidthStr;
 
     let bg_color = style.get_bg_color().map(|c| color_name(BG_PREFIX, c));
@@ -344,7 +347,6 @@ fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     if let Some(class) = bg_color.as_deref() {
         classes.push(class);
     }
-    use std::fmt::Write as _;
     write!(buffer, r#"<tspan"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
@@ -380,7 +382,7 @@ const ANSI_NAMES: [&str; 16] = [
     "bright-white",
 ];
 
-fn rgb_value(color: anstyle::Color, palette: anstyle_lossy::palette::Palette) -> String {
+fn rgb_value(color: anstyle::Color, palette: Palette) -> String {
     let color = anstyle_lossy::color_to_rgb(color, palette);
     let anstyle::RgbColor(r, g, b) = color;
     format!("#{r:02X}{g:02X}{b:02X}")
@@ -411,7 +413,7 @@ fn color_name(prefix: &str, color: anstyle::Color) -> String {
 
 fn color_styles(
     styled: &[(anstyle::Style, String)],
-    palette: anstyle_lossy::palette::Palette,
+    palette: Palette,
 ) -> impl Iterator<Item = (String, String)> {
     let mut colors = std::collections::BTreeMap::new();
     for (style, _) in styled {

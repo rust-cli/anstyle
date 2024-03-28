@@ -30,6 +30,7 @@
 pub use clap::ColorChoice;
 
 /// Mixin a clap argument for colored output selection
+#[allow(clippy::exhaustive_structs)]
 #[derive(Copy, Clone, Default, Debug, PartialEq, Eq, clap::Args)]
 #[command(about = None, long_about = None)]
 pub struct Color {
@@ -67,6 +68,6 @@ mod test {
         }
 
         use clap::CommandFactory;
-        Cli::command().debug_assert()
+        Cli::command().debug_assert();
     }
 }

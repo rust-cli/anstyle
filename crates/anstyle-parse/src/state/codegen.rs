@@ -52,7 +52,7 @@ pub(crate) const STATE_CHANGES: [[u8; 256]; 16] = ["#
 
 /// This is the state change table. It's indexed first by current state and then by the next
 /// character in the pty stream.
-pub static STATE_CHANGES: [[u8; 256]; 16] = state_changes();
+pub(crate) static STATE_CHANGES: [[u8; 256]; 16] = state_changes();
 generate_state_changes!(state_changes, {
     Anywhere {
         0x18 => (Ground, Execute),

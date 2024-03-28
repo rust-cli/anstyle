@@ -1,23 +1,10 @@
+//! Convert between [yansi](https://lib.rs/yansi) and generic styling types
+
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
 
-mod sealed {
-    pub(crate) trait Sealed {}
-}
-
-trait Ext: sealed::Sealed {
-    fn to_yansi(self) -> yansi::Style;
-}
-
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_yansi(self) -> yansi::Style {
-        to_yansi_style(self)
-    }
-}
-
+/// Adapt generic styling to [`yansi`]
 pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
     let (fg, fg_bold) = style
         .get_fg_color()
@@ -57,6 +44,7 @@ pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
     style
 }
 
+/// Adapt generic color to [`yansi`]
 pub fn to_yansi_color(color: anstyle::Color) -> yansi::Color {
     to_yansi_color_with_bold(color).0
 }

@@ -1,3 +1,6 @@
+#![allow(missing_docs)]
+#![allow(clippy::unwrap_used)]
+
 use criterion::{black_box, Criterion};
 
 #[derive(Default)]
@@ -59,14 +62,14 @@ fn strip(c: &mut Criterion) {
                 }
 
                 black_box(stripped.0)
-            })
+            });
         });
         group.bench_function("strip_ansi_escapes", |b| {
             b.iter(|| {
                 let stripped = strip_ansi_escapes::strip(content);
 
                 black_box(stripped)
-            })
+            });
         });
         if let Ok(content) = std::str::from_utf8(content) {
             group.bench_function("strip_str", |b| {
@@ -74,7 +77,7 @@ fn strip(c: &mut Criterion) {
                     let stripped = anstream::adapter::strip_str(content).to_string();
 
                     black_box(stripped)
-                })
+                });
             });
             group.bench_function("StripStr", |b| {
                 b.iter(|| {
@@ -85,7 +88,7 @@ fn strip(c: &mut Criterion) {
                     }
 
                     black_box(stripped)
-                })
+                });
             });
         }
         group.bench_function("strip_bytes", |b| {
@@ -93,7 +96,7 @@ fn strip(c: &mut Criterion) {
                 let stripped = anstream::adapter::strip_bytes(content).into_vec();
 
                 black_box(stripped)
-            })
+            });
         });
     }
 }
