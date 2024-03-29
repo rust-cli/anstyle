@@ -43,7 +43,6 @@ vte_generate_state_changes = { version = "0.1.1" }
 [[bench]]
 name = "parse"
 harness = false
-test = true
 required-features = ["utf8"]
 
 [lints]
