@@ -1,19 +1,11 @@
-mod sealed {
-    pub(crate) trait Sealed {}
-}
+//! Convert between [`syntect`](https://lib.rs/syntect) highlighting and
+//! [generic styling types][anstyle::Style]
 
-trait Ext: sealed::Sealed {
-    fn syntect_to_anstyle(self) -> anstyle::Style;
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
-impl sealed::Sealed for syntect::highlighting::Style {}
-
-impl Ext for syntect::highlighting::Style {
-    fn syntect_to_anstyle(self) -> anstyle::Style {
-        to_anstyle(self)
-    }
-}
-
+/// Convert highlighting style to general style
 pub fn to_anstyle(style: syntect::highlighting::Style) -> anstyle::Style {
     anstyle::Style::new()
         .fg_color(Some(to_anstyle_color(style.foreground)))
@@ -21,10 +13,12 @@ pub fn to_anstyle(style: syntect::highlighting::Style) -> anstyle::Style {
         .effects(to_anstyle_effects(style.font_style))
 }
 
+/// Convert highlighting color to general color
 pub fn to_anstyle_color(color: syntect::highlighting::Color) -> anstyle::Color {
     anstyle::RgbColor(color.r, color.g, color.b).into()
 }
 
+/// Convert highlighting style to general effects
 pub fn to_anstyle_effects(style: syntect::highlighting::FontStyle) -> anstyle::Effects {
     let mut effects = anstyle::Effects::new();
 

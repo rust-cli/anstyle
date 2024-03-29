@@ -1,19 +1,10 @@
-mod sealed {
-    pub(crate) trait Sealed {}
-}
+//! Convert between [`crossterm`](https://lib.rs/crossterm) and [generic styling types][anstyle]
 
-trait Ext: sealed::Sealed {
-    fn to_crossterm(self) -> crossterm::style::ContentStyle;
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_crossterm(self) -> crossterm::style::ContentStyle {
-        to_crossterm(self)
-    }
-}
-
+/// Adapt generic styling to [`crossterm`]
 pub fn to_crossterm(astyle: anstyle::Style) -> crossterm::style::ContentStyle {
     let foreground_color = astyle.get_fg_color().map(to_ansi_color);
     let background_color = astyle.get_bg_color().map(to_ansi_color);

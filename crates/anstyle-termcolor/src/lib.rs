@@ -1,19 +1,10 @@
-mod sealed {
-    pub(crate) trait Sealed {}
-}
+//! Convert between [termcolor](https://lib.rs/termcolor) and [generic styling types][anstyle]
 
-trait Ext: sealed::Sealed {
-    fn to_termcolor(self) -> termcolor::ColorSpec;
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_termcolor(self) -> termcolor::ColorSpec {
-        to_termcolor_spec(self)
-    }
-}
-
+/// Adapt generic styling to [`termcolor`]
 pub fn to_termcolor_spec(style: anstyle::Style) -> termcolor::ColorSpec {
     let fg = style.get_fg_color().map(to_termcolor_color);
     let bg = style.get_bg_color().map(to_termcolor_color);
@@ -29,6 +20,7 @@ pub fn to_termcolor_spec(style: anstyle::Style) -> termcolor::ColorSpec {
     style
 }
 
+/// Adapt generic colors to [`termcolor`]
 pub fn to_termcolor_color(color: anstyle::Color) -> termcolor::Color {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_termcolor_color(ansi),

@@ -3,8 +3,8 @@
 use anstyle::{AnsiColor, Color as AColor, Effects, Style};
 use cansi::{v3::CategorisedSlice, Color, Intensity};
 
-/// Produce a stream of StyledStr from text that contains ansi escape sequences
-pub(crate) fn styled_stream(text: &str) -> impl Iterator<Item = StyledStr> {
+/// Produce a stream of [`StyledStr`] from text that contains ansi escape sequences
+pub(crate) fn styled_stream(text: &str) -> impl Iterator<Item = StyledStr<'_>> {
     let categorized = cansi::v3::categorise_text(text);
     categorized.into_iter().map(|x| x.into())
 }
@@ -12,8 +12,8 @@ pub(crate) fn styled_stream(text: &str) -> impl Iterator<Item = StyledStr> {
 /// Represents a Section of text, along with the desired styling for it
 #[derive(Debug, Default, Clone, Copy)]
 pub(crate) struct StyledStr<'text> {
-    pub text: &'text str,
-    pub style: Style,
+    pub(crate) text: &'text str,
+    pub(crate) style: Style,
 }
 
 impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
@@ -33,7 +33,7 @@ impl<'text> From<CategorisedSlice<'text>> for StyledStr<'text> {
     }
 }
 
-fn create_effects(category: &CategorisedSlice) -> Effects {
+fn create_effects(category: &CategorisedSlice<'_>) -> Effects {
     Effects::new()
         .set(Effects::ITALIC, category.italic.unwrap_or(false))
         .set(Effects::BLINK, category.blink.unwrap_or(false))
@@ -83,14 +83,16 @@ mod tests {
 
     use super::*;
 
-    /// Creates a CategorisedSlice for Testing
+    /// Creates a [`CategorisedSlice`] for Testing
     ///
-    /// styled_str!( Text, [Color:COLOR_SET] [Intensity:INTENSITY_SET] [Effects:EFFECTS_SET])
+    /// ```rust
+    /// styled_str!(Text, [Color:COLOR_SET] [Intensity:INTENSITY_SET] [Effects:EFFECTS_SET])
+    /// ```
     ///
     /// Where:
-    ///     COLOR_SET={fg|bg}:<cansi::Color>
-    ///     INTENSITY_SET=<cansi::Intensity>
-    ///     EFFECTS_SET = {"underline"|"italic"|"blink"|"reversed"|"strikethrough"|"hidden"};+
+    ///     `COLOR_SET={fg|bg}:<cansi::Color>`
+    ///     `INTENSITY_SET=<cansi::Intensity>`
+    ///     `EFFECTS_SET={"underline"|"italic"|"blink"|"reversed"|"strikethrough"|"hidden"};+`
     macro_rules! styled_str {
         ($text: literal, $(Color:$color_key:literal:$color_val:expr;)* $(Intensity:$intensity:expr;)? $(Effects:$($key:literal;)+)? ) => {
             {
@@ -137,14 +139,14 @@ mod tests {
     #[test]
     fn from_categorized_underlined() {
         let categorised = styled_str!("Hello", Effects:"underline";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
     }
 
     #[test]
     fn from_categorized_underlined_striketrhough() {
         let categorised = styled_str!("Hello", Effects:"underline";"strikethrough";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::UNDERLINE));
         assert!(styled_str
             .style
@@ -155,21 +157,21 @@ mod tests {
     #[test]
     fn from_categorized_blink() {
         let categorised = styled_str!("Hello", Effects:"blink";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::BLINK));
     }
 
     #[test]
     fn from_categorized_reversed() {
         let categorised = styled_str!("Hello", Effects:"reversed";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::INVERT));
     }
 
     #[test]
     fn from_categorized_strikthrough() {
         let categorised = styled_str!("Hello", Effects:"strikethrough";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str
             .style
             .get_effects()
@@ -179,14 +181,14 @@ mod tests {
     #[test]
     fn from_categorized_hidden() {
         let categorised = styled_str!("Hello", Effects:"hidden";);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::HIDDEN));
     }
 
     #[test]
     fn from_categorized_bg() {
         let categorised = styled_str!("Hello", Color:"bg":Color::Blue;);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(matches!(
             styled_str.style.get_bg_color(),
             Some(AColor::Ansi(AnsiColor::Blue))
@@ -196,7 +198,7 @@ mod tests {
     #[test]
     fn from_categorized_fg() {
         let categorised = styled_str!("Hello", Color:"fg":Color::Blue;);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(matches!(
             styled_str.style.get_fg_color(),
             Some(AColor::Ansi(AnsiColor::Blue))
@@ -206,14 +208,14 @@ mod tests {
     #[test]
     fn from_categorized_bold() {
         let categorised = styled_str!("Hello", Intensity:Intensity::Bold;);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::BOLD));
     }
 
     #[test]
     fn from_categorized_faint() {
         let categorised = styled_str!("Hello", Intensity:Intensity::Faint;);
-        let styled_str: StyledStr = categorised.into();
+        let styled_str: StyledStr<'_> = categorised.into();
         assert!(styled_str.style.get_effects().contains(Effects::DIMMED));
     }
 }

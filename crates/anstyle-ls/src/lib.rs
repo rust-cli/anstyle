@@ -8,21 +8,9 @@
 //! assert_eq!(style, anstyle::AnsiColor::Blue.on_default() | anstyle::Effects::ITALIC);
 //! ```
 
-mod sealed {
-    pub(crate) trait Sealed {}
-}
-
-trait Ext: sealed::Sealed + Sized {
-    fn parse_ls(code: &str) -> Option<Self>;
-}
-
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn parse_ls(code: &str) -> Option<Self> {
-        parse(code)
-    }
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
 /// Parse a string in `LS_COLORS`'s color configuration syntax into an
 /// `ansi_term::Style`.
@@ -93,7 +81,7 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
                 (Some(5), Some(color)) => fg_color = Some(anstyle::Ansi256Color(color).into()),
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
-                        fg_color = Some(anstyle::RgbColor(red, green, blue).into())
+                        fg_color = Some(anstyle::RgbColor(red, green, blue).into());
                     }
                     _ => {
                         break;
@@ -116,7 +104,7 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
                 (Some(5), Some(color)) => bg_color = Some(anstyle::Ansi256Color(color).into()),
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
-                        bg_color = Some(anstyle::RgbColor(red, green, blue).into())
+                        bg_color = Some(anstyle::RgbColor(red, green, blue).into());
                     }
                     _ => {
                         break;
@@ -129,11 +117,11 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
             49 => bg_color = None,
             58 => match (parts.pop_front(), parts.pop_front()) {
                 (Some(5), Some(color)) => {
-                    underline_color = Some(anstyle::Ansi256Color(color).into())
+                    underline_color = Some(anstyle::Ansi256Color(color).into());
                 }
                 (Some(2), Some(red)) => match (parts.pop_front(), parts.pop_front()) {
                     (Some(green), Some(blue)) => {
-                        underline_color = Some(anstyle::RgbColor(red, green, blue).into())
+                        underline_color = Some(anstyle::RgbColor(red, green, blue).into());
                     }
                     _ => {
                         break;
@@ -181,7 +169,7 @@ mod tests {
 
     #[track_caller]
     fn assert_style(code: &str, expected: impl Into<anstyle::Style>) {
-        let actual = anstyle::Style::parse_ls(code).unwrap();
+        let actual = parse(code).unwrap();
         let expected = expected.into();
         assert_eq!(actual, expected);
     }
@@ -206,9 +194,9 @@ mod tests {
 
     #[test]
     fn parse_reject() {
-        assert_eq!(None, anstyle::Style::parse_ls("a"));
-        assert_eq!(None, anstyle::Style::parse_ls("1;"));
-        assert_eq!(None, anstyle::Style::parse_ls("33; 42"));
+        assert_eq!(None, parse("a"));
+        assert_eq!(None, parse("1;"));
+        assert_eq!(None, parse("33; 42"));
     }
 
     #[test]

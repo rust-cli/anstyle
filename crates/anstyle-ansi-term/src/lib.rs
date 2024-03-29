@@ -1,19 +1,10 @@
-mod sealed {
-    pub(crate) trait Sealed {}
-}
+//!  Convert between [`ansi_term`](https://lib.rs/ansi_term) and generic styling types
 
-trait Ext: sealed::Sealed {
-    fn to_ansi_term(self) -> ansi_term::Style;
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_ansi_term(self) -> ansi_term::Style {
-        to_ansi_term(self)
-    }
-}
-
+/// Adapt generic styling to [`ansi_term`]
 pub fn to_ansi_term(astyle: anstyle::Style) -> ansi_term::Style {
     let mut style = ansi_term::Style::new();
 

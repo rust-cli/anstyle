@@ -1,3 +1,5 @@
+//! Write colored text using wincon API calls
+
 use anstyle_wincon::WinconStream as _;
 
 fn main() -> Result<(), lexopt::Error> {
@@ -84,7 +86,7 @@ enum Layer {
 
 impl Args {
     fn parse() -> Result<Self, lexopt::Error> {
-        use lexopt::prelude::*;
+        use lexopt::prelude::{Long, ValueExt};
 
         let mut res = Args::default();
 

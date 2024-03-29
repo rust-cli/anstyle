@@ -1,6 +1,6 @@
 # anstyle-syntect
 
-> Convert from color styling types to [`ansi_term`](https://lib.rs/syntect) color types
+> Convert between [`syntect`](https://lib.rs/syntect) highlighting and generic styling types
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-syntect.svg)

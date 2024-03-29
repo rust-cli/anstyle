@@ -1,19 +1,10 @@
-mod sealed {
-    pub(crate) trait Sealed {}
-}
+//!  Convert between [owo-colors](https://lib.rs/owo-colors) and generic styling types
 
-trait Ext: sealed::Sealed {
-    fn to_owo(self) -> owo_colors::Style;
-}
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
 
-impl sealed::Sealed for anstyle::Style {}
-
-impl Ext for anstyle::Style {
-    fn to_owo(self) -> owo_colors::Style {
-        to_owo_style(self)
-    }
-}
-
+/// Adapt generic styling to [`owo_colors`]
 pub fn to_owo_style(style: anstyle::Style) -> owo_colors::Style {
     let fg = style.get_fg_color().map(to_owo_colors);
     let bg = style.get_bg_color().map(to_owo_colors);
@@ -53,6 +44,7 @@ pub fn to_owo_style(style: anstyle::Style) -> owo_colors::Style {
     style
 }
 
+/// Adapt generic colors to [`owo_colors`]
 pub fn to_owo_colors(color: anstyle::Color) -> owo_colors::DynColors {
     match color {
         anstyle::Color::Ansi(ansi) => owo_colors::DynColors::Ansi(ansi_to_owo_colors_color(ansi)),

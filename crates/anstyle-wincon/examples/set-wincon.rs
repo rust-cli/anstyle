@@ -1,3 +1,5 @@
+//! Interactively manipulate wincon colors
+
 #![cfg_attr(not(windows), allow(dead_code))]
 
 #[cfg(not(windows))]
@@ -31,7 +33,7 @@ struct Args {
 
 impl Args {
     fn parse() -> Result<Self, lexopt::Error> {
-        use lexopt::prelude::*;
+        use lexopt::prelude::{Long, ValueExt};
 
         let mut res = Args::default();
 

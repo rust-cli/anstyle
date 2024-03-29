@@ -11,6 +11,10 @@ edition.workspace = true
 rust-version.workspace = true
 include.workspace = true
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.release]
 pre-release-replacements = [
   {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
@@ -23,3 +27,6 @@ pre-release-replacements = [
 [dependencies]
 anstyle = { version = "1.0.0", path = "../anstyle" }
 crossterm = { version = "0.27.0", default-features = false, features = ["windows"] }
+
+[lints]
+workspace = true

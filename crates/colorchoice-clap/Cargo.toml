@@ -10,6 +10,10 @@ edition.workspace = true
 rust-version.workspace = true
 include.workspace = true
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.release]
 pre-release-replacements = [
   {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
@@ -27,3 +31,6 @@ clap = { version = "4.3.5", default-features = false, features = ["std", "derive
 anstream = { path = "../anstream" }
 clap = "4.4.18"
 owo-colors = "4.0.0"
+
+[lints]
+workspace = true

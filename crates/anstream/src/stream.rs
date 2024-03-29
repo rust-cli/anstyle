@@ -41,7 +41,9 @@ impl RawStream for crate::Buffer {}
 #[allow(deprecated)]
 impl RawStream for &'_ mut crate::Buffer {}
 
+/// Trait to determine if a descriptor/handle refers to a terminal/tty.
 pub trait IsTerminal: private::Sealed {
+    /// Returns `true` if the descriptor/handle refers to a terminal/tty.
     fn is_terminal(&self) -> bool;
 }
 
@@ -145,11 +147,14 @@ impl IsTerminal for &'_ mut crate::Buffer {
     }
 }
 
+/// Lock a stream
 pub trait AsLockedWrite: private::Sealed {
+    /// Locked writer type
     type Write<'w>: RawStream + 'w
     where
         Self: 'w;
 
+    /// Lock a stream
     fn as_locked_write(&mut self) -> Self::Write<'_>;
 }
 

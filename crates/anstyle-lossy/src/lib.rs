@@ -1,7 +1,17 @@
+//! Lossy conversion between ANSI Color Codes
+
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 pub mod palette;
 
 use anstyle::RgbColor as Rgb;
 
+/// Lossily convert from any color to RGB
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn color_to_rgb(color: anstyle::Color, palette: palette::Palette) -> anstyle::RgbColor {
     match color {
         anstyle::Color::Ansi(color) => ansi_to_rgb(color, palette),
@@ -10,6 +20,10 @@ pub const fn color_to_rgb(color: anstyle::Color, palette: palette::Palette) -> a
     }
 }
 
+/// Lossily convert from any color to 256-color
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn color_to_xterm(color: anstyle::Color) -> anstyle::Ansi256Color {
     match color {
         anstyle::Color::Ansi(color) => anstyle::Ansi256Color::from_ansi(color),
@@ -18,6 +32,10 @@ pub const fn color_to_xterm(color: anstyle::Color) -> anstyle::Ansi256Color {
     }
 }
 
+/// Lossily convert from any color to 4-bit color
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn color_to_ansi(color: anstyle::Color, palette: palette::Palette) -> anstyle::AnsiColor {
     match color {
         anstyle::Color::Ansi(color) => color,
@@ -26,6 +44,10 @@ pub const fn color_to_ansi(color: anstyle::Color, palette: palette::Palette) -> 
     }
 }
 
+/// Lossily convert from 4-bit color to RGB
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn ansi_to_rgb(
     color: anstyle::AnsiColor,
     palette: palette::Palette,
@@ -33,6 +55,10 @@ pub const fn ansi_to_rgb(
     palette.rgb_from_ansi(color)
 }
 
+/// Lossily convert from 256-color to RGB
+///
+/// As 256-color palette is a superset of 4-bit colors and since the palette for 4-bit colors is
+/// terminal/user defined, a [`palette::Palette`] must be provided to match against.
 pub const fn xterm_to_rgb(
     color: anstyle::Ansi256Color,
     palette: palette::Palette,
@@ -43,6 +69,10 @@ pub const fn xterm_to_rgb(
     }
 }
 
+/// Lossily convert from the 256-color palette to 4-bit color
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn xterm_to_ansi(
     color: anstyle::Ansi256Color,
     palette: palette::Palette,
@@ -71,6 +101,10 @@ pub const fn xterm_to_ansi(
     }
 }
 
+/// Lossily convert an RGB value to a 4-bit color
+///
+/// As the palette for 4-bit colors is terminal/user defined, a [`palette::Palette`] must be
+/// provided to match against.
 pub const fn rgb_to_ansi(
     color: anstyle::RgbColor,
     palette: palette::Palette,
@@ -78,6 +112,7 @@ pub const fn rgb_to_ansi(
     palette.find_match(color)
 }
 
+/// Lossily convert an RGB value to the 256-color palette
 pub const fn rgb_to_xterm(color: anstyle::RgbColor) -> anstyle::Ansi256Color {
     // Skip placeholders
     let index = find_xterm_match(color);

@@ -2,6 +2,10 @@
 //! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
 //! roff output.
 
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![warn(clippy::print_stderr)]
+#![warn(clippy::print_stdout)]
+
 mod styled_str;
 use anstyle::{Ansi256Color, AnsiColor, Color, RgbColor, Style};
 use anstyle_lossy::palette::Palette;
@@ -11,14 +15,14 @@ use styled_str::StyledStr;
 /// Static Strings defining ROFF Control Requests
 mod control_requests {
     /// Control to Create a Color definition
-    pub const CREATE_COLOR: &str = "defcolor";
+    pub(crate) const CREATE_COLOR: &str = "defcolor";
     /// Roff control request to set background color (fill color)
-    pub const BACKGROUND: &str = "fcolor";
+    pub(crate) const BACKGROUND: &str = "fcolor";
     /// Roff control request to set foreground color (glyph color)
-    pub const FOREGROUND: &str = "gcolor";
+    pub(crate) const FOREGROUND: &str = "gcolor";
 }
 
-/// Generate A RoffStyle from Style
+/// Generate a [`Roff`] from ANSI escape codes
 ///
 /// ```rust
 /// let text = "\u{1b}[44;31mtest\u{1b}[0m";
@@ -43,7 +47,7 @@ pub fn to_roff(styled_text: &str) -> Roff {
     doc
 }
 
-fn set_effects_and_text(styled: &StyledStr, doc: &mut Roff) {
+fn set_effects_and_text(styled: &StyledStr<'_>, doc: &mut Roff) {
     // Roff (the crate) only supports these inline commands
     //  - Bold
     //  - Italic
@@ -69,7 +73,7 @@ fn has_bright_fg(style: &Style) -> bool {
         .unwrap_or(false)
 }
 
-/// Check if Color is an AnsiColor::Bright* variant
+/// Check if [`Color`] is an [`AnsiColor::Bright*`][AnsiColor] variant
 fn is_bright(fg_color: &Color) -> bool {
     if let Color::Ansi(color) = fg_color {
         matches!(
@@ -90,7 +94,7 @@ fn is_bright(fg_color: &Color) -> bool {
 
 type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
 
-fn set_color(colors: ColorSet, doc: &mut Roff) {
+fn set_color(colors: ColorSet<'_>, doc: &mut Roff) {
     add_color_to_roff(doc, control_requests::FOREGROUND, colors.0);
     add_color_to_roff(doc, control_requests::BACKGROUND, colors.1);
 }
@@ -116,7 +120,7 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             // Adding Support for Ansi256 colors, however cansi does not support
             // Ansi256 Colors, so this is not executed. If we switch to a provider
             // That has Xterm support we will also get it for Roff
-            add_color_to_roff(doc, control_request, &Some(xterm_to_ansi_or_rgb(*c)))
+            add_color_to_roff(doc, control_request, &Some(xterm_to_ansi_or_rgb(*c)));
         }
         None => {
             // TODO: get rid of "default" hardcoded str?
@@ -143,7 +147,7 @@ fn to_hex(rgb: &RgbColor) -> String {
 }
 
 /// Map Color and Bright Variants to Roff Color styles
-fn ansi_color_to_roff(color: &anstyle::AnsiColor) -> &'static str {
+fn ansi_color_to_roff(color: &AnsiColor) -> &'static str {
     match color {
         AnsiColor::Black | AnsiColor::BrightBlack => "black",
         AnsiColor::Red | AnsiColor::BrightRed => "red",

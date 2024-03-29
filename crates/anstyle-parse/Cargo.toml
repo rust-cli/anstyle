@@ -11,6 +11,10 @@ edition.workspace = true
 rust-version.workspace = true
 include.workspace = true
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [package.metadata.release]
 pre-release-replacements = [
   {file="CHANGELOG.md", search="Unreleased", replace="{{version}}", min=1},
@@ -39,4 +43,7 @@ vte_generate_state_changes = { version = "0.1.1" }
 [[bench]]
 name = "parse"
 harness = false
-test = true
+required-features = ["utf8"]
+
+[lints]
+workspace = true

@@ -12,8 +12,8 @@ rust-version.workspace = true
 include.workspace = true
 
 [package.metadata.docs.rs]
+all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
-cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
 
 [package.metadata.release]
 pre-release-replacements = [
@@ -42,11 +42,19 @@ utf8parse = "0.2.1"
 anstyle-wincon = { version = "3.0.1", path = "../anstyle-wincon", optional = true }
 
 [dev-dependencies]
-criterion = "0.5.1"
+divan = "0.1.11"
 lexopt = "0.3.0"
 owo-colors = "4.0.0"
 proptest = "1.4.0"
 strip-ansi-escapes = "0.2.0"
+
+[[example]]
+name = "dump-stream"
+required-features = ["auto"]
+
+[[example]]
+name = "query-stream"
+required-features = ["auto"]
 
 [[bench]]
 name = "strip"
@@ -59,3 +67,6 @@ harness = false
 [[bench]]
 name = "stream"
 harness = false
+
+[lints]
+workspace = true
