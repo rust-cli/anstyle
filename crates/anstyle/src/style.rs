@@ -429,6 +429,7 @@ impl core::fmt::Display for StyleDisplay {
 }
 
 #[test]
+#[cfg(feature = "std")]
 fn print_size_of() {
     use std::mem::size_of;
     dbg!(size_of::<Style>());

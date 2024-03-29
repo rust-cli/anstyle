@@ -48,6 +48,14 @@ owo-colors = "4.0.0"
 proptest = "1.4.0"
 strip-ansi-escapes = "0.2.0"
 
+[[example]]
+name = "dump-stream"
+required-features = ["auto"]
+
+[[example]]
+name = "query-stream"
+required-features = ["auto"]
+
 [[bench]]
 name = "strip"
 harness = false
