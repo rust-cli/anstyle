@@ -17,10 +17,7 @@ include = [
   "examples/**/*"
 ]
 
-[workspace.dependencies]
-
 [workspace.lints.rust]
-missing_docs = "warn"
 rust_2018_idioms = "warn"
 unreachable_pub = "warn"
 unsafe_op_in_unsafe_fn = "warn"
