@@ -1,4 +1,3 @@
-#![allow(missing_docs)]
 #![allow(clippy::unwrap_used)]
 
 #[derive(Default)]
