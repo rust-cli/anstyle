@@ -74,7 +74,6 @@ enum Layer {
 
 impl Args {
     fn parse() -> Result<Self, lexopt::Error> {
-        #[allow(clippy::wildcard_imports)] // false positive
         use lexopt::prelude::*;
 
         let mut res = Args::default();
