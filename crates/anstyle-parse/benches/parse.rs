@@ -1,3 +1,5 @@
+#![allow(clippy::incompatible_msrv)] // not verifying benches atm
+
 use std::hint::black_box;
 
 use anstyle_parse::DefaultCharAccumulator;

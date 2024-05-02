@@ -50,9 +50,7 @@ pub(crate) struct AtomicChoice(AtomicUsize);
 
 impl AtomicChoice {
     pub(crate) const fn new() -> Self {
-        Self(AtomicUsize::new(Self::from_choice(
-            crate::ColorChoice::Auto,
-        )))
+        Self(AtomicUsize::new(Self::from_choice(ColorChoice::Auto)))
     }
 
     pub(crate) fn get(&self) -> ColorChoice {
@@ -67,19 +65,19 @@ impl AtomicChoice {
 
     const fn from_choice(choice: ColorChoice) -> usize {
         match choice {
-            crate::ColorChoice::Auto => 0,
-            crate::ColorChoice::AlwaysAnsi => 1,
-            crate::ColorChoice::Always => 2,
-            crate::ColorChoice::Never => 3,
+            ColorChoice::Auto => 0,
+            ColorChoice::AlwaysAnsi => 1,
+            ColorChoice::Always => 2,
+            ColorChoice::Never => 3,
         }
     }
 
     const fn to_choice(choice: usize) -> Option<ColorChoice> {
         match choice {
-            0 => Some(crate::ColorChoice::Auto),
-            1 => Some(crate::ColorChoice::AlwaysAnsi),
-            2 => Some(crate::ColorChoice::Always),
-            3 => Some(crate::ColorChoice::Never),
+            0 => Some(ColorChoice::Auto),
+            1 => Some(ColorChoice::AlwaysAnsi),
+            2 => Some(ColorChoice::Always),
+            3 => Some(ColorChoice::Never),
             _ => None,
         }
     }
