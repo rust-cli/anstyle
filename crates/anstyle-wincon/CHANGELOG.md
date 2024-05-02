@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [3.0.3] - 2024-05-02
+
 ### Fixes
 
 - Drop MSRV to 1.65
@@ -91,7 +93,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.2...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.3...HEAD
+[3.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.2...anstyle-wincon-v3.0.3
 [3.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.1...anstyle-wincon-v3.0.2
 [3.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.0...anstyle-wincon-v3.0.1
 [3.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v2.1.0...anstyle-wincon-v3.0.0

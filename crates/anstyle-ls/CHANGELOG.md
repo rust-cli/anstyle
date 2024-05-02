@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.2] - 2024-05-02
+
 ### Fixes
 
 - Drop MSRV to 1.65
@@ -28,7 +30,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.2...HEAD
+[1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.1...anstyle-ls-v1.0.2
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.0...anstyle-ls-v1.0.1
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v0.2.0...anstyle-ls-v1.0.0
 [0.2.0]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v0.1.1...anstyle-ls-v0.2.0

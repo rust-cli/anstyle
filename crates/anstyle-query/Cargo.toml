@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-query"
-version = "1.0.2"
+version = "1.0.3"
 description = "Look up colored console capabilities"
 repository = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]

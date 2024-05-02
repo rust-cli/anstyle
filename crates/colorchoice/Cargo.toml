@@ -1,6 +1,6 @@
 [package]
 name = "colorchoice"
-version = "1.0.0"
+version = "1.0.1"
 description = "Global override of color control"
 repository = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]

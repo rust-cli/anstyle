@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.14] - 2024-05-02
+
 ### Fixes
 
 - Drop MSRV to 1.65
@@ -231,7 +233,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.13...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.14...HEAD
+[0.6.14]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.13...anstream-v0.6.14
 [0.6.13]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.12...anstream-v0.6.13
 [0.6.12]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.11...anstream-v0.6.12
 [0.6.11]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.10...anstream-v0.6.11

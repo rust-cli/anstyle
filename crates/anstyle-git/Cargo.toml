@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-git"
-version = "1.0.0"
+version = "1.0.1"
 description = "Parse Git Style Descriptions"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"

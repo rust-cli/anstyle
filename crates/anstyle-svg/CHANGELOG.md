@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.4] - 2024-05-02
+
 ### Fixes
 
 - Drop MSRV to 1.65
@@ -35,7 +37,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2024-02-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.4...HEAD
+[0.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.3...anstyle-svg-v0.1.4
 [0.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.2...anstyle-svg-v0.1.3
 [0.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.1...anstyle-svg-v0.1.2
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.0...anstyle-svg-v0.1.1
