@@ -37,6 +37,7 @@ anstyle-parse = { version = "0.2.0", path = "../anstyle-parse" }
 colorchoice = { version = "1.0.0", path = "../colorchoice" }
 anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }
 utf8parse = "0.2.1"
+is_terminal_polyfill = "1.48"
 
 [target.'cfg(windows)'.dependencies]
 anstyle-wincon = { version = "3.0.1", path = "../anstyle-wincon", optional = true }
