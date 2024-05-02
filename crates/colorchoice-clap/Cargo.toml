@@ -29,7 +29,7 @@ clap = { version = "4.3.5", default-features = false, features = ["std", "derive
 
 [dev-dependencies]
 anstream = { path = "../anstream" }
-clap = "4.4.18"
+clap = "4.3.5"
 owo-colors = "4.0.0"
 
 [lints]
