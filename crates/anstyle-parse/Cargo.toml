@@ -35,9 +35,9 @@ utf8 = ["dep:utf8parse"]
 
 [dev-dependencies]
 codegenrs = { version = "3.0.1", default-features = false }
-divan = "0.1.11"
+divan = "0.1.14"
 proptest = "1.4.0"
-snapbox = { version = "0.5.0", features = ["path"] }
+snapbox = { version = "0.5.9", features = ["path"] }
 vte_generate_state_changes = { version = "0.1.1" }
 
 [[bench]]
