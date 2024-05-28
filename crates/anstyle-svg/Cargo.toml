@@ -32,7 +32,7 @@ html-escape = "0.2.13"
 unicode-width = "0.1.11"
 
 [dev-dependencies]
-snapbox = "0.5.14"
+snapbox = "0.6.5"
 
 [lints]
 workspace = true

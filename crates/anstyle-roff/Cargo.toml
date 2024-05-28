@@ -31,7 +31,7 @@ roff = "0.2.1"
 cansi = "2.2.1"
 
 [dev-dependencies]
-snapbox = "0.5.14"
+snapbox = "0.6.5"
 
 [lints]
 workspace = true

@@ -37,7 +37,7 @@ utf8 = ["dep:utf8parse"]
 codegenrs = { version = "3.0.1", default-features = false }
 divan = "0.1.14"
 proptest = "1.4.0"
-snapbox = "0.5.14"
+snapbox = "0.6.5"
 vte_generate_state_changes = { version = "0.1.1" }
 
 [[bench]]
