@@ -25,14 +25,15 @@ pub fn clicolor() -> Option<bool> {
     Some(value != "0")
 }
 
-/// Check [CLICOLOR_FORCE] status
+/// Check [CLICOLOR_FORCE] or [FORCE_COLOR] status
 ///
 /// ANSI colors should be enabled no matter what.
 ///
 /// [CLICOLOR_FORCE]: https://bixense.com/clicolors/
+/// [FORCE_COLOR]: https://force-color.org/
 #[inline]
 pub fn clicolor_force() -> bool {
-    let value = std::env::var_os("CLICOLOR_FORCE");
+    let value = std::env::var_os("CLICOLOR_FORCE").or_else(|| std::env::var_os("FORCE_COLOR"));
     value
         .as_deref()
         .unwrap_or_else(|| std::ffi::OsStr::new("0"))

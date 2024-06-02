@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Support `FORCE_COLOR` as an alias to `CLICOLOR_FORCE`.
+
 ## [0.6.14] - 2024-05-02
 
 ### Fixes

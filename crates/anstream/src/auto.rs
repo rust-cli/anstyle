@@ -9,7 +9,7 @@ use crate::WinconStream;
 ///
 /// This includes
 /// - Stripping colors for non-terminals
-/// - Respecting env variables like [NO_COLOR](https://no-color.org/) or [CLICOLOR](https://bixense.com/clicolors/)
+/// - Respecting env variables like [NO_COLOR](https://no-color.org/) or [FORCE_COLOR](https://force-color.org/) or [CLICOLOR](https://bixense.com/clicolors/)
 /// - *(windows)* Falling back to the wincon API where [ENABLE_VIRTUAL_TERMINAL_PROCESSING](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#output-sequences) is unsupported
 ///
 /// You can customize auto-detection by calling into
@@ -39,7 +39,7 @@ where
     /// ```rust
     /// # #[cfg(feature = "auto")] {
     /// # use std::io::IsTerminal as _;
-    /// // Like `AutoStream::choice` but without `NO_COLOR`, `CLICOLOR_FORCE`, `CI`
+    /// // Like `AutoStream::choice` but without `NO_COLOR`, `FORCE_COLOR`, `CLICOLOR_FORCE`, `CI`
     /// fn choice(raw: &dyn anstream::stream::RawStream) -> anstream::ColorChoice {
     ///     let choice = anstream::ColorChoice::global();
     ///     if choice == anstream::ColorChoice::Auto {
