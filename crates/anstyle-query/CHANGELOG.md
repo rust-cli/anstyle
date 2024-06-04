@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- `CLICOLOR_FORCE` now only checks for non-empty strings, rather than non-`"0"` strings
+
 ## [1.0.3] - 2024-05-02
 
 ### Fixes
