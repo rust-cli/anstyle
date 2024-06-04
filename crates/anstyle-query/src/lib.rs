@@ -32,11 +32,7 @@ pub fn clicolor() -> Option<bool> {
 /// [CLICOLOR_FORCE]: https://bixense.com/clicolors/
 #[inline]
 pub fn clicolor_force() -> bool {
-    let value = std::env::var_os("CLICOLOR_FORCE");
-    value
-        .as_deref()
-        .unwrap_or_else(|| std::ffi::OsStr::new("0"))
-        != "0"
+    non_empty(std::env::var_os("CLICOLOR_FORCE").as_deref())
 }
 
 /// Check [NO_COLOR] status
