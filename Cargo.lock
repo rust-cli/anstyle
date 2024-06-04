@@ -46,7 +46,7 @@ version = "0.6.14"
 dependencies = [
  "anstyle 1.0.7",
  "anstyle-parse 0.2.4",
- "anstyle-query 1.0.3",
+ "anstyle-query 1.1.0",
  "anstyle-wincon 3.0.3",
  "colorchoice 1.0.1",
  "divan",
@@ -149,7 +149,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-query"
-version = "1.0.3"
+version = "1.1.0"
 dependencies = [
  "windows-sys 0.52.0",
 ]

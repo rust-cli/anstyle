@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.0] - 2024-06-04
+
 ### Fixes
 
 - `CLICOLOR_FORCE` now only checks for non-empty strings, rather than non-`"0"` strings
@@ -32,7 +34,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2023-04-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.0.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.0...HEAD
+[1.1.0]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.0.3...anstyle-query-v1.1.0
 [1.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.0.2...anstyle-query-v1.0.3
 [1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.0.1...anstyle-query-v1.0.2
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.0.0...anstyle-query-v1.0.1
