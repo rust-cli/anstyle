@@ -116,9 +116,9 @@ pub(crate) const fn unpack(delta: u8) -> (State, Action) {
     unsafe {
         (
             // State is stored in bottom 4 bits
-            mem::transmute(delta & 0x0f),
+            mem::transmute::<u8, State>(delta & 0x0f),
             // Action is stored in top 4 bits
-            mem::transmute(delta >> 4),
+            mem::transmute::<u8, Action>(delta >> 4),
         )
     }
 }
