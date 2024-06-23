@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+- Update to yansi 1.0
+
 ## [1.0.1] - 2024-05-02
 
 ### Fixes
