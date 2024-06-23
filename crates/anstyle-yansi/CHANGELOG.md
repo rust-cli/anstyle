@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [2.0.0] - 2024-06-23
+
 - Update to yansi 1.0
 
 ## [1.0.1] - 2024-05-02
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v1.0.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v2.0.0...HEAD
+[2.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v1.0.1...anstyle-yansi-v2.0.0
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v1.0.0...anstyle-yansi-v1.0.1
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v0.3.0...anstyle-yansi-v1.0.0
 [0.3.0]: https://github.com/rust-cli/anstyle/compare/anstyle-yansi-v0.2.2...anstyle-yansi-v0.3.0

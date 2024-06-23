@@ -224,7 +224,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-yansi"
-version = "1.0.1"
+version = "2.0.0"
 dependencies = [
  "anstyle 1.0.7",
  "yansi",
