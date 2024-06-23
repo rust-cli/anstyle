@@ -7,22 +7,22 @@
 
 /// Adapt generic styling to [`yansi`]
 pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
-    let (fg, fg_bold) = style
+    let fg = style
         .get_fg_color()
-        .map(to_yansi_color_with_bold)
-        .unwrap_or((yansi::Color::Unset, false));
+        .map(to_yansi_color)
+        .unwrap_or(yansi::Color::Primary);
     let bg = style
         .get_bg_color()
         .map(to_yansi_color)
-        .unwrap_or(yansi::Color::Unset);
+        .unwrap_or(yansi::Color::Primary);
     let effects = style.get_effects();
 
-    let mut style = yansi::Style::new(fg).bg(bg);
-    if effects.contains(anstyle::Effects::BOLD) || fg_bold {
+    let mut style = yansi::Style::new().fg(fg).bg(bg);
+    if effects.contains(anstyle::Effects::BOLD) {
         style = style.bold();
     }
     if effects.contains(anstyle::Effects::DIMMED) {
-        style = style.dimmed();
+        style = style.dim();
     }
     if effects.contains(anstyle::Effects::ITALIC) {
         style = style.italic();
@@ -37,45 +37,41 @@ pub fn to_yansi_style(style: anstyle::Style) -> yansi::Style {
         style = style.invert();
     }
     if effects.contains(anstyle::Effects::HIDDEN) {
-        style = style.hidden();
+        style = style.conceal();
     }
     if effects.contains(anstyle::Effects::STRIKETHROUGH) {
-        style = style.strikethrough();
+        style = style.strike();
     }
     style
 }
 
 /// Adapt generic color to [`yansi`]
 pub fn to_yansi_color(color: anstyle::Color) -> yansi::Color {
-    to_yansi_color_with_bold(color).0
-}
-
-fn to_yansi_color_with_bold(color: anstyle::Color) -> (yansi::Color, bool) {
     match color {
         anstyle::Color::Ansi(ansi) => ansi_to_yansi_color(ansi),
-        anstyle::Color::Ansi256(xterm) => (xterm_to_yansi_color(xterm), false),
-        anstyle::Color::Rgb(rgb) => (rgb_to_yansi_color(rgb), false),
+        anstyle::Color::Ansi256(xterm) => xterm_to_yansi_color(xterm),
+        anstyle::Color::Rgb(rgb) => rgb_to_yansi_color(rgb),
     }
 }
 
-fn ansi_to_yansi_color(color: anstyle::AnsiColor) -> (yansi::Color, bool) {
+fn ansi_to_yansi_color(color: anstyle::AnsiColor) -> yansi::Color {
     match color {
-        anstyle::AnsiColor::Black => (yansi::Color::Black, false),
-        anstyle::AnsiColor::Red => (yansi::Color::Red, false),
-        anstyle::AnsiColor::Green => (yansi::Color::Green, false),
-        anstyle::AnsiColor::Yellow => (yansi::Color::Yellow, false),
-        anstyle::AnsiColor::Blue => (yansi::Color::Blue, false),
-        anstyle::AnsiColor::Magenta => (yansi::Color::Magenta, false),
-        anstyle::AnsiColor::Cyan => (yansi::Color::Cyan, false),
-        anstyle::AnsiColor::White => (yansi::Color::White, false),
-        anstyle::AnsiColor::BrightBlack => (yansi::Color::Black, true),
-        anstyle::AnsiColor::BrightRed => (yansi::Color::Red, true),
-        anstyle::AnsiColor::BrightGreen => (yansi::Color::Green, true),
-        anstyle::AnsiColor::BrightYellow => (yansi::Color::Yellow, true),
-        anstyle::AnsiColor::BrightBlue => (yansi::Color::Black, true),
-        anstyle::AnsiColor::BrightMagenta => (yansi::Color::Magenta, true),
-        anstyle::AnsiColor::BrightCyan => (yansi::Color::Cyan, true),
-        anstyle::AnsiColor::BrightWhite => (yansi::Color::White, true),
+        anstyle::AnsiColor::Black => yansi::Color::Black,
+        anstyle::AnsiColor::Red => yansi::Color::Red,
+        anstyle::AnsiColor::Green => yansi::Color::Green,
+        anstyle::AnsiColor::Yellow => yansi::Color::Yellow,
+        anstyle::AnsiColor::Blue => yansi::Color::Blue,
+        anstyle::AnsiColor::Magenta => yansi::Color::Magenta,
+        anstyle::AnsiColor::Cyan => yansi::Color::Cyan,
+        anstyle::AnsiColor::White => yansi::Color::White,
+        anstyle::AnsiColor::BrightBlack => yansi::Color::BrightBlack,
+        anstyle::AnsiColor::BrightRed => yansi::Color::BrightRed,
+        anstyle::AnsiColor::BrightGreen => yansi::Color::BrightGreen,
+        anstyle::AnsiColor::BrightYellow => yansi::Color::BrightYellow,
+        anstyle::AnsiColor::BrightBlue => yansi::Color::BrightBlack,
+        anstyle::AnsiColor::BrightMagenta => yansi::Color::BrightMagenta,
+        anstyle::AnsiColor::BrightCyan => yansi::Color::BrightCyan,
+        anstyle::AnsiColor::BrightWhite => yansi::Color::BrightWhite,
     }
 }
 
@@ -84,5 +80,5 @@ fn xterm_to_yansi_color(color: anstyle::Ansi256Color) -> yansi::Color {
 }
 
 fn rgb_to_yansi_color(color: anstyle::RgbColor) -> yansi::Color {
-    yansi::Color::RGB(color.0, color.1, color.2)
+    yansi::Color::Rgb(color.0, color.1, color.2)
 }
