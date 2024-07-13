@@ -217,6 +217,14 @@ mod tests {
         test!("255 -1" => Ansi256Color(255).on_default());
         test!("#000000" => RgbColor(0,0,0).on_default());
         test!("#204060" => RgbColor(0x20,0x40,0x60).on_default());
+        test!("#1a2b3c" => RgbColor(0x1a,0x2b,0x3c).on_default());
+        test!("#000" => RgbColor(0,0,0).on_default());
+        test!("#cba" => RgbColor(0xc,0xb,0xa).on_default());
+        test!("#cba   " => RgbColor(0xc,0xb,0xa).on_default());
+        test!("#987 #135" => RgbColor(9,8,7).on(RgbColor(1, 3, 5)));
+        test!("#987    #135   " => RgbColor(9,8,7).on(RgbColor(1, 3, 5)));
+        test!("#123 #abcdef" => RgbColor(1,2,3).on(RgbColor(0xab, 0xcd, 0xef)));
+        test!("#654321 #a9b" => RgbColor(0x65,0x43,0x21).on(RgbColor(0xa, 0x9, 0xb)));
 
         test!("bold cyan white" => Cyan.on(White).bold());
         test!("bold cyan nobold white" => Cyan.on(White));
@@ -226,6 +234,8 @@ mod tests {
         test!("italic cyan white" => Cyan.on(White).italic());
         test!("strike cyan white" => Cyan.on(White).strikethrough());
         test!("blink #050505 white" => RgbColor(5,5,5).on(White).blink());
+        test!("bold #987 green" => RgbColor(9,8,7).on(Green).bold());
+        test!("strike #147 #cba" => RgbColor(1,4,7).on(RgbColor(0xc, 0xb, 0xa)).strikethrough());
     }
 
     #[test]
@@ -249,6 +259,9 @@ mod tests {
         test!("red blue -1" => ExtraColor "-1");
         test!("yellow green #abcdef" => ExtraColor "#abcdef");
         test!("#123456 #654321 #abcdef" => ExtraColor "#abcdef");
+        test!("#123 #654 #abc" => ExtraColor "#abc");
+        test!("#123 #654 #abcdef" => ExtraColor "#abcdef");
+        test!("#123456 #654321 #abc" => ExtraColor "#abc");
         test!("bold red blue green" => ExtraColor "green");
         test!("red bold blue green" => ExtraColor "green");
         test!("red blue bold green" => ExtraColor "green");
@@ -270,8 +283,14 @@ mod tests {
         test!("no-green" => UnknownWord "no-green");
         test!("no-#123456" => UnknownWord "no-#123456");
         test!("#" => UnknownWord "#");
+        test!("#1" => UnknownWord "#1");
+        test!("#12" => UnknownWord "#12");
+        test!("#1234" => UnknownWord "#1234");
         test!("#12345" => UnknownWord "#12345");
         test!("#1234567" => UnknownWord "#1234567");
+        test!("#12345678" => UnknownWord "#12345678");
+        test!("#123456789" => UnknownWord "#123456789");
+        test!("#123456789abc" => UnknownWord "#123456789abc");
         test!("#bcdefg" => UnknownWord "#bcdefg");
         test!("#blue" => UnknownWord "#blue");
         test!("blue#123456" => UnknownWord "blue#123456");
