@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add support for `#RGB` 12-bit colors
+
 ## [1.0.1] - 2024-05-02
 
 ### Fixes
