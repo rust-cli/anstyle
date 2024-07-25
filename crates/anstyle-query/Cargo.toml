@@ -2,9 +2,9 @@
 name = "anstyle-query"
 version = "1.1.1"
 description = "Look up colored console capabilities"
-repository = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["cli", "color", "no-std", "terminal", "ansi"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true

@@ -2,10 +2,10 @@
 name = "anstyle-syntect"
 version = "1.0.2"
 description = "Adapt between syntect and anstyle"
-repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "syntect"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true

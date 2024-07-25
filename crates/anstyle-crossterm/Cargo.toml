@@ -2,10 +2,10 @@
 name = "anstyle-crossterm"
 version = "2.0.2"
 description = "Adapt between crossterm and anstyle"
-repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "crossterm"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true

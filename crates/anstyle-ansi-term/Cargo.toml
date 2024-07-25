@@ -2,10 +2,10 @@
 name = "anstyle-ansi-term"
 version = "1.0.2"
 description = "Adapt between ansi_term and anstyle"
-repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "ansi_term"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true

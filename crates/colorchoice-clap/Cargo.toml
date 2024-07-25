@@ -2,9 +2,9 @@
 name = "colorchoice-clap"
 version = "1.0.5"
 description = "Clap mixin to override console colors"
-repository = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["clap", "cli", "color", "terminal", "ansi"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true

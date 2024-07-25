@@ -2,10 +2,10 @@
 name = "anstyle-wincon"
 version = "3.0.4"
 description = "Styling legacy Windows terminals"
-repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "windows"]
+repository.workspace = true
 license.workspace = true
 edition.workspace = true
 rust-version.workspace = true
