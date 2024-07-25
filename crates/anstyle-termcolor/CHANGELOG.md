@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.2] - 2024-07-25
+
 ## [1.1.1] - 2024-05-02
 
 ### Fixes
@@ -44,7 +46,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v1.1.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v1.1.2...HEAD
+[1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v1.1.1...anstyle-termcolor-v1.1.2
 [1.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v1.1.0...anstyle-termcolor-v1.1.1
 [1.1.0]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v1.0.0...anstyle-termcolor-v1.1.0
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-termcolor-v0.3.0...anstyle-termcolor-v1.0.0

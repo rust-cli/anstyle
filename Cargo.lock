@@ -42,13 +42,13 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.14"
+version = "0.6.15"
 dependencies = [
- "anstyle 1.0.7",
- "anstyle-parse 0.2.4",
- "anstyle-query 1.1.0",
- "anstyle-wincon 3.0.3",
- "colorchoice 1.0.1",
+ "anstyle 1.0.8",
+ "anstyle-parse 0.2.5",
+ "anstyle-query 1.1.1",
+ "anstyle-wincon 3.0.4",
+ "colorchoice 1.0.2",
  "divan",
  "is_terminal_polyfill",
  "lexopt",
@@ -66,53 +66,53 @@ checksum = "15c4c2c83f81532e5845a733998b6971faca23490340a418e9b72a3ec9de12ea"
 
 [[package]]
 name = "anstyle"
-version = "1.0.7"
+version = "1.0.8"
 dependencies = [
  "lexopt",
 ]
 
 [[package]]
 name = "anstyle-ansi-term"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "ansi_term",
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
 ]
 
 [[package]]
 name = "anstyle-crossterm"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "crossterm",
 ]
 
 [[package]]
 name = "anstyle-git"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
 ]
 
 [[package]]
 name = "anstyle-lossy"
-version = "1.1.1"
+version = "1.1.2"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
 ]
 
 [[package]]
 name = "anstyle-ls"
-version = "1.0.2"
+version = "1.0.3"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
-version = "2.0.1"
+version = "2.0.2"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "owo-colors",
 ]
 
@@ -127,7 +127,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-parse"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "arrayvec",
  "codegenrs",
@@ -149,16 +149,16 @@ dependencies = [
 
 [[package]]
 name = "anstyle-query"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "windows-sys 0.52.0",
 ]
 
 [[package]]
 name = "anstyle-roff"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "anstyle-lossy",
  "cansi",
  "roff",
@@ -167,10 +167,10 @@ dependencies = [
 
 [[package]]
 name = "anstyle-svg"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
- "anstream 0.6.14",
- "anstyle 1.0.7",
+ "anstream 0.6.15",
+ "anstyle 1.0.8",
  "anstyle-lossy",
  "html-escape",
  "snapbox",
@@ -179,17 +179,17 @@ dependencies = [
 
 [[package]]
 name = "anstyle-syntect"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "syntect",
 ]
 
 [[package]]
 name = "anstyle-termcolor"
-version = "1.1.1"
+version = "1.1.2"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "termcolor",
 ]
 
@@ -215,18 +215,18 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "3.0.3"
+version = "3.0.4"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "lexopt",
  "windows-sys 0.52.0",
 ]
 
 [[package]]
 name = "anstyle-yansi"
-version = "2.0.0"
+version = "2.0.1"
 dependencies = [
- "anstyle 1.0.7",
+ "anstyle 1.0.8",
  "yansi",
 ]
 
@@ -342,15 +342,15 @@ checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 
 [[package]]
 name = "colorchoice"
-version = "1.0.1"
+version = "1.0.2"
 
 [[package]]
 name = "colorchoice-clap"
-version = "1.0.4"
+version = "1.0.5"
 dependencies = [
- "anstream 0.6.14",
+ "anstream 0.6.15",
  "clap",
- "colorchoice 1.0.1",
+ "colorchoice 1.0.2",
  "owo-colors",
 ]
 

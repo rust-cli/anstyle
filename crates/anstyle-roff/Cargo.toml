@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-roff"
-version = "0.3.3"
+version = "0.3.4"
 description = "Adapt between anstyle and roff"
 repository = "https://github.com/rust-cli/anstyle.git"
 homepage = "https://github.com/rust-cli/anstyle"
