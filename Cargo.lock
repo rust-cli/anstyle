@@ -183,6 +183,7 @@ version = "1.0.2"
 dependencies = [
  "anstyle 1.0.8",
  "syntect",
+ "thiserror",
 ]
 
 [[package]]
