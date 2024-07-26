@@ -76,7 +76,6 @@ const DATA: &[Data] = &[
         "0-state_changes",
         b"\x1b]2;X\x1b\\ \x1b[0m \x1bP0@\x1b\\".as_slice(),
     ),
-    #[cfg(feature = "utf8")]
     Data("1-demo.vte", include_bytes!("../tests/demo.vte").as_slice()),
     Data(
         "2-rg_help.vte",
