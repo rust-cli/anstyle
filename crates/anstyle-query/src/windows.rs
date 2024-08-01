@@ -5,13 +5,14 @@ mod windows_console {
     use std::os::windows::io::AsRawHandle;
     use std::os::windows::io::RawHandle;
 
+    use windows_sys::Win32::Foundation::HANDLE;
     use windows_sys::Win32::System::Console::CONSOLE_MODE;
     use windows_sys::Win32::System::Console::ENABLE_VIRTUAL_TERMINAL_PROCESSING;
 
     fn enable_vt(handle: RawHandle) -> std::io::Result<()> {
         unsafe {
-            let handle = std::mem::transmute(handle);
-            if handle == 0 {
+            let handle: HANDLE = std::mem::transmute(handle);
+            if handle.is_null() {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::BrokenPipe,
                     "console is detached",
