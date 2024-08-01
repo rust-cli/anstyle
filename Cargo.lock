@@ -369,14 +369,14 @@ checksum = "6245d59a3e82a7fc217c5828a6692dbc6dfb63a0c8c90495621f7b9d79704a0e"
 
 [[package]]
 name = "crossterm"
-version = "0.27.0"
+version = "0.28.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f476fe445d41c9e991fd07515a6f463074b782242ccf4a5b7b1d1012e70824df"
+checksum = "11b0533cb6d95d1301523bfa592dd15a501323a026fcb12a0cd720a2291470d1"
 dependencies = [
  "bitflags 2.5.0",
  "crossterm_winapi",
- "libc",
  "parking_lot",
+ "rustix 0.38.34",
  "winapi",
 ]
 
