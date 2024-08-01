@@ -86,14 +86,15 @@ pub(crate) fn write_colored<S: AsHandle + std::io::Write>(
 }
 
 mod inner {
+    use std::os::windows::io::RawHandle;
+
+    use windows_sys::Win32::Foundation::HANDLE;
     use windows_sys::Win32::System::Console::CONSOLE_CHARACTER_ATTRIBUTES;
     use windows_sys::Win32::System::Console::CONSOLE_SCREEN_BUFFER_INFO;
     use windows_sys::Win32::System::Console::FOREGROUND_BLUE;
     use windows_sys::Win32::System::Console::FOREGROUND_GREEN;
     use windows_sys::Win32::System::Console::FOREGROUND_INTENSITY;
     use windows_sys::Win32::System::Console::FOREGROUND_RED;
-
-    use std::os::windows::io::RawHandle;
 
     const FOREGROUND_CYAN: CONSOLE_CHARACTER_ATTRIBUTES = FOREGROUND_BLUE | FOREGROUND_GREEN;
     const FOREGROUND_MAGENTA: CONSOLE_CHARACTER_ATTRIBUTES = FOREGROUND_BLUE | FOREGROUND_RED;
@@ -128,8 +129,8 @@ mod inner {
         handle: RawHandle,
     ) -> Result<CONSOLE_SCREEN_BUFFER_INFO, IoError> {
         unsafe {
-            let handle = std::mem::transmute(handle);
-            if handle == 0 {
+            let handle: HANDLE = std::mem::transmute(handle);
+            if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
 
@@ -149,8 +150,8 @@ mod inner {
         attributes: CONSOLE_CHARACTER_ATTRIBUTES,
     ) -> Result<(), IoError> {
         unsafe {
-            let handle = std::mem::transmute(handle);
-            if handle == 0 {
+            let handle: HANDLE = std::mem::transmute(handle);
+            if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
 
