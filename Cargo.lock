@@ -81,7 +81,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-crossterm"
-version = "2.0.2"
+version = "3.0.0"
 dependencies = [
  "anstyle 1.0.8",
  "crossterm",

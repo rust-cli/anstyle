@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-crossterm"
-version = "2.0.2"
+version = "3.0.0"
 description = "Adapt between crossterm and anstyle"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
