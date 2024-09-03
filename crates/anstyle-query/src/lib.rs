@@ -94,8 +94,6 @@ pub fn term_supports_ansi_color() -> bool {
 #[cfg(windows)]
 pub fn term_supports_ansi_color() -> bool {
     match std::env::var_os("TERM") {
-        // If TERM isn't set, then we are in a weird environment that
-        // probably doesn't support ansi.
         None => return false,
         Some(k) => {
             // cygwin doesn't seem to support ANSI escape sequences
