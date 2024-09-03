@@ -52,61 +52,60 @@ pub fn no_color() -> bool {
 
 /// Check `TERM` for color support
 #[inline]
-#[cfg(not(windows))]
 pub fn term_supports_color() -> bool {
-    match std::env::var_os("TERM") {
-        // If TERM isn't set, then we are in a weird environment that
-        // probably doesn't support colors.
-        None => return false,
-        Some(k) => {
+    #[cfg(not(windows))]
+    {
+        match std::env::var_os("TERM") {
+            // If TERM isn't set, then we are in a weird environment that
+            // probably doesn't support colors.
+            None => return false,
+            Some(k) => {
+                if k == "dumb" {
+                    return false;
+                }
+            }
+        }
+        true
+    }
+    #[cfg(windows)]
+    {
+        // On Windows, if TERM isn't set, then we shouldn't automatically
+        // assume that colors aren't allowed. This is unlike Unix environments
+        // where TERM is more rigorously set.
+        if let Some(k) = std::env::var_os("TERM") {
             if k == "dumb" {
                 return false;
             }
         }
+        true
     }
-    true
-}
-
-/// Check `TERM` for color support
-#[inline]
-#[cfg(windows)]
-pub fn term_supports_color() -> bool {
-    // On Windows, if TERM isn't set, then we shouldn't automatically
-    // assume that colors aren't allowed. This is unlike Unix environments
-    // where TERM is more rigorously set.
-    if let Some(k) = std::env::var_os("TERM") {
-        if k == "dumb" {
-            return false;
-        }
-    }
-    true
 }
 
 /// Check `TERM` for ANSI color support
+///
+/// On Windows, you might need to also check [`windows::enable_ansi_colors`] as ANSI color support
+/// is opt-in, rather than assumed.
 #[inline]
-#[cfg(not(windows))]
 pub fn term_supports_ansi_color() -> bool {
-    term_supports_color()
-}
-
-/// Check `TERM` for ANSI color support
-#[inline]
-#[cfg(windows)]
-pub fn term_supports_ansi_color() -> bool {
-    match std::env::var_os("TERM") {
-        // If TERM isn't set, then we are in a weird environment that
-        // probably doesn't support ansi.
-        None => return false,
-        Some(k) => {
-            // cygwin doesn't seem to support ANSI escape sequences
-            // and instead has its own variety. However, the Windows
-            // console API may be available.
-            if k == "dumb" || k == "cygwin" {
-                return false;
+    #[cfg(not(windows))]
+    {
+        term_supports_color()
+    }
+    #[cfg(windows)]
+    {
+        match std::env::var_os("TERM") {
+            None => return false,
+            Some(k) => {
+                // cygwin doesn't seem to support ANSI escape sequences
+                // and instead has its own variety. However, the Windows
+                // console API may be available.
+                if k == "dumb" || k == "cygwin" {
+                    return false;
+                }
             }
         }
+        true
     }
-    true
 }
 
 /// Check [COLORTERM] for truecolor support
