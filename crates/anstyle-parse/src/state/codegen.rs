@@ -36,10 +36,10 @@ pub(crate) const STATE_CHANGES: [[u8; 256]; 16] = ["#
             let (next_state, action) = unpack(*packed);
             if last_entry != Some(packed) {
                 writeln!(file)?;
-                writeln!(file, "        // {:?} {:?}", next_state, action)?;
+                writeln!(file, "        // {next_state:?} {action:?}")?;
                 write!(file, "        ")?;
             }
-            write!(file, "0x{:0>2x}, ", packed)?;
+            write!(file, "0x{packed:0>2x}, ")?;
             last_entry = Some(packed);
         }
         writeln!(file)?;

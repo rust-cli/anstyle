@@ -66,7 +66,7 @@ fn print_number(
     });
 
     stdout
-        .write_colored(fg, bg, format!("{:>3X}", fixed).as_bytes())
+        .write_colored(fg, bg, format!("{fixed:>3X}").as_bytes())
         .map(|_| ())
 }
 

@@ -161,15 +161,13 @@ impl std::fmt::Display for Error {
             Self::ExtraColor { style, word } => {
                 write!(
                     fmt,
-                    "Error parsing style \"{}\": extra color \"{}\"",
-                    style, word
+                    "Error parsing style \"{style}\": extra color \"{word}\""
                 )
             }
             Self::UnknownWord { style, word } => {
                 write!(
                     fmt,
-                    "Error parsing style \"{}\": unknown word: \"{}\"",
-                    style, word
+                    "Error parsing style \"{style}\": unknown word: \"{word}\""
                 )
             }
         }
