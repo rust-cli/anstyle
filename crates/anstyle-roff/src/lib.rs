@@ -144,7 +144,7 @@ fn rgb_name(c: &RgbColor) -> String {
 
 fn to_hex(rgb: &RgbColor) -> String {
     let val: usize = ((rgb.0 as usize) << 16) + ((rgb.1 as usize) << 8) + (rgb.2 as usize);
-    format!("#{:06x}", val)
+    format!("#{val:06x}")
 }
 
 /// Map Color and Bright Variants to Roff Color styles

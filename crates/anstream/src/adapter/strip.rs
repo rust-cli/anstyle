@@ -45,7 +45,7 @@ impl<'s> StrippedStr<'s> {
     pub fn to_string(&self) -> String {
         use std::fmt::Write as _;
         let mut stripped = String::with_capacity(self.bytes.len());
-        let _ = write!(&mut stripped, "{}", self);
+        let _ = write!(&mut stripped, "{self}");
         stripped
     }
 }
