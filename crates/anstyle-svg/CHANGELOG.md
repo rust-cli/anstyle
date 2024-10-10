@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Internal
+
+- Update `unicode-width` to 0.2
+
 ### Compatibility
 
 - Update MSRV to 1.66
