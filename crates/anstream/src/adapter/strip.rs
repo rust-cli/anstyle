@@ -174,12 +174,14 @@ fn is_utf8_continuation(b: u8) -> bool {
 /// let plain_str = anstream::adapter::strip_bytes(styled_text.as_bytes()).into_vec();
 /// assert_eq!(plain_str.as_slice(), &b"foo bar"[..]);
 /// ```
+#[cfg(feature = "utf8")]
 #[inline]
 pub fn strip_bytes(data: &[u8]) -> StrippedBytes<'_> {
     StrippedBytes::new(data)
 }
 
 /// See [`strip_bytes`]
+#[cfg(feature = "utf8")]
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StrippedBytes<'s> {
     bytes: &'s [u8],
@@ -187,6 +189,7 @@ pub struct StrippedBytes<'s> {
     utf8parser: Utf8Parser,
 }
 
+#[cfg(feature = "utf8")]
 impl<'s> StrippedBytes<'s> {
     /// See [`strip_bytes`]
     #[inline]
@@ -231,6 +234,7 @@ impl<'s> StrippedBytes<'s> {
     }
 }
 
+#[cfg(feature = "utf8")]
 impl<'s> Iterator for StrippedBytes<'s> {
     type Item = &'s [u8];
 
@@ -240,6 +244,7 @@ impl<'s> Iterator for StrippedBytes<'s> {
     }
 }
 
+#[cfg(feature = "utf8")]
 /// Incrementally strip non-contiguous data
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub struct StripBytes {
@@ -247,6 +252,7 @@ pub struct StripBytes {
     utf8parser: Utf8Parser,
 }
 
+#[cfg(feature = "utf8")]
 impl StripBytes {
     /// Initial state
     pub fn new() -> Self {
@@ -263,6 +269,7 @@ impl StripBytes {
     }
 }
 
+#[cfg(feature = "utf8")]
 /// See [`StripBytes`]
 #[derive(Debug, PartialEq, Eq)]
 pub struct StripBytesIter<'s> {
@@ -271,6 +278,7 @@ pub struct StripBytesIter<'s> {
     utf8parser: &'s mut Utf8Parser,
 }
 
+#[cfg(feature = "utf8")]
 impl<'s> Iterator for StripBytesIter<'s> {
     type Item = &'s [u8];
 
@@ -280,6 +288,7 @@ impl<'s> Iterator for StripBytesIter<'s> {
     }
 }
 
+#[cfg(feature = "utf8")]
 #[inline]
 fn next_bytes<'s>(
     bytes: &mut &'s [u8],
@@ -328,11 +337,13 @@ fn next_bytes<'s>(
     }
 }
 
+#[cfg(feature = "utf8")]
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
 pub(crate) struct Utf8Parser {
     utf8_parser: utf8parse::Parser,
 }
 
+#[cfg(feature = "utf8")]
 impl Utf8Parser {
     fn add(&mut self, byte: u8) -> bool {
         let mut b = false;
@@ -342,8 +353,10 @@ impl Utf8Parser {
     }
 }
 
+#[cfg(feature = "utf8")]
 struct VtUtf8Receiver<'a>(&'a mut bool);
 
+#[cfg(feature = "utf8")]
 impl<'a> utf8parse::Receiver for VtUtf8Receiver<'a> {
     fn codepoint(&mut self, _: char) {
         *self.0 = true;

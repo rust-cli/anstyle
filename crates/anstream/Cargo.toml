@@ -25,18 +25,19 @@ pre-release-replacements = [
 ]
 
 [features]
-default = ["auto", "wincon"]
+default = ["auto", "wincon", "utf8"]
 auto = ["dep:anstyle-query"]
 wincon = ["dep:anstyle-wincon"]
+utf8 = ["dep:utf8parse", "anstyle-parse/utf8"]
 # Enable in `dev-dependencies` to make sure output is captured for tests
 test = []
 
 [dependencies]
 anstyle = { version = "1.0.0", path = "../anstyle" }
-anstyle-parse = { version = "0.2.0", path = "../anstyle-parse" }
+anstyle-parse = { version = "0.2.0", path = "../anstyle-parse", default-features = false }
 colorchoice = { version = "1.0.0", path = "../colorchoice" }
 anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }
-utf8parse = "0.2.1"
+utf8parse = { version = "0.2.1", optional = true }
 is_terminal_polyfill = "1.48"
 
 [target.'cfg(windows)'.dependencies]
