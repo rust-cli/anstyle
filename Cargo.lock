@@ -42,7 +42,7 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.15"
+version = "0.6.16"
 dependencies = [
  "anstyle 1.0.8",
  "anstyle-parse 0.2.5",
@@ -169,7 +169,7 @@ dependencies = [
 name = "anstyle-svg"
 version = "0.1.6"
 dependencies = [
- "anstream 0.6.15",
+ "anstream 0.6.16",
  "anstyle 1.0.8",
  "anstyle-lossy",
  "html-escape",
@@ -348,7 +348,7 @@ version = "1.0.2"
 name = "colorchoice-clap"
 version = "1.0.5"
 dependencies = [
- "anstream 0.6.15",
+ "anstream 0.6.16",
  "clap",
  "colorchoice 1.0.2",
  "owo-colors",
