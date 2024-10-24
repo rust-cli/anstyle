@@ -9,73 +9,32 @@ pub trait WinconStream {
     ) -> std::io::Result<usize>;
 }
 
-impl WinconStream for Box<dyn std::io::Write> {
+impl<T: WinconStream + ?Sized> WinconStream for &mut T {
+    #[inline]
     fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        crate::ansi::write_colored(self, fg, bg, data)
+        T::write_colored(&mut **self, fg, bg, data)
     }
 }
 
-impl WinconStream for &'_ mut Box<dyn std::io::Write> {
+impl<T: WinconStream + ?Sized> WinconStream for Box<T> {
+    #[inline]
     fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
         bg: Option<anstyle::AnsiColor>,
         data: &[u8],
     ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
-    }
-}
-
-impl WinconStream for std::fs::File {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        crate::ansi::write_colored(self, fg, bg, data)
-    }
-}
-
-impl WinconStream for &'_ mut std::fs::File {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
-    }
-}
-
-impl WinconStream for Vec<u8> {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        crate::ansi::write_colored(self, fg, bg, data)
-    }
-}
-
-impl WinconStream for &'_ mut Vec<u8> {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
+        T::write_colored(&mut **self, fg, bg, data)
     }
 }
 
 impl WinconStream for std::io::Stdout {
+    #[inline]
     fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
@@ -88,6 +47,7 @@ impl WinconStream for std::io::Stdout {
 }
 
 impl WinconStream for std::io::Stderr {
+    #[inline]
     fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,
@@ -151,24 +111,29 @@ mod platform {
     }
 }
 
-impl WinconStream for &'_ mut std::io::StdoutLock<'_> {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
-    }
+macro_rules! impl_default_wincon_stream {
+    ($( $(#[$attr:meta])* $t:ty),* $(,)?) => {
+        $(
+            $(#[$attr])*
+            impl WinconStream for $t {
+                #[inline]
+                fn write_colored(
+                    &mut self,
+                    fg: Option<anstyle::AnsiColor>,
+                    bg: Option<anstyle::AnsiColor>,
+                    data: &[u8],
+                ) -> std::io::Result<usize> {
+                    crate::ansi::write_colored(self, fg, bg, data)
+                }
+            }
+        )*
+    };
 }
 
-impl WinconStream for &'_ mut std::io::StderrLock<'_> {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
-    }
-}
+impl_default_wincon_stream!(
+    dyn std::io::Write,
+    dyn std::io::Write + Send,
+    dyn std::io::Write + Send + Sync,
+    Vec<u8>,
+    std::fs::File,
+);

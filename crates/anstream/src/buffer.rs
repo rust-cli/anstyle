@@ -54,15 +54,3 @@ impl anstyle_wincon::WinconStream for Buffer {
         self.0.write_colored(fg, bg, data)
     }
 }
-
-#[cfg(all(windows, feature = "wincon"))]
-impl anstyle_wincon::WinconStream for &'_ mut Buffer {
-    fn write_colored(
-        &mut self,
-        fg: Option<anstyle::AnsiColor>,
-        bg: Option<anstyle::AnsiColor>,
-        data: &[u8],
-    ) -> std::io::Result<usize> {
-        (**self).write_colored(fg, bg, data)
-    }
-}
