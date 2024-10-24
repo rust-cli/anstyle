@@ -20,7 +20,18 @@ impl<T: WinconStream + ?Sized> WinconStream for &mut T {
     }
 }
 
-impl WinconStream for Box<dyn std::io::Write> {
+impl<T: WinconStream + ?Sized> WinconStream for Box<T> {
+    fn write_colored(
+        &mut self,
+        fg: Option<anstyle::AnsiColor>,
+        bg: Option<anstyle::AnsiColor>,
+        data: &[u8],
+    ) -> std::io::Result<usize> {
+        (**self).write_colored(fg, bg, data)
+    }
+}
+
+impl WinconStream for dyn std::io::Write {
     fn write_colored(
         &mut self,
         fg: Option<anstyle::AnsiColor>,

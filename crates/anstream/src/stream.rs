@@ -12,6 +12,7 @@ pub trait RawStream:
 }
 
 impl<T: RawStream + ?Sized> RawStream for &mut T {}
+impl<T: RawStream + ?Sized> RawStream for Box<T> {}
 
 impl RawStream for std::io::Stdout {}
 
@@ -21,7 +22,7 @@ impl RawStream for std::io::Stderr {}
 
 impl RawStream for std::io::StderrLock<'_> {}
 
-impl RawStream for Box<dyn std::io::Write> {}
+impl RawStream for dyn std::io::Write {}
 
 impl RawStream for Vec<u8> {}
 
@@ -44,6 +45,13 @@ impl<T: IsTerminal + ?Sized> IsTerminal for &T {
 }
 
 impl<T: IsTerminal + ?Sized> IsTerminal for &mut T {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        (**self).is_terminal()
+    }
+}
+
+impl<T: IsTerminal + ?Sized> IsTerminal for Box<T> {
     #[inline]
     fn is_terminal(&self) -> bool {
         (**self).is_terminal()
@@ -78,7 +86,7 @@ impl IsTerminal for std::io::StderrLock<'_> {
     }
 }
 
-impl IsTerminal for Box<dyn std::io::Write> {
+impl IsTerminal for dyn std::io::Write {
     #[inline]
     fn is_terminal(&self) -> bool {
         false
@@ -154,7 +162,7 @@ impl AsLockedWrite for std::io::StderrLock<'static> {
     }
 }
 
-impl AsLockedWrite for Box<dyn std::io::Write> {
+impl AsLockedWrite for dyn std::io::Write {
     type Write<'w> = &'w mut Self;
 
     #[inline]
@@ -196,6 +204,7 @@ mod private {
 
     impl<T: Sealed + ?Sized> Sealed for &T {}
     impl<T: Sealed + ?Sized> Sealed for &mut T {}
+    impl<T: Sealed + ?Sized> Sealed for Box<T> {}
 
     impl Sealed for std::io::Stdout {}
 
@@ -205,7 +214,7 @@ mod private {
 
     impl Sealed for std::io::StderrLock<'_> {}
 
-    impl Sealed for Box<dyn std::io::Write> {}
+    impl Sealed for dyn std::io::Write {}
 
     impl Sealed for Vec<u8> {}
 
