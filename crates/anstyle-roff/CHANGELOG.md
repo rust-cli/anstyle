@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.3.5] - 2024-10-24
+
 ### Compatibility
 
 - Update MSRV to 1.66
@@ -42,7 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2023-02-10
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.5...HEAD
+[0.3.5]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.4...anstyle-roff-v0.3.5
 [0.3.4]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.3...anstyle-roff-v0.3.4
 [0.3.3]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.2...anstyle-roff-v0.3.3
 [0.3.2]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.1...anstyle-roff-v0.3.2

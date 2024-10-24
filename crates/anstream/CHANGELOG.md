@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.17] - 2024-10-24
+
 ## [0.6.16] - 2024-10-24
 
 ### Compatibility
@@ -245,7 +247,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.16...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.17...HEAD
+[0.6.17]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.16...anstream-v0.6.17
 [0.6.16]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.15...anstream-v0.6.16
 [0.6.15]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.14...anstream-v0.6.15
 [0.6.14]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.13...anstream-v0.6.14

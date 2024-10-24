@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-ansi-term"
-version = "1.0.2"
+version = "1.0.3"
 description = "Adapt between ansi_term and anstyle"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]

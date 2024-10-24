@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.3] - 2024-10-24
+
 ### Compatibility
 
 - Update MSRV to 1.66
@@ -36,7 +38,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.2...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.3...HEAD
+[1.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.2...anstyle-syntect-v1.0.3
 [1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.1...anstyle-syntect-v1.0.2
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v1.0.0...anstyle-syntect-v1.0.1
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-syntect-v0.2.0...anstyle-syntect-v1.0.0

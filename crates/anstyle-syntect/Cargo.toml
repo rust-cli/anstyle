@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-syntect"
-version = "1.0.2"
+version = "1.0.3"
 description = "Adapt between syntect and anstyle"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]

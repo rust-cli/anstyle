@@ -1,6 +1,6 @@
 [package]
 name = "colorchoice-clap"
-version = "1.0.5"
+version = "1.0.6"
 description = "Clap mixin to override console colors"
 categories = ["command-line-interface"]
 keywords = ["clap", "cli", "color", "terminal", "ansi"]

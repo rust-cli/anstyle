@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.2.6] - 2024-10-24
+
 ### Compatibility
 
 - Update MSRV to 1.66
@@ -42,7 +44,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.5...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.6...HEAD
+[0.2.6]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.5...anstyle-parse-v0.2.6
 [0.2.5]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.4...anstyle-parse-v0.2.5
 [0.2.4]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.3...anstyle-parse-v0.2.4
 [0.2.3]: https://github.com/rust-cli/anstyle/compare/anstyle-parse-v0.2.2...anstyle-parse-v0.2.3

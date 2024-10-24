@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-ls"
-version = "1.0.3"
+version = "1.0.4"
 description = "Parse LS_COLORS Style Descriptions"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]

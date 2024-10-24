@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.7] - 2024-10-24
+
 ## [0.1.6] - 2024-10-10
 
 ### Internal
@@ -49,7 +51,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2024-02-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.6...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.7...HEAD
+[0.1.7]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.6...anstyle-svg-v0.1.7
 [0.1.6]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.5...anstyle-svg-v0.1.6
 [0.1.5]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.4...anstyle-svg-v0.1.5
 [0.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.3...anstyle-svg-v0.1.4

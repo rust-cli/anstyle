@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-owo-colors"
-version = "2.0.2"
+version = "2.0.3"
 description = "Adapt between owo-colors and anstyle"
 homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
