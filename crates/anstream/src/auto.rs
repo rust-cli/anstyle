@@ -146,7 +146,29 @@ where
         }
     }
 
-    /// Get the wrapped [`RawStream`]
+    /// Returns a reference to the wrapped [`RawStream`].
+    #[inline]
+    pub fn as_inner(&self) -> &S {
+        match &self.inner {
+            StreamInner::PassThrough(w) => w,
+            StreamInner::Strip(w) => w.as_inner(),
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(w) => w.as_inner(),
+        }
+    }
+
+    /// Returns a mutable reference to the wrapped [`RawStream`].
+    #[inline]
+    pub fn as_inner_mut(&mut self) -> &mut S {
+        match &mut self.inner {
+            StreamInner::PassThrough(w) => w,
+            StreamInner::Strip(w) => w.as_inner_mut(),
+            #[cfg(all(windows, feature = "wincon"))]
+            StreamInner::Wincon(w) => w.as_inner_mut(),
+        }
+    }
+
+    /// Get the wrapped [`RawStream`].
     #[inline]
     pub fn into_inner(self) -> S {
         match self.inner {
