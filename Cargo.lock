@@ -47,7 +47,7 @@ dependencies = [
  "anstyle 1.0.8",
  "anstyle-parse 0.2.5",
  "anstyle-query 1.1.1",
- "anstyle-wincon 3.0.4",
+ "anstyle-wincon 3.0.5",
  "colorchoice 1.0.2",
  "divan",
  "is_terminal_polyfill",
@@ -216,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "3.0.4"
+version = "3.0.5"
 dependencies = [
  "anstyle 1.0.8",
  "lexopt",
