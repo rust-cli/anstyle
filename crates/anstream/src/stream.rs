@@ -142,6 +142,30 @@ pub trait AsLockedWrite: private::Sealed {
     fn as_locked_write(&mut self) -> Self::Write<'_>;
 }
 
+impl<T: AsLockedWrite + ?Sized> AsLockedWrite for &mut T {
+    type Write<'w>
+        = T::Write<'w>
+    where
+        Self: 'w;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        (**self).as_locked_write()
+    }
+}
+
+impl<T: AsLockedWrite + ?Sized> AsLockedWrite for Box<T> {
+    type Write<'w>
+        = T::Write<'w>
+    where
+        Self: 'w;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        (**self).as_locked_write()
+    }
+}
+
 impl AsLockedWrite for std::io::Stdout {
     type Write<'w> = std::io::StdoutLock<'w>;
 
@@ -179,6 +203,24 @@ impl AsLockedWrite for std::io::StderrLock<'static> {
 }
 
 impl AsLockedWrite for dyn std::io::Write {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
+impl AsLockedWrite for dyn std::io::Write + Send {
+    type Write<'w> = &'w mut Self;
+
+    #[inline]
+    fn as_locked_write(&mut self) -> Self::Write<'_> {
+        self
+    }
+}
+
+impl AsLockedWrite for dyn std::io::Write + Send + Sync {
     type Write<'w> = &'w mut Self;
 
     #[inline]
@@ -240,4 +282,34 @@ mod private {
 
     #[allow(deprecated)]
     impl Sealed for crate::Buffer {}
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn assert_raw_stream<T: RawStream>()
+    where
+        crate::AutoStream<T>: std::io::Write,
+    {
+    }
+
+    #[test]
+    fn test() {
+        assert_raw_stream::<Box<dyn std::io::Write>>();
+        assert_raw_stream::<Box<dyn std::io::Write + 'static>>();
+        assert_raw_stream::<Box<dyn std::io::Write + Send>>();
+        assert_raw_stream::<Box<dyn std::io::Write + Send + Sync>>();
+
+        assert_raw_stream::<&mut (dyn std::io::Write)>();
+        assert_raw_stream::<&mut (dyn std::io::Write + 'static)>();
+        assert_raw_stream::<&mut (dyn std::io::Write + Send)>();
+        assert_raw_stream::<&mut (dyn std::io::Write + Send + Sync)>();
+
+        assert_raw_stream::<Vec<u8>>();
+        assert_raw_stream::<&mut Vec<u8>>();
+
+        assert_raw_stream::<std::fs::File>();
+        assert_raw_stream::<&mut std::fs::File>();
+    }
 }
