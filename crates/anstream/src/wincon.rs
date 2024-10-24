@@ -20,7 +20,7 @@ impl<S> WinconStream<S>
 where
     S: anstyle_wincon::WinconStream,
 {
-    /// Only pass printable data to the inner `Write`
+    /// Only pass printable data to the inner `Write`.
     #[inline]
     pub fn new(raw: S) -> Self {
         Self {
@@ -29,7 +29,17 @@ where
         }
     }
 
-    /// Get the wrapped [`anstyle_wincon::WinconStream`]
+    /// Returns a reference to the wrapped [`anstyle_wincon::WinconStream`].
+    pub fn as_inner(&self) -> &S {
+        &self.raw
+    }
+
+    /// Returns a mutable reference to the wrapped [`anstyle_wincon::WinconStream`].
+    pub fn as_inner_mut(&mut self) -> &mut S {
+        &mut self.raw
+    }
+
+    /// Get the wrapped [`anstyle_wincon::WinconStream`].
     #[inline]
     pub fn into_inner(self) -> S {
         self.raw

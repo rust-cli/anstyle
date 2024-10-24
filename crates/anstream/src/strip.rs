@@ -16,7 +16,7 @@ impl<S> StripStream<S>
 where
     S: std::io::Write,
 {
-    /// Only pass printable data to the inner `Write`
+    /// Only pass printable data to the inner `Write`.
     #[inline]
     pub fn new(raw: S) -> Self {
         Self {
@@ -25,7 +25,19 @@ where
         }
     }
 
-    /// Get the wrapped [`std::io::Write`]
+    /// Returns a reference to the wrapped [`std::io::Write`].
+    #[inline]
+    pub fn as_inner(&self) -> &S {
+        &self.raw
+    }
+
+    /// Returns a mutable reference to the wrapped [`std::io::Write`].
+    #[inline]
+    pub fn as_inner_mut(&mut self) -> &mut S {
+        &mut self.raw
+    }
+
+    /// Get the wrapped [`std::io::Write`].
     #[inline]
     pub fn into_inner(self) -> S {
         self.raw
