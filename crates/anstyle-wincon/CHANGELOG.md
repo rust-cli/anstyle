@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 - Update MSRV to 1.66
 
+### Features
+
+- Implement AutoStream for dyn Write + auto traits
+
 ## [3.0.4] - 2024-07-25
 
 ## [3.0.3] - 2024-05-02
