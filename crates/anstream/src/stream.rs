@@ -23,6 +23,8 @@ impl RawStream for std::io::Stderr {}
 impl RawStream for std::io::StderrLock<'_> {}
 
 impl RawStream for dyn std::io::Write {}
+impl RawStream for dyn std::io::Write + Send {}
+impl RawStream for dyn std::io::Write + Send + Sync {}
 
 impl RawStream for Vec<u8> {}
 
@@ -87,6 +89,20 @@ impl IsTerminal for std::io::StderrLock<'_> {
 }
 
 impl IsTerminal for dyn std::io::Write {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
+impl IsTerminal for dyn std::io::Write + Send {
+    #[inline]
+    fn is_terminal(&self) -> bool {
+        false
+    }
+}
+
+impl IsTerminal for dyn std::io::Write + Send + Sync {
     #[inline]
     fn is_terminal(&self) -> bool {
         false
@@ -215,6 +231,8 @@ mod private {
     impl Sealed for std::io::StderrLock<'_> {}
 
     impl Sealed for dyn std::io::Write {}
+    impl Sealed for dyn std::io::Write + Send {}
+    impl Sealed for dyn std::io::Write + Send + Sync {}
 
     impl Sealed for Vec<u8> {}
 
