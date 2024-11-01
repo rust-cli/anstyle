@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Performance
+
+- Replace some `write!`s with `write_str`
+
 ## [1.0.9] - 2024-10-24
 
 ### Compatibility
