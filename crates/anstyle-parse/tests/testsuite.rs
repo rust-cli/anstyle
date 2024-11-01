@@ -244,7 +244,7 @@ advance!(
 fn gen_exceed_max_buffer_size() -> (Vec<u8>, Dispatcher) {
     static NUM_BYTES: usize = MAX_OSC_RAW + 100;
     static INPUT_START: &[u8] = &[0x1b, b']', b'5', b'2', b';', b's'];
-    static INPUT_END: &[u8] = &[b'\x07'];
+    static INPUT_END: &[u8] = b"\x07";
     let mut input = INPUT_START.to_vec();
     input.resize(INPUT_START.len() + NUM_BYTES, b'a');
     input.extend(INPUT_END);
