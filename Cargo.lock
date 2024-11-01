@@ -44,7 +44,7 @@ dependencies = [
 name = "anstream"
 version = "0.6.17"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "anstyle-parse 0.2.6",
  "anstyle-query 1.1.2",
  "anstyle-wincon 3.0.6",
@@ -66,7 +66,7 @@ checksum = "15c4c2c83f81532e5845a733998b6971faca23490340a418e9b72a3ec9de12ea"
 
 [[package]]
 name = "anstyle"
-version = "1.0.9"
+version = "1.0.10"
 dependencies = [
  "lexopt",
 ]
@@ -76,14 +76,14 @@ name = "anstyle-ansi-term"
 version = "1.0.3"
 dependencies = [
  "ansi_term",
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
 ]
 
 [[package]]
 name = "anstyle-crossterm"
 version = "3.0.1"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "crossterm",
 ]
 
@@ -91,28 +91,28 @@ dependencies = [
 name = "anstyle-git"
 version = "1.1.2"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
 ]
 
 [[package]]
 name = "anstyle-lossy"
 version = "1.1.3"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
 ]
 
 [[package]]
 name = "anstyle-ls"
 version = "1.0.4"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
 version = "2.0.3"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "owo-colors",
 ]
 
@@ -158,7 +158,7 @@ dependencies = [
 name = "anstyle-roff"
 version = "0.3.5"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "anstyle-lossy",
  "cansi",
  "roff",
@@ -170,7 +170,7 @@ name = "anstyle-svg"
 version = "0.1.7"
 dependencies = [
  "anstream 0.6.17",
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "anstyle-lossy",
  "html-escape",
  "snapbox",
@@ -181,7 +181,7 @@ dependencies = [
 name = "anstyle-syntect"
 version = "1.0.3"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "syntect",
  "thiserror",
 ]
@@ -190,7 +190,7 @@ dependencies = [
 name = "anstyle-termcolor"
 version = "1.1.3"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "termcolor",
 ]
 
@@ -218,7 +218,7 @@ dependencies = [
 name = "anstyle-wincon"
 version = "3.0.6"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "lexopt",
  "windows-sys 0.59.0",
 ]
@@ -227,7 +227,7 @@ dependencies = [
 name = "anstyle-yansi"
 version = "2.0.2"
 dependencies = [
- "anstyle 1.0.9",
+ "anstyle 1.0.10",
  "yansi",
 ]
 
