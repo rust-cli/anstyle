@@ -38,11 +38,12 @@
 
 pub mod adapter;
 pub mod stream;
-
-mod buffer;
+#[doc(hidden)]
 #[macro_use]
-mod macros;
+pub mod _macros;
+
 mod auto;
+mod buffer;
 mod fmt;
 mod strip;
 #[cfg(all(windows, feature = "wincon"))]

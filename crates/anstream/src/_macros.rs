@@ -60,18 +60,9 @@
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
-            use std::io::Write as _;
-
-            let stdio = std::io::stdout();
-            let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = Vec::new();
-            let mut stream = $crate::AutoStream::new(buffer, choice);
-            // Ignore errors rather than panic
-            let _ = ::std::write!(&mut stream, $($arg)*);
-            let buffer = stream.into_inner();
-            // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(&buffer);
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
+            let target_stream = std::io::stdout();
+            let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::print!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -141,18 +132,9 @@ macro_rules! println {
         $crate::print!("\n")
     };
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
-            use std::io::Write as _;
-
-            let stdio = std::io::stdout();
-            let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = Vec::new();
-            let mut stream = $crate::AutoStream::new(buffer, choice);
-            // Ignore errors rather than panic
-            let _ = ::std::write!(&mut stream, $($arg)*);
-            let buffer = stream.into_inner();
-            // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(&buffer);
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
+            let target_stream = std::io::stdout();
+            let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::println!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -201,18 +183,9 @@ macro_rules! println {
 #[macro_export]
 macro_rules! eprint {
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
-            use std::io::Write as _;
-
-            let stdio = std::io::stderr();
-            let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = Vec::new();
-            let mut stream = $crate::AutoStream::new(buffer, choice);
-            // Ignore errors rather than panic
-            let _ = ::std::write!(&mut stream, $($arg)*);
-            let buffer = stream.into_inner();
-            // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(&buffer);
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
+            let target_stream = std::io::stderr();
+            let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::eprint!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -220,7 +193,7 @@ macro_rules! eprint {
             let mut stream = $crate::stderr();
             match ::std::write!(&mut stream, $($arg)*) {
                 Err(e) if e.kind() != ::std::io::ErrorKind::BrokenPipe => {
-                    ::std::panic!("failed printing to stdout: {e}");
+                    ::std::panic!("failed printing to stderr: {e}");
                 }
                 Err(_) | Ok(_) => {}
             }
@@ -264,18 +237,9 @@ macro_rules! eprintln {
         $crate::eprint!("\n")
     };
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
-            use std::io::Write as _;
-
-            let stdio = std::io::stderr();
-            let choice = $crate::AutoStream::choice(&stdio);
-            let buffer = Vec::new();
-            let mut stream = $crate::AutoStream::new(buffer, choice);
-            // Ignore errors rather than panic
-            let _ = ::std::write!(&mut stream, $($arg)*);
-            let buffer = stream.into_inner();
-            // Should be UTF-8 but not wanting to panic
-            let buffer = String::from_utf8_lossy(&buffer);
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
+            let target_stream = std::io::stderr();
+            let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::eprintln!("{}", buffer)
         } else {
             use std::io::Write as _;
@@ -283,7 +247,7 @@ macro_rules! eprintln {
             let mut stream = $crate::stderr();
             match ::std::writeln!(&mut stream, $($arg)*) {
                 Err(e) if e.kind() != ::std::io::ErrorKind::BrokenPipe => {
-                    ::std::panic!("failed printing to stdout: {e}");
+                    ::std::panic!("failed printing to stderr: {e}");
                 }
                 Err(_) | Ok(_) => {}
             }
@@ -373,17 +337,29 @@ macro_rules! panic {
         ::std::panic!()
     };
     ($($arg:tt)*) => {{
-        use std::io::Write as _;
-
-        let panic_stream = std::io::stderr();
-        let choice = $crate::AutoStream::choice(&panic_stream);
-        let buffer = Vec::new();
-        let mut stream = $crate::AutoStream::new(buffer, choice);
-        // Ignore errors rather than panic
-        let _ = ::std::write!(&mut stream, $($arg)*);
-        let buffer = stream.into_inner();
-        // Should be UTF-8 but not wanting to panic
-        let buffer = String::from_utf8_lossy(&buffer).into_owned();
+        let target_stream = std::io::stderr();
+        let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
         ::std::panic!("{}", buffer)
     }};
+}
+
+#[cfg(feature = "auto")]
+pub const FEATURE_TEST_ACTIVATED: bool = cfg!(feature = "test");
+
+#[cfg(feature = "auto")]
+pub fn to_adapted_string(
+    display: &dyn std::fmt::Display,
+    stream: &impl crate::stream::RawStream,
+) -> String {
+    use std::io::Write as _;
+
+    let choice = crate::AutoStream::choice(stream);
+    let buffer = Vec::new();
+    let mut stream = crate::AutoStream::new(buffer, choice);
+    // Ignore errors rather than panic
+    let _ = ::std::write!(&mut stream, "{display}");
+    let buffer = stream.into_inner();
+    // Should be UTF-8 but not wanting to panic
+    let buffer = String::from_utf8_lossy(&buffer).into_owned();
+    buffer
 }
