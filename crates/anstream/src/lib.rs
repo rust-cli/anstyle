@@ -41,7 +41,7 @@ pub mod stream;
 
 mod buffer;
 #[macro_use]
-mod macros;
+mod _macros;
 mod auto;
 mod fmt;
 mod strip;
