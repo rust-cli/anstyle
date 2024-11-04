@@ -193,7 +193,7 @@ macro_rules! eprint {
             let mut stream = $crate::stderr();
             match ::std::write!(&mut stream, $($arg)*) {
                 Err(e) if e.kind() != ::std::io::ErrorKind::BrokenPipe => {
-                    ::std::panic!("failed printing to stdout: {e}");
+                    ::std::panic!("failed printing to stderr: {e}");
                 }
                 Err(_) | Ok(_) => {}
             }
@@ -247,7 +247,7 @@ macro_rules! eprintln {
             let mut stream = $crate::stderr();
             match ::std::writeln!(&mut stream, $($arg)*) {
                 Err(e) if e.kind() != ::std::io::ErrorKind::BrokenPipe => {
-                    ::std::panic!("failed printing to stdout: {e}");
+                    ::std::panic!("failed printing to stderr: {e}");
                 }
                 Err(_) | Ok(_) => {}
             }
