@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Ensure `test` feature is respected by `print!`
+
 ## [0.6.17] - 2024-10-24
 
 ## [0.6.16] - 2024-10-24
