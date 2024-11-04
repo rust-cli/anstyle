@@ -60,7 +60,7 @@
 #[macro_export]
 macro_rules! print {
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
             let target_stream = std::io::stdout();
             let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::print!("{}", buffer)
@@ -132,7 +132,7 @@ macro_rules! println {
         $crate::print!("\n")
     };
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
             let target_stream = std::io::stdout();
             let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::println!("{}", buffer)
@@ -183,7 +183,7 @@ macro_rules! println {
 #[macro_export]
 macro_rules! eprint {
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
             let target_stream = std::io::stderr();
             let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::eprint!("{}", buffer)
@@ -237,7 +237,7 @@ macro_rules! eprintln {
         $crate::eprint!("\n")
     };
     ($($arg:tt)*) => {{
-        if cfg!(any(feature = "test", test)) {
+        if cfg!(test) || $crate::_macros::FEATURE_TEST_ACTIVATED {
             let target_stream = std::io::stderr();
             let buffer = $crate::_macros::to_adapted_string(&format_args!($($arg)*), &target_stream);
             ::std::eprintln!("{}", buffer)
@@ -342,6 +342,9 @@ macro_rules! panic {
         ::std::panic!("{}", buffer)
     }};
 }
+
+#[cfg(feature = "auto")]
+pub const FEATURE_TEST_ACTIVATED: bool = cfg!(feature = "test");
 
 #[cfg(feature = "auto")]
 pub fn to_adapted_string(
