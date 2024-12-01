@@ -29,7 +29,7 @@ anstyle = { version = "1.0.0", path = "../anstyle" }
 syntect = { version = "5.0.0", default-features = false }
 
 [target.'cfg(any())'.dependencies]
-thiserror = "1.0.2"  # HACK: bad minimal dep in syntect
+thiserror = "2.0.0"  # HACK: bad minimal dep in syntect
 
 [lints]
 workspace = true
