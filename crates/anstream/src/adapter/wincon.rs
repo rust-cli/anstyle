@@ -31,7 +31,7 @@ pub struct WinconBytesIter<'s> {
     capture: &'s mut WinconCapture,
 }
 
-impl<'s> Iterator for WinconBytesIter<'s> {
+impl Iterator for WinconBytesIter<'_> {
     type Item = (anstyle::Style, String);
 
     #[inline]
