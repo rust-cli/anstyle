@@ -4,3 +4,7 @@ check-file = false
 
 [type.svg]
 check-file = false
+
+[default.extend-words]
+# until https://github.com/crate-ci/typos/issues/1055 is fixed
+ratatui = "ratatui"

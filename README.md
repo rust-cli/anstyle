@@ -1,4 +1,7 @@
+# anstyle
+
 This repo contains:
+
 - [`anstream`](./crates/anstream) for a simple cross platform library for writing colored text to a terminal
 - [`anstyle`](./crates/anstyle) for style definitions
 - User-styling parsers
@@ -11,6 +14,7 @@ This repo contains:
   - [`anstyle-ansi-term`](./crates/anstyle-ansi-term) for adapting `anstyle` to `ansi_term`
   - [`anstyle-crossterm`](./crates/anstyle-crossterm) for adapting `anstyle` to `crossterm`
   - [`anstyle-owo-colors`](./crates/anstyle-owo-colors) for adapting `anstyle` to `owo-colors`
+  - [`anstyle-ratatui`](./crates/anstyle-ratatui) for adapting `anstyle` to `ratatui`
   - [`anstyle-syntect`](./crates/anstyle-syntect) for adapting `anstyle` to `syntect`
   - [`anstyle-termcolor`](./crates/anstyle-termcolor) for adapting `anstyle` to `termcolor`
   - [`anstyle-yansi`](./crates/anstyle-yansi) for adapting `anstyle` to `yansi`
