@@ -9,19 +9,13 @@ type StdioColorInnerResult = Result<(anstyle::AnsiColor, anstyle::AnsiColor), in
 /// Cached [`get_colors`] call for [`std::io::stdout`]
 pub fn stdout_initial_colors() -> StdioColorResult {
     static INITIAL: std::sync::OnceLock<StdioColorInnerResult> = std::sync::OnceLock::new();
-    INITIAL
-        .get_or_init(|| get_colors_(&std::io::stdout()))
-        .clone()
-        .map_err(Into::into)
+    (*INITIAL.get_or_init(|| get_colors_(&std::io::stdout()))).map_err(Into::into)
 }
 
 /// Cached [`get_colors`] call for [`std::io::stderr`]
 pub fn stderr_initial_colors() -> StdioColorResult {
     static INITIAL: std::sync::OnceLock<StdioColorInnerResult> = std::sync::OnceLock::new();
-    INITIAL
-        .get_or_init(|| get_colors_(&std::io::stderr()))
-        .clone()
-        .map_err(Into::into)
+    (*INITIAL.get_or_init(|| get_colors_(&std::io::stderr()))).map_err(Into::into)
 }
 
 /// Apply colors to future writes
@@ -132,7 +126,7 @@ mod inner {
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
-            let handle: HANDLE = std::mem::transmute(handle);
+            let handle: HANDLE = handle as HANDLE;
 
             let mut info: CONSOLE_SCREEN_BUFFER_INFO = std::mem::zeroed();
             if windows_sys::Win32::System::Console::GetConsoleScreenBufferInfo(handle, &mut info)
@@ -153,7 +147,7 @@ mod inner {
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
-            let handle: HANDLE = std::mem::transmute(handle);
+            let handle: HANDLE = handle as HANDLE;
 
             if windows_sys::Win32::System::Console::SetConsoleTextAttribute(handle, attributes) != 0
             {
@@ -258,7 +252,7 @@ mod inner {
         for expected in COLORS {
             let nibble = to_nibble(expected);
             let actual = from_nibble(nibble);
-            assert_eq!(expected, actual, "Intermediate: {}", nibble);
+            assert_eq!(expected, actual, "Intermediate: {nibble}");
         }
     }
 }
