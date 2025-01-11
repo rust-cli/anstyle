@@ -11,13 +11,13 @@ mod windows_console {
 
     fn enable_vt(handle: RawHandle) -> std::io::Result<()> {
         unsafe {
-            let handle: HANDLE = std::mem::transmute(handle);
             if handle.is_null() {
                 return Err(std::io::Error::new(
                     std::io::ErrorKind::BrokenPipe,
                     "console is detached",
                 ));
             }
+            let handle: HANDLE = std::mem::transmute(handle);
 
             let mut dwmode: CONSOLE_MODE = 0;
             if windows_sys::Win32::System::Console::GetConsoleMode(handle, &mut dwmode) == 0 {

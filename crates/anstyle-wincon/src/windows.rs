@@ -129,10 +129,10 @@ mod inner {
         handle: RawHandle,
     ) -> Result<CONSOLE_SCREEN_BUFFER_INFO, IoError> {
         unsafe {
-            let handle: HANDLE = std::mem::transmute(handle);
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
+            let handle: HANDLE = std::mem::transmute(handle);
 
             let mut info: CONSOLE_SCREEN_BUFFER_INFO = std::mem::zeroed();
             if windows_sys::Win32::System::Console::GetConsoleScreenBufferInfo(handle, &mut info)
@@ -150,10 +150,10 @@ mod inner {
         attributes: CONSOLE_CHARACTER_ATTRIBUTES,
     ) -> Result<(), IoError> {
         unsafe {
-            let handle: HANDLE = std::mem::transmute(handle);
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
+            let handle: HANDLE = std::mem::transmute(handle);
 
             if windows_sys::Win32::System::Console::SetConsoleTextAttribute(handle, attributes) != 0
             {
