@@ -8,20 +8,16 @@ type StdioColorInnerResult = Result<(anstyle::AnsiColor, anstyle::AnsiColor), in
 
 /// Cached [`get_colors`] call for [`std::io::stdout`]
 pub fn stdout_initial_colors() -> StdioColorResult {
-    static INITIAL: std::sync::OnceLock<StdioColorInnerResult> = std::sync::OnceLock::new();
-    INITIAL
-        .get_or_init(|| get_colors_(&std::io::stdout()))
-        .clone()
-        .map_err(Into::into)
+    static INITIAL: once_cell::sync::OnceCell<StdioColorInnerResult> =
+        once_cell::sync::OnceCell::new();
+    (*INITIAL.get_or_init(|| get_colors_(&std::io::stdout()))).map_err(Into::into)
 }
 
 /// Cached [`get_colors`] call for [`std::io::stderr`]
 pub fn stderr_initial_colors() -> StdioColorResult {
-    static INITIAL: std::sync::OnceLock<StdioColorInnerResult> = std::sync::OnceLock::new();
-    INITIAL
-        .get_or_init(|| get_colors_(&std::io::stderr()))
-        .clone()
-        .map_err(Into::into)
+    static INITIAL: once_cell::sync::OnceCell<StdioColorInnerResult> =
+        once_cell::sync::OnceCell::new();
+    (*INITIAL.get_or_init(|| get_colors_(&std::io::stderr()))).map_err(Into::into)
 }
 
 /// Apply colors to future writes
@@ -129,7 +125,7 @@ mod inner {
         handle: RawHandle,
     ) -> Result<CONSOLE_SCREEN_BUFFER_INFO, IoError> {
         unsafe {
-            let handle: HANDLE = std::mem::transmute(handle);
+            let handle: HANDLE = handle as HANDLE;
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
@@ -150,7 +146,7 @@ mod inner {
         attributes: CONSOLE_CHARACTER_ATTRIBUTES,
     ) -> Result<(), IoError> {
         unsafe {
-            let handle: HANDLE = std::mem::transmute(handle);
+            let handle: HANDLE = handle as HANDLE;
             if handle.is_null() {
                 return Err(IoError::BrokenPipe);
             }
@@ -258,7 +254,7 @@ mod inner {
         for expected in COLORS {
             let nibble = to_nibble(expected);
             let actual = from_nibble(nibble);
-            assert_eq!(expected, actual, "Intermediate: {}", nibble);
+            assert_eq!(expected, actual, "Intermediate: {nibble}");
         }
     }
 }

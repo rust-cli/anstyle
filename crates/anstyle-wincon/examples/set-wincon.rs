@@ -18,8 +18,9 @@ fn main() -> Result<(), lexopt::Error> {
     let fg = args.fg.and_then(|c| c.into_ansi());
     let bg = args.bg.and_then(|c| c.into_ansi());
 
-    let _ = stdout.write_colored(fg, bg, "".as_bytes());
+    let _ = stdout.write_colored(fg, bg, b"");
 
+    #[allow(clippy::mem_forget)]
     std::mem::forget(stdout);
 
     Ok(())
