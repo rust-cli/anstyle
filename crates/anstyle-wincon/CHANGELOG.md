@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+- Restore MSRV for Windows
+
 ## [3.0.6] - 2024-10-24
 
 ## [3.0.5] - 2024-10-24
