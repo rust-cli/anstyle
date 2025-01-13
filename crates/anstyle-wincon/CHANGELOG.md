@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [3.0.7] - 2025-01-13
+
 - Restore MSRV for Windows
 
 ## [3.0.6] - 2024-10-24
@@ -109,7 +111,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.6...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.7...HEAD
+[3.0.7]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.6...anstyle-wincon-v3.0.7
 [3.0.6]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.5...anstyle-wincon-v3.0.6
 [3.0.5]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.4...anstyle-wincon-v3.0.5
 [3.0.4]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.3...anstyle-wincon-v3.0.4
