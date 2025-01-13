@@ -54,7 +54,10 @@ jobs:
       run: cargo hack test --feature-powerset --workspace
   msrv:
     name: "Check MSRV"
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ["ubuntu-latest", "windows-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
