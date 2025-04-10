@@ -149,9 +149,7 @@ pub fn parse(code: &str) -> Option<anstyle::Style> {
             105 => bg_color = Some(anstyle::AnsiColor::BrightMagenta.into()),
             106 => bg_color = Some(anstyle::AnsiColor::BrightCyan.into()),
             107 => bg_color = Some(anstyle::AnsiColor::BrightWhite.into()),
-            _ => {
-                continue;
-            }
+            _ => {}
         }
     }
 
