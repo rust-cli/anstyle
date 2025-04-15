@@ -21,7 +21,7 @@ pub use anstyle_lossy::palette::Palette;
 pub use anstyle_lossy::palette::VGA;
 pub use anstyle_lossy::palette::WIN10_CONSOLE;
 
-/// Define the terminal-like settings for rendering outpu
+/// Define the terminal-like settings for rendering output
 #[derive(Copy, Clone, Debug)]
 pub struct Term {
     palette: Palette,
