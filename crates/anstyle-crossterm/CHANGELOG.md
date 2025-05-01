@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking Change
+
+- Update crossterm to 0.29
+
 ## [3.0.1] - 2024-10-24
 
 ### Compatibility
