@@ -311,7 +311,6 @@ macro_rules! eprintln {
 /// [`std::panic::set_hook()`]: ../std/panic/fn.set_hook.html
 /// [`panic_any`]: ../std/panic/fn.panic_any.html
 /// [`Box`]: ../std/boxed/struct.Box.html
-/// [`Any`]: crate::any::Any
 /// [`format!`]: ../std/macro.format.html
 /// [book]: ../book/ch09-00-error-handling.html
 /// [`std::result`]: ../std/result/index.html

@@ -1,4 +1,5 @@
 #![allow(clippy::unwrap_used)]
+#![allow(clippy::incompatible_msrv)]
 
 use std::io::Write as _;
 

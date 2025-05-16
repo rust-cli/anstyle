@@ -1,3 +1,5 @@
+#![allow(clippy::incompatible_msrv)]
+
 #[divan::bench(args = DATA)]
 fn nop(data: &Data) -> Vec<(anstyle::Style, String)> {
     let mut state = anstream::adapter::WinconBytes::new();

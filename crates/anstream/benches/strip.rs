@@ -1,4 +1,5 @@
 #![allow(clippy::unwrap_used)]
+#![allow(clippy::incompatible_msrv)]
 
 #[derive(Default)]
 struct Strip(String);
