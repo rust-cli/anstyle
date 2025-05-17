@@ -2,22 +2,22 @@
 
 use std::os::windows::io::AsHandle;
 use std::os::windows::io::AsRawHandle;
+use std::sync::LazyLock;
 
 type StdioColorResult = std::io::Result<(anstyle::AnsiColor, anstyle::AnsiColor)>;
 type StdioColorInnerResult = Result<(anstyle::AnsiColor, anstyle::AnsiColor), inner::IoError>;
 
+static STOUT_COLORS: LazyLock<StdioColorInnerResult>  = LazyLock::new(|| get_colors_(&std::io::stdout()));
+static STERR_COLORS: LazyLock<StdioColorInnerResult>  = LazyLock::new(|| get_colors_(&std::io::stderr()));
+
 /// Cached [`get_colors`] call for [`std::io::stdout`]
 pub fn stdout_initial_colors() -> StdioColorResult {
-    static INITIAL: once_cell::sync::OnceCell<StdioColorInnerResult> =
-        once_cell::sync::OnceCell::new();
-    (*INITIAL.get_or_init(|| get_colors_(&std::io::stdout()))).map_err(Into::into)
+    STOUT_COLORS.map_err(Into::into)
 }
 
 /// Cached [`get_colors`] call for [`std::io::stderr`]
 pub fn stderr_initial_colors() -> StdioColorResult {
-    static INITIAL: once_cell::sync::OnceCell<StdioColorInnerResult> =
-        once_cell::sync::OnceCell::new();
-    (*INITIAL.get_or_init(|| get_colors_(&std::io::stderr()))).map_err(Into::into)
+    STERR_COLORS.map_err(Into::into)
 }
 
 /// Apply colors to future writes
