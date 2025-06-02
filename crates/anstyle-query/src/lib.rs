@@ -157,3 +157,7 @@ mod test {
         assert!(non_empty(Some(std::ffi::OsStr::new("hello"))));
     }
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

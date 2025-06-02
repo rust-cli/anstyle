@@ -35,3 +35,7 @@ pub fn to_anstyle_effects(style: syntect::highlighting::FontStyle) -> anstyle::E
 
     effects
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

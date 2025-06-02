@@ -2,7 +2,6 @@
 name = "anstream"
 version = "0.6.18"
 description = "A simple cross platform library for writing colored text to a terminal."
-homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "strip", "wincon"]
 repository.workspace = true

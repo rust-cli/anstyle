@@ -87,3 +87,7 @@ fn rgb_to_ansi_color(color: anstyle::RgbColor) -> crossterm::style::Color {
         b: color.2,
     }
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

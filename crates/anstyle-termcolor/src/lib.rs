@@ -58,3 +58,7 @@ fn xterm_to_termcolor_color(color: anstyle::Ansi256Color) -> termcolor::Color {
 fn rgb_to_termcolor_color(color: anstyle::RgbColor) -> termcolor::Color {
     termcolor::Color::Rgb(color.0, color.1, color.2)
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

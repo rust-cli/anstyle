@@ -2,7 +2,6 @@
 name = "anstyle"
 version = "1.0.10"
 description = "ANSI text styling"
-homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "no_std"]
 repository.workspace = true

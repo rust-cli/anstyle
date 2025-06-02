@@ -2,7 +2,6 @@
 name = "anstyle-svg"
 version = "0.1.7"
 description = "Convert ANSI escape codes to SVG"
-homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "svg"]
 repository.workspace = true
