@@ -294,3 +294,7 @@ mod tests {
         test!("blue#123456" => UnknownWord "blue#123456");
     }
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

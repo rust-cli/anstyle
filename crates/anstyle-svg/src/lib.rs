@@ -453,3 +453,7 @@ fn split_lines(styled: &[(anstyle::Style, String)]) -> Vec<Vec<(anstyle::Style, 
     }
     lines
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

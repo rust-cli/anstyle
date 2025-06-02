@@ -64,3 +64,7 @@ pub use color::*;
 pub use effect::*;
 pub use reset::*;
 pub use style::*;
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

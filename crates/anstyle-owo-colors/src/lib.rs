@@ -87,3 +87,7 @@ fn xterm_to_owo_colors_color(color: anstyle::Ansi256Color) -> owo_colors::XtermC
 fn rgb_to_owo_colors_color(color: anstyle::RgbColor) -> (u8, u8, u8) {
     (color.0, color.1, color.2)
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

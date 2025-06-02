@@ -2,7 +2,6 @@
 name = "anstyle-yansi"
 version = "2.0.2"
 description = "Adapt between yansi and anstyle"
-homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "yansi"]
 repository.workspace = true

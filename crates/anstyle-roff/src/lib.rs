@@ -174,3 +174,7 @@ mod tests {
         assert_eq!(to_hex(&RgbColor(0, 0, 255)).as_str(), "#0000ff");
     }
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

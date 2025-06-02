@@ -2,7 +2,6 @@
 name = "anstyle-crossterm"
 version = "4.0.0"
 description = "Adapt between crossterm and anstyle"
-homepage = "https://github.com/rust-cli/anstyle"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "crossterm"]
 repository.workspace = true

@@ -82,3 +82,7 @@ fn xterm_to_yansi_color(color: anstyle::Ansi256Color) -> yansi::Color {
 fn rgb_to_yansi_color(color: anstyle::RgbColor) -> yansi::Color {
     yansi::Color::Rgb(color.0, color.1, color.2)
 }
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;

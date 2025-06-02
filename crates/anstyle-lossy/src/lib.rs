@@ -422,3 +422,7 @@ const XTERM_COLORS: [anstyle::RgbColor; 256] = [
     Rgb(228, 228, 228),
     Rgb(238, 238, 238),
 ];
+
+#[doc = include_str!("../README.md")]
+#[cfg(doctest)]
+pub struct ReadmeDoctests;
