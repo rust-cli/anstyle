@@ -301,7 +301,6 @@ fn to_ansi_color(digit: u16) -> Option<anstyle::AnsiColor> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use owo_colors::OwoColorize as _;
     use proptest::prelude::*;
 
     #[track_caller]
@@ -317,12 +316,10 @@ mod test {
 
     #[test]
     fn start() {
-        let input = format!("{} world!", "Hello".green().on_red());
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!("{green_on_red}Hello{green_on_red:#} world!");
         let expected = vec![
-            (
-                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
-                "Hello",
-            ),
+            (green_on_red, "Hello"),
             (anstyle::Style::default(), " world!"),
         ];
         verify(&input, expected);
@@ -330,13 +327,11 @@ mod test {
 
     #[test]
     fn middle() {
-        let input = format!("Hello {}!", "world".green().on_red());
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!("Hello {green_on_red}world{green_on_red:#}!");
         let expected = vec![
             (anstyle::Style::default(), "Hello "),
-            (
-                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
-                "world",
-            ),
+            (green_on_red, "world"),
             (anstyle::Style::default(), "!"),
         ];
         verify(&input, expected);
@@ -344,27 +339,23 @@ mod test {
 
     #[test]
     fn end() {
-        let input = format!("Hello {}", "world!".green().on_red());
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!("Hello {green_on_red}world!{green_on_red:#}");
         let expected = vec![
             (anstyle::Style::default(), "Hello "),
-            (
-                anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red),
-                "world!",
-            ),
+            (green_on_red, "world!"),
         ];
         verify(&input, expected);
     }
 
     #[test]
     fn ansi256_colors() {
+        let ansi_11 = anstyle::Ansi256Color(11).on_default();
         // termcolor only supports "brights" via these
-        let input = format!(
-            "Hello {}!",
-            "world".color(owo_colors::XtermColors::UserBrightYellow)
-        );
+        let input = format!("Hello {ansi_11}world{ansi_11:#}!");
         let expected = vec![
             (anstyle::Style::default(), "Hello "),
-            (anstyle::Ansi256Color(11).on_default(), "world"),
+            (ansi_11, "world"),
             (anstyle::Style::default(), "!"),
         ];
         verify(&input, expected);
