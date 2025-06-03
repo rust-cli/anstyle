@@ -32,7 +32,7 @@ pub(crate) struct AnsiBytesIter<'s> {
 }
 
 impl Iterator for AnsiBytesIter<'_> {
-    type Item = (anstyle::Style, String);
+    type Item = Element;
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
@@ -45,7 +45,7 @@ fn next_bytes(
     bytes: &mut &[u8],
     parser: &mut anstyle_parse::Parser,
     capture: &mut AnsiCapture,
-) -> Option<(anstyle::Style, String)> {
+) -> Option<Element> {
     capture.reset();
     while capture.ready.is_none() {
         let byte = if let Some((byte, remainder)) = (*bytes).split_first() {
@@ -61,7 +61,10 @@ fn next_bytes(
     }
 
     let style = capture.ready.unwrap_or(capture.style);
-    Some((style, std::mem::take(&mut capture.printable)))
+    Some(Element {
+        text: std::mem::take(&mut capture.printable),
+        style,
+    })
 }
 
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
@@ -268,6 +271,12 @@ impl anstyle_parse::Perform for AnsiCapture {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct Element {
+    pub(crate) text: String,
+    pub(crate) style: anstyle::Style,
+}
+
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 enum CsiState {
     Normal,
@@ -304,11 +313,8 @@ mod test {
     use proptest::prelude::*;
 
     #[track_caller]
-    fn verify(input: &str, expected: Vec<(anstyle::Style, &str)>) {
-        let expected = expected
-            .into_iter()
-            .map(|(style, value)| (style, value.to_owned()))
-            .collect::<Vec<_>>();
+    fn verify(input: &str, expected: Vec<Element>) {
+        let expected = expected.into_iter().collect::<Vec<_>>();
         let mut state = AnsiBytes::new();
         let actual = state.extract_next(input.as_bytes()).collect::<Vec<_>>();
         assert_eq!(expected, actual, "{input:?}");
@@ -319,8 +325,14 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("{green_on_red}Hello{green_on_red:#} world!");
         let expected = vec![
-            (green_on_red, "Hello"),
-            (anstyle::Style::default(), " world!"),
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: " world!".to_owned(),
+                style: anstyle::Style::default(),
+            },
         ];
         verify(&input, expected);
     }
@@ -330,9 +342,18 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("Hello {green_on_red}world{green_on_red:#}!");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (green_on_red, "world"),
-            (anstyle::Style::default(), "!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
         ];
         verify(&input, expected);
     }
@@ -342,8 +363,14 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("Hello {green_on_red}world!{green_on_red:#}");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (green_on_red, "world!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world!".to_owned(),
+                style: green_on_red,
+            },
         ];
         verify(&input, expected);
     }
@@ -354,9 +381,18 @@ mod test {
         // termcolor only supports "brights" via these
         let input = format!("Hello {ansi_11}world{ansi_11:#}!");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (ansi_11, "world"),
-            (anstyle::Style::default(), "!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: ansi_11,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
         ];
         verify(&input, expected);
     }
@@ -368,7 +404,10 @@ mod test {
             let expected = if s.is_empty() {
                 vec![]
             } else {
-                vec![(anstyle::Style::default(), s.clone())]
+                vec![Element {
+                    text:  s.clone(),
+                    style: anstyle::Style::default(),
+                }]
             };
             let mut state = AnsiBytes::new();
             let actual = state.extract_next(s.as_bytes()).collect::<Vec<_>>();

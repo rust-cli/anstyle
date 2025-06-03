@@ -91,9 +91,10 @@ impl Term {
         const BG: &str = "bg";
 
         let mut styled = adapter::AnsiBytes::new();
-        let mut styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
         let mut effects_in_use = anstyle::Effects::new();
-        for (style, _) in &mut styled {
+        for element in &mut elements {
+            let style = &mut element.style;
             // Pre-process INVERT to make fg/bg calculations easier
             if style.get_effects().contains(anstyle::Effects::INVERT) {
                 *style = style
@@ -103,7 +104,7 @@ impl Term {
             }
             effects_in_use |= style.get_effects();
         }
-        let styled_lines = split_lines(&styled);
+        let styled_lines = split_lines(&elements);
 
         let fg_color = rgb_value(self.fg_color, self.palette);
         let bg_color = rgb_value(self.bg_color, self.palette);
@@ -113,7 +114,7 @@ impl Term {
         let height = styled_lines.len() * line_height + self.padding_px * 2;
         let max_width = styled_lines
             .iter()
-            .map(|l| l.iter().map(|(_, t)| t.width()).sum())
+            .map(|l| l.iter().map(|e| e.text.width()).sum())
             .max()
             .unwrap_or(0);
         let width_px = (max_width as f64 * 8.4).ceil() as usize;
@@ -128,7 +129,7 @@ impl Term {
         writeln!(&mut buffer, r#"  <style>"#).unwrap();
         writeln!(&mut buffer, r#"    .{FG} {{ fill: {fg_color} }}"#).unwrap();
         writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
-        for (name, rgb) in color_styles(&styled, self.palette) {
+        for (name, rgb) in color_styles(&elements, self.palette) {
             if name.starts_with(FG_PREFIX) {
                 writeln!(&mut buffer, r#"    .{name} {{ fill: {rgb} }}"#).unwrap();
             }
@@ -230,13 +231,13 @@ impl Term {
         )
         .unwrap();
         for line in &styled_lines {
-            if line.iter().any(|(s, _)| s.get_bg_color().is_some()) {
+            if line.iter().any(|e| e.style.get_bg_color().is_some()) {
                 write!(&mut buffer, r#"    <tspan x="{text_x}px" y="{text_y}px">"#).unwrap();
-                for (style, fragment) in line {
-                    if fragment.is_empty() {
+                for element in line {
+                    if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, style, fragment);
+                    write_bg_span(&mut buffer, &element.style, &element.text);
                 }
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -244,11 +245,11 @@ impl Term {
             }
 
             write!(&mut buffer, r#"    <tspan x="{text_x}px" y="{text_y}px">"#).unwrap();
-            for (style, fragment) in line {
-                if fragment.is_empty() {
+            for element in line {
+                if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, style, fragment);
+                write_fg_span(&mut buffer, element, &element.text);
             }
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
@@ -267,8 +268,9 @@ impl Term {
 const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White);
 const BG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::Black);
 
-fn write_fg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str) {
     use std::fmt::Write as _;
+    let style = element.style;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
     let underline_color = style
         .get_underline_color()
@@ -415,11 +417,12 @@ fn color_name(prefix: &str, color: anstyle::Color) -> String {
 }
 
 fn color_styles(
-    styled: &[(anstyle::Style, String)],
+    styled: &[adapter::Element],
     palette: Palette,
 ) -> impl Iterator<Item = (String, String)> {
     let mut colors = std::collections::BTreeMap::new();
-    for (style, _) in styled {
+    for element in styled {
+        let style = element.style;
         if let Some(color) = style.get_fg_color() {
             colors.insert(color_name(FG_PREFIX, color), rgb_value(color, palette));
         }
@@ -437,18 +440,20 @@ fn color_styles(
     colors.into_iter()
 }
 
-fn split_lines(styled: &[(anstyle::Style, String)]) -> Vec<Vec<(anstyle::Style, &str)>> {
+fn split_lines(styled: &[adapter::Element]) -> Vec<Vec<adapter::Element>> {
     let mut lines = Vec::new();
     let mut current_line = Vec::new();
-    for (style, mut next) in styled.iter().map(|(s, t)| (*s, t.as_str())) {
-        while let Some((current, remaining)) = next.split_once('\n') {
+    for mut element in styled.iter().cloned() {
+        while let Some((current, remaining)) = element.text.split_once('\n') {
             let current = current.strip_suffix('\r').unwrap_or(current);
-            current_line.push((style, current));
+            let mut new_element = element.clone();
+            new_element.text = current.to_owned();
+            current_line.push(new_element);
             lines.push(current_line);
             current_line = Vec::new();
-            next = remaining;
+            element.text = remaining.to_owned();
         }
-        current_line.push((style, next));
+        current_line.push(element);
     }
     if !current_line.is_empty() {
         lines.push(current_line);
