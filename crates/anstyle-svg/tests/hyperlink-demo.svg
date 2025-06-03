@@ -1,0 +1,234 @@
+<svg width="1356px" height="1766px" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .fg { fill: #AAAAAA }
+    .bg { background: #000000 }
+    .bg-ansi256-021 { stroke: #0000FF; fill: #0000FF; user-select: none;  }
+    .bg-ansi256-027 { stroke: #005FFF; fill: #005FFF; user-select: none;  }
+    .bg-ansi256-033 { stroke: #0087FF; fill: #0087FF; user-select: none;  }
+    .bg-ansi256-039 { stroke: #00AFFF; fill: #00AFFF; user-select: none;  }
+    .bg-ansi256-045 { stroke: #00D7FF; fill: #00D7FF; user-select: none;  }
+    .bg-ansi256-051 { stroke: #00FFFF; fill: #00FFFF; user-select: none;  }
+    .fg-blue { fill: #0000AA }
+    .fg-cyan { fill: #00AAAA }
+    .fg-green { fill: #00AA00 }
+    .fg-magenta { fill: #AA00AA }
+    .fg-red { fill: #AA0000 }
+    .fg-yellow { fill: #AA5500 }
+    .container {
+      padding: 0 10px;
+      line-height: 18px;
+    }
+    .bold { font-weight: bold; }
+    .italic { font-style: italic; }
+    .underline { text-decoration-line: underline; }
+    .strikethrough { text-decoration-line: line-through; }
+    .hidden { opacity: 0; }
+    tspan {
+      font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      white-space: pre;
+      line-height: 18px;
+    }
+  </style>
+
+  <rect width="100%" height="100%" y="0" rx="4.5" class="bg" />
+
+  <text xml:space="preserve" class="container fg">
+    <tspan x="10px" y="28px"><tspan>Link to original file</tspan>
+</tspan>
+    <tspan x="10px" y="46px">
+</tspan>
+    <tspan x="10px" y="64px"><tspan class="bold">Tests for gnome-terminal #779734 and iTerm2 #5158</tspan>
+</tspan>
+    <tspan x="10px" y="82px"><tspan>═════════════════════════════════════════════════</tspan>
+</tspan>
+    <tspan x="10px" y="100px">
+</tspan>
+    <tspan x="10px" y="118px"><tspan class="fg-yellow">commit a9b0b4c75a6dc7282f7cfcaef71413d69f7f0731</tspan>
+</tspan>
+    <tspan x="10px" y="136px"><tspan>Author: Egmont Koblinger &lt;egmont@gmail.com&gt;</tspan>
+</tspan>
+    <tspan x="10px" y="154px"><tspan>Date:   Sat Oct 24 00:12:22 2015 +0200</tspan>
+</tspan>
+    <tspan x="10px" y="172px">
+</tspan>
+    <tspan x="10px" y="190px"><tspan>    widget: Implement smooth scrolling</tspan>
+</tspan>
+    <tspan x="10px" y="208px"><tspan>    </tspan>
+</tspan>
+    <tspan x="10px" y="226px"><tspan>    Bug #746690</tspan>
+</tspan>
+    <tspan x="10px" y="244px">
+</tspan>
+    <tspan x="10px" y="262px"><tspan class="fg-yellow">commit 6a74baeaabb0a1ce54444611b324338f94721a5c</tspan>
+</tspan>
+    <tspan x="10px" y="280px"><tspan>Merge: 3fac446 56ea581</tspan>
+</tspan>
+    <tspan x="10px" y="298px"><tspan>Author: Christian Persch &lt;chpe@gnome.org&gt;</tspan>
+</tspan>
+    <tspan x="10px" y="316px"><tspan>Date:   Mon Apr 27 13:48:52 2015 +0200</tspan>
+</tspan>
+    <tspan x="10px" y="334px">
+</tspan>
+    <tspan x="10px" y="352px"><tspan>    Merge branch 'work-html' into merge-html</tspan>
+</tspan>
+    <tspan x="10px" y="370px">
+</tspan>
+    <tspan x="10px" y="388px"><tspan>A file with a % sign in its name (escaped as %25)</tspan>
+</tspan>
+    <tspan x="10px" y="406px"><tspan>Icons: Theme Graphics Star Exit Terminal</tspan>
+</tspan>
+    <tspan x="10px" y="424px"><tspan>Backgrounds: Bokeh Chmiri Ivy Flower Iceland Icescape Mirror Road Sandstone Stones Waterfalls Waves</tspan>
+</tspan>
+    <tspan x="10px" y="442px">
+</tspan>
+    <tspan x="10px" y="460px"><tspan>Wiki page of Á (unescaped raw UTF-8)</tspan>
+</tspan>
+    <tspan x="10px" y="478px"><tspan>Wiki page of Á (escaped as %C3%81)</tspan>
+</tspan>
+    <tspan x="10px" y="496px"><tspan>Wiki page of % (escaped as %25)</tspan>
+</tspan>
+    <tspan x="10px" y="514px"><tspan>http://المغرب.icom.museum (with URI-escaped domain name)</tspan>
+</tspan>
+    <tspan x="10px" y="532px"><tspan>http://xn--4wa8awb4637h.org (Παν語.org)</tspan>
+</tspan>
+    <tspan x="10px" y="550px">
+</tspan>
+    <tspan x="10px" y="568px"><tspan>Two adjacent links pointing to the same URL:   foofoo</tspan>
+</tspan>
+    <tspan x="10px" y="586px"><tspan>Two adjacent links pointing to different URLs: foobar</tspan>
+</tspan>
+    <tspan x="10px" y="604px">
+</tspan>
+    <tspan x="10px" y="622px"><tspan>The same two without closing the first link: foofoo foobar</tspan>
+</tspan>
+    <tspan x="10px" y="640px">
+</tspan>
+    <tspan x="10px" y="658px"><tspan>A URL wrapping to the next line, and a trailing whitespace: foo</tspan>
+</tspan>
+    <tspan x="10px" y="676px"><tspan>bar </tspan>
+</tspan>
+    <tspan x="10px" y="694px">
+</tspan>
+    <tspan x="10px" y="712px"><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan class="bg-ansi256-021">█</tspan><tspan class="bg-ansi256-027">█</tspan><tspan class="bg-ansi256-033">█</tspan><tspan class="bg-ansi256-039">█</tspan><tspan class="bg-ansi256-045">█</tspan><tspan class="bg-ansi256-051">█</tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan> </tspan><tspan>                                        </tspan><tspan>   </tspan><tspan>                   </tspan>
+</tspan>
+    <tspan x="10px" y="712px"><tspan class="fg-red">M</tspan><tspan class="fg-green">u</tspan><tspan class="fg-yellow">l</tspan><tspan class="fg-blue">t</tspan><tspan class="fg-magenta">i</tspan><tspan class="fg-cyan">-</tspan><tspan>c</tspan><tspan>o</tspan><tspan>l</tspan><tspan>o</tspan><tspan>u</tspan><tspan>r</tspan><tspan> </tspan><tspan class="bold">l</tspan><tspan class="italic">i</tspan><tspan class="underline">n</tspan><tspan class="strikethrough">k</tspan><tspan> also tests that "\e[m" or "\e[0m" does </tspan><tspan class="italic">not</tspan><tspan> terminate the link</tspan>
+</tspan>
+    <tspan x="10px" y="730px">
+</tspan>
+    <tspan x="10px" y="748px"><tspan>Soft reset "\e[!p" resets attributes and terminates link: </tspan><tspan class="fg-red italic">foobar</tspan>
+</tspan>
+    <tspan x="10px" y="766px">
+</tspan>
+    <tspan x="10px" y="784px"><tspan class="fg-red italic">Some CJK and combining accents: 䀀䀁䀂ćĝm̃n̄o̅</tspan>
+</tspan>
+    <tspan x="10px" y="802px">
+</tspan>
+    <tspan x="10px" y="820px"><tspan class="fg-red italic">(Introducing the "under_score" character for even more fun)</tspan>
+</tspan>
+    <tspan x="10px" y="838px">
+</tspan>
+    <tspan x="10px" y="856px"><tspan class="fg-red italic">Explicit and implicit link: http://example.com/under_score</tspan>
+</tspan>
+    <tspan x="10px" y="874px"><tspan class="fg-red italic">Explicit and implicit link with different targets: http://example.com/implicit_under_score</tspan>
+</tspan>
+    <tspan x="10px" y="892px"><tspan class="fg-red italic">Explicit and implicit link, broken into two lines: http://examp</tspan>
+</tspan>
+    <tspan x="10px" y="910px"><tspan class="fg-red italic">le.com/under_score</tspan>
+</tspan>
+    <tspan x="10px" y="928px">
+</tspan>
+    <tspan x="10px" y="946px"><tspan class="fg-red underline italic">Explicitly underlined links ("\e[4m"):</tspan>
+</tspan>
+    <tspan x="10px" y="964px"><tspan>Explicit link only: </tspan><tspan class="underline">I'm an explicit link with under_score</tspan>
+</tspan>
+    <tspan x="10px" y="982px"><tspan>Implicit link only: </tspan><tspan class="underline">http://example.com/under_score</tspan>
+</tspan>
+    <tspan x="10px" y="1000px"><tspan>Both:               </tspan><tspan class="underline">http://example.com/under_score</tspan>
+</tspan>
+    <tspan x="10px" y="1018px">
+</tspan>
+    <tspan x="10px" y="1036px"><tspan>Conflicting explicit and implicit links: http://example.com/foobar-explicit-rest</tspan>
+</tspan>
+    <tspan x="10px" y="1054px">
+</tspan>
+    <tspan x="10px" y="1072px"><tspan>Invisible explicit link: «</tspan><tspan class="hidden">Can you see me?</tspan><tspan>»</tspan>
+</tspan>
+    <tspan x="10px" y="1090px"><tspan>Invisible implicit link: «</tspan><tspan class="hidden">http://example.com/how_about_me</tspan><tspan>»</tspan>
+</tspan>
+    <tspan x="10px" y="1108px">
+</tspan>
+    <tspan x="10px" y="1126px"><tspan>Explicit link with stupid target</tspan>
+</tspan>
+    <tspan x="10px" y="1144px">
+</tspan>
+    <tspan x="10px" y="1162px"><tspan>URL of 100 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1180px"><tspan>URL of 200 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1198px"><tspan>URL of 500 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1216px"><tspan>URL of 1000 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1234px"><tspan>URL of 1500 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1252px"><tspan>URL of 2000 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1270px"><tspan>URL of 2083 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1288px"><tspan>URL of 2084 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1306px">
+</tspan>
+    <tspan x="10px" y="1324px"><tspan>ID of 250 bytes once, twice</tspan>
+</tspan>
+    <tspan x="10px" y="1342px"><tspan>ID of 251 bytes once, twice</tspan>
+</tspan>
+    <tspan x="10px" y="1360px">
+</tspan>
+    <tspan x="10px" y="1378px"><tspan>ID of 250 bytes + URL of 2083 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1396px"><tspan>ID of 251 bytes + URL of 2083 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1414px"><tspan>ID of 250 bytes + URL of 2084 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1432px"><tspan>ID of 251 bytes + URL of 2084 bytes</tspan>
+</tspan>
+    <tspan x="10px" y="1450px">
+</tspan>
+    <tspan x="10px" y="1468px"><tspan>BEL instead of ST (not standard)</tspan>
+</tspan>
+    <tspan x="10px" y="1486px"><tspan>8;;http://example.com/C1C1 (U+009D [UTF-8: 0xC2 0x9D] as OSC and U+009C [UTF-8: 0xC2 0x9C] as ST)8;; (note: not all terminal emulators support C1 in UTF-8)</tspan>
+</tspan>
+    <tspan x="10px" y="1504px">
+</tspan>
+    <tspan x="10px" y="1522px"><tspan>Cursor movement within the same OSC 8 run: moveright</tspan>
+</tspan>
+    <tspan x="10px" y="1540px">
+</tspan>
+    <tspan x="10px" y="1558px"><tspan>Alternating URIs, all with the same ID. Either all foos or all bars should be underlined on hover:</tspan>
+</tspan>
+    <tspan x="10px" y="1576px"><tspan>foobarfoobarfoobarfoo</tspan>
+</tspan>
+    <tspan x="10px" y="1594px">
+</tspan>
+    <tspan x="10px" y="1612px"><tspan>Screenshot from an imaginary text editor:</tspan>
+</tspan>
+    <tspan x="10px" y="1630px"><tspan>╔═ file1 ════╗</tspan>
+</tspan>
+    <tspan x="10px" y="1648px"><tspan>║          ╔═ file2 ═══╗</tspan>
+</tspan>
+    <tspan x="10px" y="1666px"><tspan>║http://exa║Lorem ipsum║</tspan>
+</tspan>
+    <tspan x="10px" y="1684px"><tspan>║le.com    ║ dolor sit ║</tspan>
+</tspan>
+    <tspan x="10px" y="1702px"><tspan>║          ║amet, conse║</tspan>
+</tspan>
+    <tspan x="10px" y="1720px"><tspan>╚══════════║ctetur adip║</tspan>
+</tspan>
+    <tspan x="10px" y="1738px"><tspan>           ╚═══════════╝</tspan>
+</tspan>
+    <tspan x="10px" y="1756px">
+</tspan>
+  </text>
+
+</svg>

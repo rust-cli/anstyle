@@ -312,12 +312,18 @@ mod test {
     use super::*;
     use proptest::prelude::*;
 
+    const URL: &str = "https://example.com";
+
     #[track_caller]
     fn verify(input: &str, expected: Vec<Element>) {
         let expected = expected.into_iter().collect::<Vec<_>>();
         let mut state = AnsiBytes::new();
         let actual = state.extract_next(input.as_bytes()).collect::<Vec<_>>();
         assert_eq!(expected, actual, "{input:?}");
+    }
+
+    fn hyperlink(input: &str, url: &str) -> String {
+        format!("\x1B]8;;{url}\x1B\\{input}\x1B]8;;\x1B\\")
     }
 
     #[test]
@@ -391,6 +397,134 @@ mod test {
             },
             Element {
                 text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_start() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "{green_on_red}{}{green_on_red:#} world!",
+            hyperlink("Hello", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: " world!".to_owned(),
+                style: anstyle::Style::default(),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_middle() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "Hello {green_on_red}{}{green_on_red:#}!",
+            hyperlink("world", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_end() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "Hello {green_on_red}{}{green_on_red:#}",
+            hyperlink("world!", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world!".to_owned(),
+                style: green_on_red,
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_ansi256_colors() {
+        let ansi_11 = anstyle::Ansi256Color(11).on_default();
+        // termcolor only supports "brights" via these
+        let input = format!("Hello {ansi_11}{}{ansi_11:#}!", hyperlink("world", URL));
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: ansi_11,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn style_mid_hyperlink_text() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let styled_str = format!("Hello {green_on_red}world{green_on_red:#}!");
+        let input = hyperlink(&styled_str, URL);
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_empty() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "{green_on_red}{}{green_on_red:#} world!",
+            hyperlink("Hello", "")
+        );
+        let expected = vec![
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+            },
+            Element {
+                text: " world!".to_owned(),
                 style: anstyle::Style::default(),
             },
         ];
