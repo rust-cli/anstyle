@@ -327,13 +327,22 @@ fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str
         classes.push("hidden");
     }
 
+    let mut need_closing_a = false;
+
     write!(buffer, r#"<tspan"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
     write!(buffer, r#">"#).unwrap();
+    if let Some(hyperlink) = &element.url {
+        write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+        need_closing_a = true;
+    }
     write!(buffer, "{fragment}").unwrap();
+    if need_closing_a {
+        write!(buffer, r#"</a>"#).unwrap();
+    }
     write!(buffer, r#"</tspan>"#).unwrap();
 }
 

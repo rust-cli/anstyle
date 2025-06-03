@@ -60,10 +60,11 @@ fn next_bytes(
         return None;
     }
 
-    let style = capture.ready.unwrap_or(capture.style);
+    let (style, url) = capture.ready.clone().unwrap_or((capture.style, None));
     Some(Element {
         text: std::mem::take(&mut capture.printable),
         style,
+        url,
     })
 }
 
@@ -71,7 +72,8 @@ fn next_bytes(
 struct AnsiCapture {
     style: anstyle::Style,
     printable: String,
-    ready: Option<anstyle::Style>,
+    hyperlink: Option<String>,
+    ready: Option<(anstyle::Style, Option<String>)>,
 }
 
 impl AnsiCapture {
@@ -265,9 +267,44 @@ impl anstyle_parse::Perform for AnsiCapture {
         }
 
         if style != self.style && !self.printable.is_empty() {
-            self.ready = Some(self.style);
+            self.ready = Some((self.style, self.hyperlink.clone()));
         }
         self.style = style;
+    }
+
+    fn osc_dispatch(&mut self, params: &[&[u8]], _bell_terminated: bool) {
+        let mut state = OscState::Normal;
+        for value in params {
+            match (state, value) {
+                (OscState::Normal, &[b'8']) => {
+                    state = OscState::HyperlinkParams;
+                }
+                (OscState::HyperlinkParams, _) => {
+                    state = OscState::HyperlinkUri;
+                }
+                (OscState::HyperlinkUri, &[]) => {
+                    if self.hyperlink.is_some() {
+                        self.ready = Some((self.style, std::mem::take(&mut self.hyperlink)));
+                    }
+                    break;
+                }
+                (OscState::HyperlinkUri, uri) => {
+                    let hyperlink = uri.iter().map(|b| *b as char).collect::<String>();
+                    self.hyperlink = Some(hyperlink);
+
+                    // Any current text in `self.printable` needs to be
+                    // rendered, so it doesn't get confused with Hyperlink text
+                    if !self.printable.is_empty() {
+                        self.ready = Some((self.style, None));
+                    }
+                    break;
+                }
+
+                _ => {
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -275,6 +312,7 @@ impl anstyle_parse::Perform for AnsiCapture {
 pub(crate) struct Element {
     pub(crate) text: String,
     pub(crate) style: anstyle::Style,
+    pub(crate) url: Option<String>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -284,6 +322,13 @@ enum CsiState {
     Ansi256,
     Rgb,
     Underline,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+enum OscState {
+    Normal,
+    HyperlinkParams,
+    HyperlinkUri,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -334,10 +379,12 @@ mod test {
             Element {
                 text: "Hello".to_owned(),
                 style: green_on_red,
+                url: None,
             },
             Element {
                 text: " world!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -351,14 +398,17 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world".to_owned(),
                 style: green_on_red,
+                url: None,
             },
             Element {
                 text: "!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -372,10 +422,12 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world!".to_owned(),
                 style: green_on_red,
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -390,14 +442,17 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world".to_owned(),
                 style: ansi_11,
+                url: None,
             },
             Element {
                 text: "!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -414,10 +469,12 @@ mod test {
             Element {
                 text: "Hello".to_owned(),
                 style: green_on_red,
+                url: Some(URL.to_owned()),
             },
             Element {
                 text: " world!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -434,14 +491,17 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world".to_owned(),
                 style: green_on_red,
+                url: Some(URL.to_owned()),
             },
             Element {
                 text: "!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -458,10 +518,12 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world!".to_owned(),
                 style: green_on_red,
+                url: Some(URL.to_owned()),
             },
         ];
         verify(&input, expected);
@@ -476,14 +538,17 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
             Element {
                 text: "world".to_owned(),
                 style: ansi_11,
+                url: Some(URL.to_owned()),
             },
             Element {
                 text: "!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -498,14 +563,17 @@ mod test {
             Element {
                 text: "Hello ".to_owned(),
                 style: anstyle::Style::default(),
+                url: Some(URL.to_owned()),
             },
             Element {
                 text: "world".to_owned(),
                 style: green_on_red,
+                url: Some(URL.to_owned()),
             },
             Element {
                 text: "!".to_owned(),
                 style: anstyle::Style::default(),
+                url: Some(URL.to_owned()),
             },
         ];
         verify(&input, expected);
@@ -522,10 +590,12 @@ mod test {
             Element {
                 text: "Hello".to_owned(),
                 style: green_on_red,
+                url: None,
             },
             Element {
                 text: " world!".to_owned(),
                 style: anstyle::Style::default(),
+                url: None,
             },
         ];
         verify(&input, expected);
@@ -541,6 +611,7 @@ mod test {
                 vec![Element {
                     text:  s.clone(),
                     style: anstyle::Style::default(),
+                    url: None,
                 }]
             };
             let mut state = AnsiBytes::new();
