@@ -170,10 +170,11 @@ dependencies = [
 name = "anstyle-svg"
 version = "0.1.7"
 dependencies = [
- "anstream 0.6.18",
  "anstyle 1.0.10",
  "anstyle-lossy",
+ "anstyle-parse 0.2.6",
  "html-escape",
+ "proptest",
  "snapbox",
  "unicode-width",
 ]
