@@ -25,12 +25,13 @@ pre-release-replacements = [
 
 [dependencies]
 anstyle = { version = "1.0.0", path = "../anstyle" }
-anstream = { version = "0.6", path = "../anstream", default-features = false }
+anstyle-parse = { version = "0.2.6", path = "../anstyle-parse" }
 anstyle-lossy = { version = "1.0.0", path = "../anstyle-lossy" }
 html-escape = "0.2.13"
 unicode-width = "0.2.0"
 
 [dev-dependencies]
+proptest = "1.5.0"
 snapbox = "0.6.5"
 
 [lints]

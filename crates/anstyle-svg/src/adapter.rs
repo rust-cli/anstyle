@@ -1,21 +1,21 @@
-/// Incrementally convert to wincon calls for non-contiguous data
+/// Incrementally convert to styled string fragments for non-contiguous data
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
-pub struct WinconBytes {
+pub(crate) struct AnsiBytes {
     parser: anstyle_parse::Parser,
-    capture: WinconCapture,
+    capture: AnsiCapture,
 }
 
-impl WinconBytes {
+impl AnsiBytes {
     /// Initial state
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Default::default()
     }
 
     /// Strip the next segment of data
-    pub fn extract_next<'s>(&'s mut self, bytes: &'s [u8]) -> WinconBytesIter<'s> {
+    pub(crate) fn extract_next<'s>(&'s mut self, bytes: &'s [u8]) -> AnsiBytesIter<'s> {
         self.capture.reset();
         self.capture.printable.reserve(bytes.len());
-        WinconBytesIter {
+        AnsiBytesIter {
             bytes,
             parser: &mut self.parser,
             capture: &mut self.capture,
@@ -23,16 +23,16 @@ impl WinconBytes {
     }
 }
 
-/// See [`WinconBytes`]
+/// See [`AnsiBytes`]
 #[derive(Debug, PartialEq, Eq)]
-pub struct WinconBytesIter<'s> {
+pub(crate) struct AnsiBytesIter<'s> {
     bytes: &'s [u8],
     parser: &'s mut anstyle_parse::Parser,
-    capture: &'s mut WinconCapture,
+    capture: &'s mut AnsiCapture,
 }
 
-impl Iterator for WinconBytesIter<'_> {
-    type Item = (anstyle::Style, String);
+impl Iterator for AnsiBytesIter<'_> {
+    type Item = Element;
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
@@ -44,8 +44,8 @@ impl Iterator for WinconBytesIter<'_> {
 fn next_bytes(
     bytes: &mut &[u8],
     parser: &mut anstyle_parse::Parser,
-    capture: &mut WinconCapture,
-) -> Option<(anstyle::Style, String)> {
+    capture: &mut AnsiCapture,
+) -> Option<Element> {
     capture.reset();
     while capture.ready.is_none() {
         let byte = if let Some((byte, remainder)) = (*bytes).split_first() {
@@ -60,24 +60,29 @@ fn next_bytes(
         return None;
     }
 
-    let style = capture.ready.unwrap_or(capture.style);
-    Some((style, std::mem::take(&mut capture.printable)))
+    let (style, url) = capture.ready.clone().unwrap_or((capture.style, None));
+    Some(Element {
+        text: std::mem::take(&mut capture.printable),
+        style,
+        url,
+    })
 }
 
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
-struct WinconCapture {
+struct AnsiCapture {
     style: anstyle::Style,
     printable: String,
-    ready: Option<anstyle::Style>,
+    hyperlink: Option<String>,
+    ready: Option<(anstyle::Style, Option<String>)>,
 }
 
-impl WinconCapture {
+impl AnsiCapture {
     fn reset(&mut self) {
         self.ready = None;
     }
 }
 
-impl anstyle_parse::Perform for WinconCapture {
+impl anstyle_parse::Perform for AnsiCapture {
     /// Draw a character to the screen and update states.
     fn print(&mut self, c: char) {
         self.printable.push(c);
@@ -262,10 +267,52 @@ impl anstyle_parse::Perform for WinconCapture {
         }
 
         if style != self.style && !self.printable.is_empty() {
-            self.ready = Some(self.style);
+            self.ready = Some((self.style, self.hyperlink.clone()));
         }
         self.style = style;
     }
+
+    fn osc_dispatch(&mut self, params: &[&[u8]], _bell_terminated: bool) {
+        let mut state = OscState::Normal;
+        for value in params {
+            match (state, value) {
+                (OscState::Normal, &[b'8']) => {
+                    state = OscState::HyperlinkParams;
+                }
+                (OscState::HyperlinkParams, _) => {
+                    state = OscState::HyperlinkUri;
+                }
+                (OscState::HyperlinkUri, &[]) => {
+                    if self.hyperlink.is_some() {
+                        self.ready = Some((self.style, std::mem::take(&mut self.hyperlink)));
+                    }
+                    break;
+                }
+                (OscState::HyperlinkUri, uri) => {
+                    let hyperlink = uri.iter().map(|b| *b as char).collect::<String>();
+                    self.hyperlink = Some(hyperlink);
+
+                    // Any current text in `self.printable` needs to be
+                    // rendered, so it doesn't get confused with Hyperlink text
+                    if !self.printable.is_empty() {
+                        self.ready = Some((self.style, None));
+                    }
+                    break;
+                }
+
+                _ => {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) struct Element {
+    pub(crate) text: String,
+    pub(crate) style: anstyle::Style,
+    pub(crate) url: Option<String>,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -275,6 +322,13 @@ enum CsiState {
     Ansi256,
     Rgb,
     Underline,
+}
+
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
+enum OscState {
+    Normal,
+    HyperlinkParams,
+    HyperlinkUri,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
@@ -303,15 +357,18 @@ mod test {
     use super::*;
     use proptest::prelude::*;
 
+    const URL: &str = "https://example.com";
+
     #[track_caller]
-    fn verify(input: &str, expected: Vec<(anstyle::Style, &str)>) {
-        let expected = expected
-            .into_iter()
-            .map(|(style, value)| (style, value.to_owned()))
-            .collect::<Vec<_>>();
-        let mut state = WinconBytes::new();
+    fn verify(input: &str, expected: Vec<Element>) {
+        let expected = expected.into_iter().collect::<Vec<_>>();
+        let mut state = AnsiBytes::new();
         let actual = state.extract_next(input.as_bytes()).collect::<Vec<_>>();
         assert_eq!(expected, actual, "{input:?}");
+    }
+
+    fn hyperlink(input: &str, url: &str) -> String {
+        format!("\x1B]8;;{url}\x1B\\{input}\x1B]8;;\x1B\\")
     }
 
     #[test]
@@ -319,8 +376,16 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("{green_on_red}Hello{green_on_red:#} world!");
         let expected = vec![
-            (green_on_red, "Hello"),
-            (anstyle::Style::default(), " world!"),
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+                url: None,
+            },
+            Element {
+                text: " world!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
         ];
         verify(&input, expected);
     }
@@ -330,9 +395,21 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("Hello {green_on_red}world{green_on_red:#}!");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (green_on_red, "world"),
-            (anstyle::Style::default(), "!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+                url: None,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
         ];
         verify(&input, expected);
     }
@@ -342,8 +419,16 @@ mod test {
         let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
         let input = format!("Hello {green_on_red}world!{green_on_red:#}");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (green_on_red, "world!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world!".to_owned(),
+                style: green_on_red,
+                url: None,
+            },
         ];
         verify(&input, expected);
     }
@@ -354,9 +439,164 @@ mod test {
         // termcolor only supports "brights" via these
         let input = format!("Hello {ansi_11}world{ansi_11:#}!");
         let expected = vec![
-            (anstyle::Style::default(), "Hello "),
-            (ansi_11, "world"),
-            (anstyle::Style::default(), "!"),
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world".to_owned(),
+                style: ansi_11,
+                url: None,
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_start() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "{green_on_red}{}{green_on_red:#} world!",
+            hyperlink("Hello", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+                url: Some(URL.to_owned()),
+            },
+            Element {
+                text: " world!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_middle() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "Hello {green_on_red}{}{green_on_red:#}!",
+            hyperlink("world", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+                url: Some(URL.to_owned()),
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_end() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "Hello {green_on_red}{}{green_on_red:#}",
+            hyperlink("world!", URL)
+        );
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world!".to_owned(),
+                style: green_on_red,
+                url: Some(URL.to_owned()),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_ansi256_colors() {
+        let ansi_11 = anstyle::Ansi256Color(11).on_default();
+        // termcolor only supports "brights" via these
+        let input = format!("Hello {ansi_11}{}{ansi_11:#}!", hyperlink("world", URL));
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+            Element {
+                text: "world".to_owned(),
+                style: ansi_11,
+                url: Some(URL.to_owned()),
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn style_mid_hyperlink_text() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let styled_str = format!("Hello {green_on_red}world{green_on_red:#}!");
+        let input = hyperlink(&styled_str, URL);
+        let expected = vec![
+            Element {
+                text: "Hello ".to_owned(),
+                style: anstyle::Style::default(),
+                url: Some(URL.to_owned()),
+            },
+            Element {
+                text: "world".to_owned(),
+                style: green_on_red,
+                url: Some(URL.to_owned()),
+            },
+            Element {
+                text: "!".to_owned(),
+                style: anstyle::Style::default(),
+                url: Some(URL.to_owned()),
+            },
+        ];
+        verify(&input, expected);
+    }
+
+    #[test]
+    fn hyperlink_empty() {
+        let green_on_red = anstyle::AnsiColor::Green.on(anstyle::AnsiColor::Red);
+        let input = format!(
+            "{green_on_red}{}{green_on_red:#} world!",
+            hyperlink("Hello", "")
+        );
+        let expected = vec![
+            Element {
+                text: "Hello".to_owned(),
+                style: green_on_red,
+                url: None,
+            },
+            Element {
+                text: " world!".to_owned(),
+                style: anstyle::Style::default(),
+                url: None,
+            },
         ];
         verify(&input, expected);
     }
@@ -368,9 +608,13 @@ mod test {
             let expected = if s.is_empty() {
                 vec![]
             } else {
-                vec![(anstyle::Style::default(), s.clone())]
+                vec![Element {
+                    text:  s.clone(),
+                    style: anstyle::Style::default(),
+                    url: None,
+                }]
             };
-            let mut state = WinconBytes::new();
+            let mut state = AnsiBytes::new();
             let actual = state.extract_next(s.as_bytes()).collect::<Vec<_>>();
             assert_eq!(expected, actual);
         }
