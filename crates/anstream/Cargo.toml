@@ -1,6 +1,6 @@
 [package]
 name = "anstream"
-version = "0.6.18"
+version = "0.6.19"
 description = "A simple cross platform library for writing colored text to a terminal."
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "strip", "wincon"]

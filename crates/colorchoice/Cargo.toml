@@ -1,6 +1,6 @@
 [package]
 name = "colorchoice"
-version = "1.0.3"
+version = "1.0.4"
 description = "Global override of color control"
 categories = ["command-line-interface"]
 keywords = ["cli", "color", "no-std", "terminal", "ansi"]

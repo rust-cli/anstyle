@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.4] - 2025-06-04
+
 ## [1.0.3] - 2024-10-24
 
 ### Compatibility
@@ -24,7 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2023-04-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.4...HEAD
+[1.0.4]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.3...colorchoice-v1.0.4
 [1.0.3]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.2...colorchoice-v1.0.3
 [1.0.2]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.1...colorchoice-v1.0.2
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/colorchoice-v1.0.0...colorchoice-v1.0.1

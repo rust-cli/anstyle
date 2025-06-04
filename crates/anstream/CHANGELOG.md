@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.19] - 2025-06-04
+
 ## [0.6.18] - 2024-11-04
 
 ### Fixes
@@ -253,7 +255,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.18...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.19...HEAD
+[0.6.19]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.18...anstream-v0.6.19
 [0.6.18]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.17...anstream-v0.6.18
 [0.6.17]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.16...anstream-v0.6.17
 [0.6.16]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.15...anstream-v0.6.16

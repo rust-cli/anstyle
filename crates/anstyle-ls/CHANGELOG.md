@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.5] - 2025-06-04
+
 ## [1.0.4] - 2024-10-24
 
 ### Compatibility
@@ -38,7 +40,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.5...HEAD
+[1.0.5]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.4...anstyle-ls-v1.0.5
 [1.0.4]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.3...anstyle-ls-v1.0.4
 [1.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.2...anstyle-ls-v1.0.3
 [1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-ls-v1.0.1...anstyle-ls-v1.0.2

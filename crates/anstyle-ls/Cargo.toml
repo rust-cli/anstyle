@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-ls"
-version = "1.0.4"
+version = "1.0.5"
 description = "Parse LS_COLORS Style Descriptions"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "ls", "colorparse"]
