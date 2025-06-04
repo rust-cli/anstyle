@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Respect hyperlink ANSI escape codes and render them as `<a>` tags
+
 ## [0.1.7] - 2024-10-24
 
 ## [0.1.6] - 2024-10-10
