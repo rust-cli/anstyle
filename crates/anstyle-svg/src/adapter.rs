@@ -1,21 +1,21 @@
-/// Incrementally convert to wincon calls for non-contiguous data
+/// Incrementally convert to styled string fragments for non-contiguous data
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
-pub(crate) struct WinconBytes {
+pub(crate) struct AnsiBytes {
     parser: anstyle_parse::Parser,
-    capture: WinconCapture,
+    capture: AnsiCapture,
 }
 
-impl WinconBytes {
+impl AnsiBytes {
     /// Initial state
     pub(crate) fn new() -> Self {
         Default::default()
     }
 
     /// Strip the next segment of data
-    pub(crate) fn extract_next<'s>(&'s mut self, bytes: &'s [u8]) -> WinconBytesIter<'s> {
+    pub(crate) fn extract_next<'s>(&'s mut self, bytes: &'s [u8]) -> AnsiBytesIter<'s> {
         self.capture.reset();
         self.capture.printable.reserve(bytes.len());
-        WinconBytesIter {
+        AnsiBytesIter {
             bytes,
             parser: &mut self.parser,
             capture: &mut self.capture,
@@ -23,15 +23,15 @@ impl WinconBytes {
     }
 }
 
-/// See [`WinconBytes`]
+/// See [`AnsiBytes`]
 #[derive(Debug, PartialEq, Eq)]
-pub(crate) struct WinconBytesIter<'s> {
+pub(crate) struct AnsiBytesIter<'s> {
     bytes: &'s [u8],
     parser: &'s mut anstyle_parse::Parser,
-    capture: &'s mut WinconCapture,
+    capture: &'s mut AnsiCapture,
 }
 
-impl Iterator for WinconBytesIter<'_> {
+impl Iterator for AnsiBytesIter<'_> {
     type Item = (anstyle::Style, String);
 
     #[inline]
@@ -44,7 +44,7 @@ impl Iterator for WinconBytesIter<'_> {
 fn next_bytes(
     bytes: &mut &[u8],
     parser: &mut anstyle_parse::Parser,
-    capture: &mut WinconCapture,
+    capture: &mut AnsiCapture,
 ) -> Option<(anstyle::Style, String)> {
     capture.reset();
     while capture.ready.is_none() {
@@ -65,19 +65,19 @@ fn next_bytes(
 }
 
 #[derive(Default, Clone, Debug, PartialEq, Eq)]
-struct WinconCapture {
+struct AnsiCapture {
     style: anstyle::Style,
     printable: String,
     ready: Option<anstyle::Style>,
 }
 
-impl WinconCapture {
+impl AnsiCapture {
     fn reset(&mut self) {
         self.ready = None;
     }
 }
 
-impl anstyle_parse::Perform for WinconCapture {
+impl anstyle_parse::Perform for AnsiCapture {
     /// Draw a character to the screen and update states.
     fn print(&mut self, c: char) {
         self.printable.push(c);
@@ -309,7 +309,7 @@ mod test {
             .into_iter()
             .map(|(style, value)| (style, value.to_owned()))
             .collect::<Vec<_>>();
-        let mut state = WinconBytes::new();
+        let mut state = AnsiBytes::new();
         let actual = state.extract_next(input.as_bytes()).collect::<Vec<_>>();
         assert_eq!(expected, actual, "{input:?}");
     }
@@ -370,7 +370,7 @@ mod test {
             } else {
                 vec![(anstyle::Style::default(), s.clone())]
             };
-            let mut state = WinconBytes::new();
+            let mut state = AnsiBytes::new();
             let actual = state.extract_next(s.as_bytes()).collect::<Vec<_>>();
             assert_eq!(expected, actual);
         }

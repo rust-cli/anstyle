@@ -90,7 +90,7 @@ impl Term {
         const FG: &str = "fg";
         const BG: &str = "bg";
 
-        let mut styled = adapter::WinconBytes::new();
+        let mut styled = adapter::AnsiBytes::new();
         let mut styled = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
         let mut effects_in_use = anstyle::Effects::new();
         for (style, _) in &mut styled {
