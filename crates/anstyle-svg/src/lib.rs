@@ -1,8 +1,8 @@
-//! Convert ANSI escape codes to SVG
+//! Convert ANSI escape codes to SVG and HTML
 //!
 //! See [`Term`]
 //!
-//! # Example
+//! # SVG Example
 //!
 //! ```
 //! # use anstyle_svg::Term;
@@ -11,6 +11,14 @@
 //! ```
 //!
 //! ![demo of supported styles](https://raw.githubusercontent.com/rust-cli/anstyle/main/crates/anstyle-svg/tests/rainbow.svg "Example output")
+//!
+//! # HTML Example
+//!
+//! ```
+//! # use anstyle_svg::Term;
+//! let vte = std::fs::read_to_string("tests/rainbow.vte").unwrap();
+//! let html = Term::new().render_html(&vte);
+//! ```
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs)]
@@ -92,18 +100,8 @@ impl Term {
 
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
-        let mut effects_in_use = anstyle::Effects::new();
-        for element in &mut elements {
-            let style = &mut element.style;
-            // Pre-process INVERT to make fg/bg calculations easier
-            if style.get_effects().contains(anstyle::Effects::INVERT) {
-                *style = style
-                    .fg_color(Some(style.get_bg_color().unwrap_or(self.bg_color)))
-                    .bg_color(Some(style.get_fg_color().unwrap_or(self.fg_color)))
-                    .effects(style.get_effects().remove(anstyle::Effects::INVERT));
-            }
-            effects_in_use |= style.get_effects();
-        }
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
         let styled_lines = split_lines(&elements);
 
         let fg_color = rgb_value(self.fg_color, self.palette);
@@ -152,60 +150,7 @@ impl Term {
         writeln!(&mut buffer, r#"      padding: 0 10px;"#).unwrap();
         writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
-        if effects_in_use.contains(anstyle::Effects::BOLD) {
-            writeln!(&mut buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::ITALIC) {
-            writeln!(&mut buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .underline {{ text-decoration-line: underline; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DOUBLE_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::CURLY_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DOTTED_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DASHED_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::STRIKETHROUGH) {
-            writeln!(
-                &mut buffer,
-                r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DIMMED) {
-            writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::HIDDEN) {
-            writeln!(&mut buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
-        }
+        write_effects_in_use(&mut buffer, &elements);
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
@@ -237,7 +182,7 @@ impl Term {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, &element.style, &element.text);
+                    write_bg_span(&mut buffer, "tspan", &element.style, &element.text);
                 }
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -249,7 +194,7 @@ impl Term {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, element, &element.text);
+                write_fg_span(&mut buffer, "tspan", element, &element.text);
             }
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
@@ -263,12 +208,183 @@ impl Term {
         writeln!(&mut buffer, r#"</svg>"#).unwrap();
         buffer
     }
+
+    /// Render the HTML with the terminal defined
+    ///
+    /// **Note:** Lines are not wrapped.  This is intentional as this attempts to convey the exact
+    /// output with escape codes translated to HTML elements.
+    pub fn render_html(&self, ansi: &str) -> String {
+        use std::fmt::Write as _;
+
+        const FG: &str = "fg";
+        const BG: &str = "bg";
+
+        let mut styled = adapter::AnsiBytes::new();
+        let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
+        let styled_lines = split_lines(&elements);
+
+        let fg_color = rgb_value(self.fg_color, self.palette);
+        let bg_color = rgb_value(self.bg_color, self.palette);
+        let font_family = self.font_family;
+
+        let line_height = 18;
+
+        let mut buffer = String::new();
+        writeln!(&mut buffer, r#"<!DOCTYPE html>"#).unwrap();
+        writeln!(&mut buffer, r#"<html>"#).unwrap();
+        writeln!(&mut buffer, r#"<head>"#).unwrap();
+        writeln!(&mut buffer, r#"  <meta charset="UTF-8">"#).unwrap();
+        writeln!(
+            &mut buffer,
+            r#"  <meta name="viewport" content="width=device-width, initial-scale=1.0">"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"  <meta http-equiv="X-UA-Compatible" content="ie=edge">"#
+        )
+        .unwrap();
+        writeln!(&mut buffer, r#"  <style>"#).unwrap();
+        writeln!(&mut buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
+        writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
+        for (name, rgb) in color_styles(&elements, self.palette) {
+            if name.starts_with(FG_PREFIX) {
+                writeln!(&mut buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
+            }
+            if name.starts_with(BG_PREFIX) {
+                writeln!(
+                    &mut buffer,
+                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
+                )
+                .unwrap();
+            }
+            if name.starts_with(UNDERLINE_PREFIX) {
+                writeln!(
+                    &mut buffer,
+                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
+                )
+                .unwrap();
+            }
+        }
+        writeln!(&mut buffer, r#"    .container {{"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        write_effects_in_use(&mut buffer, &elements);
+        writeln!(&mut buffer, r#"    span {{"#).unwrap();
+        writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
+        writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        writeln!(&mut buffer, r#"  </style>"#).unwrap();
+        writeln!(&mut buffer, r#"</head>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
+        if !self.background {
+            writeln!(&mut buffer, r#"<body>"#).unwrap();
+        } else {
+            writeln!(&mut buffer, r#"<body class="{BG}">"#).unwrap();
+        }
+        writeln!(&mut buffer).unwrap();
+
+        writeln!(&mut buffer, r#"  <div class="container {FG}">"#).unwrap();
+        for line in &styled_lines {
+            if line.iter().any(|e| e.style.get_bg_color().is_some()) {
+                for element in line {
+                    if element.text.is_empty() {
+                        continue;
+                    }
+                    write_bg_span(&mut buffer, "span", &element.style, &element.text);
+                }
+                writeln!(&mut buffer, r#"<br />"#).unwrap();
+            }
+
+            for element in line {
+                if element.text.is_empty() {
+                    continue;
+                }
+                write_fg_span(&mut buffer, "span", element, &element.text);
+            }
+            writeln!(&mut buffer, r#"<br />"#).unwrap();
+        }
+        writeln!(&mut buffer, r#"  </div>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
+        writeln!(&mut buffer, r#"</body>"#).unwrap();
+        writeln!(&mut buffer, r#"</html>"#).unwrap();
+        buffer
+    }
 }
 
 const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White);
 const BG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::Black);
 
-fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str) {
+fn write_effects_in_use(buffer: &mut String, elements: &[adapter::Element]) {
+    use std::fmt::Write as _;
+
+    let mut effects_in_use = anstyle::Effects::new();
+    for element in elements {
+        effects_in_use |= element.style.get_effects();
+    }
+
+    if effects_in_use.contains(anstyle::Effects::BOLD) {
+        writeln!(buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::ITALIC) {
+        writeln!(buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::UNDERLINE) {
+        writeln!(
+            buffer,
+            r#"    .underline {{ text-decoration-line: underline; }}"#
+        )
+        .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DOUBLE_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::CURLY_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DOTTED_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DASHED_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::STRIKETHROUGH) {
+        writeln!(
+            buffer,
+            r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
+        )
+        .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DIMMED) {
+        writeln!(buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::HIDDEN) {
+        writeln!(buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
+    }
+}
+
+fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fragment: &str) {
     use std::fmt::Write as _;
     let style = element.style;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
@@ -329,7 +445,7 @@ fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str
 
     let mut need_closing_a = false;
 
-    write!(buffer, r#"<tspan"#).unwrap();
+    write!(buffer, r#"<{span}"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
@@ -343,10 +459,10 @@ fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str
     if need_closing_a {
         write!(buffer, r#"</a>"#).unwrap();
     }
-    write!(buffer, r#"</tspan>"#).unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
-fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+fn write_bg_span(buffer: &mut String, span: &str, style: &anstyle::Style, fragment: &str) {
     use std::fmt::Write as _;
     use unicode_width::UnicodeWidthStr;
 
@@ -361,14 +477,14 @@ fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     if let Some(class) = bg_color.as_deref() {
         classes.push(class);
     }
-    write!(buffer, r#"<tspan"#).unwrap();
+    write!(buffer, r#"<{span}"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
     write!(buffer, r#">"#).unwrap();
     write!(buffer, "{fragment}").unwrap();
-    write!(buffer, r#"</tspan>"#).unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
 impl Default for Term {
@@ -447,6 +563,23 @@ fn color_styles(
     }
 
     colors.into_iter()
+}
+
+fn preprocess_invert_style(
+    elements: &mut [adapter::Element],
+    bg_color: anstyle::Color,
+    fg_color: anstyle::Color,
+) {
+    for element in elements {
+        let style = &mut element.style;
+        // Pre-process INVERT to make fg/bg calculations easier
+        if style.get_effects().contains(anstyle::Effects::INVERT) {
+            *style = style
+                .fg_color(Some(style.get_bg_color().unwrap_or(bg_color)))
+                .bg_color(Some(style.get_fg_color().unwrap_or(fg_color)))
+                .effects(style.get_effects().remove(anstyle::Effects::INVERT));
+        }
+    }
 }
 
 fn split_lines(styled: &[adapter::Element]) -> Vec<Vec<adapter::Element>> {
