@@ -1,8 +1,8 @@
-//! Convert ANSI escape codes to SVG
+//! Convert ANSI escape codes to SVG and HTML
 //!
 //! See [`Term`]
 //!
-//! # Example
+//! # SVG Example
 //!
 //! ```
 //! # use anstyle_svg::Term;
@@ -11,6 +11,14 @@
 //! ```
 //!
 //! ![demo of supported styles](https://raw.githubusercontent.com/rust-cli/anstyle/main/crates/anstyle-svg/tests/rainbow.svg "Example output")
+//!
+//! # HTML Example
+//!
+//! ```
+//! # use anstyle_svg::Term;
+//! let vte = std::fs::read_to_string("tests/rainbow.vte").unwrap();
+//! let html = Term::new().render_html(&vte);
+//! ```
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![warn(missing_docs)]
@@ -198,6 +206,113 @@ impl Term {
         writeln!(&mut buffer).unwrap();
 
         writeln!(&mut buffer, r#"</svg>"#).unwrap();
+        buffer
+    }
+
+    /// Render the HTML with the terminal defined
+    ///
+    /// **Note:** Lines are not wrapped.  This is intentional as this attempts to convey the exact
+    /// output with escape codes translated to HTML elements.
+    pub fn render_html(&self, ansi: &str) -> String {
+        use std::fmt::Write as _;
+
+        const FG: &str = "fg";
+        const BG: &str = "bg";
+
+        let mut styled = adapter::AnsiBytes::new();
+        let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
+        let styled_lines = split_lines(&elements);
+
+        let fg_color = rgb_value(self.fg_color, self.palette);
+        let bg_color = rgb_value(self.bg_color, self.palette);
+        let font_family = self.font_family;
+
+        let line_height = 18;
+
+        let mut buffer = String::new();
+        writeln!(&mut buffer, r#"<!DOCTYPE html>"#).unwrap();
+        writeln!(&mut buffer, r#"<html>"#).unwrap();
+        writeln!(&mut buffer, r#"<head>"#).unwrap();
+        writeln!(&mut buffer, r#"  <meta charset="UTF-8">"#).unwrap();
+        writeln!(
+            &mut buffer,
+            r#"  <meta name="viewport" content="width=device-width, initial-scale=1.0">"#
+        )
+        .unwrap();
+        writeln!(
+            &mut buffer,
+            r#"  <meta http-equiv="X-UA-Compatible" content="ie=edge">"#
+        )
+        .unwrap();
+        writeln!(&mut buffer, r#"  <style>"#).unwrap();
+        writeln!(&mut buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
+        writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
+        for (name, rgb) in color_styles(&elements, self.palette) {
+            if name.starts_with(FG_PREFIX) {
+                writeln!(&mut buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
+            }
+            if name.starts_with(BG_PREFIX) {
+                writeln!(
+                    &mut buffer,
+                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
+                )
+                .unwrap();
+            }
+            if name.starts_with(UNDERLINE_PREFIX) {
+                writeln!(
+                    &mut buffer,
+                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
+                )
+                .unwrap();
+            }
+        }
+        writeln!(&mut buffer, r#"    .container {{"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        write_effects_in_use(&mut buffer, &elements);
+        writeln!(&mut buffer, r#"    span {{"#).unwrap();
+        writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
+        writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        writeln!(&mut buffer, r#"  </style>"#).unwrap();
+        writeln!(&mut buffer, r#"</head>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
+        if !self.background {
+            writeln!(&mut buffer, r#"<body>"#).unwrap();
+        } else {
+            writeln!(&mut buffer, r#"<body class="{BG}">"#).unwrap();
+        }
+        writeln!(&mut buffer).unwrap();
+
+        writeln!(&mut buffer, r#"  <div class="container {FG}">"#).unwrap();
+        for line in &styled_lines {
+            if line.iter().any(|e| e.style.get_bg_color().is_some()) {
+                for element in line {
+                    if element.text.is_empty() {
+                        continue;
+                    }
+                    write_bg_span(&mut buffer, "span", &element.style, &element.text);
+                }
+                writeln!(&mut buffer, r#"<br />"#).unwrap();
+            }
+
+            for element in line {
+                if element.text.is_empty() {
+                    continue;
+                }
+                write_fg_span(&mut buffer, "span", element, &element.text);
+            }
+            writeln!(&mut buffer, r#"<br />"#).unwrap();
+        }
+        writeln!(&mut buffer, r#"  </div>"#).unwrap();
+        writeln!(&mut buffer).unwrap();
+
+        writeln!(&mut buffer, r#"</body>"#).unwrap();
+        writeln!(&mut buffer, r#"</html>"#).unwrap();
         buffer
     }
 }
