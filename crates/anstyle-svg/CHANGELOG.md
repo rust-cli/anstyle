@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.9] - 2025-06-16
+
 ### Features
 
 - Add `Term::render_html`
@@ -61,7 +63,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2024-02-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.8...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.9...HEAD
+[0.1.9]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.8...anstyle-svg-v0.1.9
 [0.1.8]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.7...anstyle-svg-v0.1.8
 [0.1.7]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.6...anstyle-svg-v0.1.7
 [0.1.6]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.5...anstyle-svg-v0.1.6
