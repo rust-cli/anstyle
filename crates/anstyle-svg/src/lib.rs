@@ -92,18 +92,8 @@ impl Term {
 
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
-        let mut effects_in_use = anstyle::Effects::new();
-        for element in &mut elements {
-            let style = &mut element.style;
-            // Pre-process INVERT to make fg/bg calculations easier
-            if style.get_effects().contains(anstyle::Effects::INVERT) {
-                *style = style
-                    .fg_color(Some(style.get_bg_color().unwrap_or(self.bg_color)))
-                    .bg_color(Some(style.get_fg_color().unwrap_or(self.fg_color)))
-                    .effects(style.get_effects().remove(anstyle::Effects::INVERT));
-            }
-            effects_in_use |= style.get_effects();
-        }
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
         let styled_lines = split_lines(&elements);
 
         let fg_color = rgb_value(self.fg_color, self.palette);
@@ -152,60 +142,7 @@ impl Term {
         writeln!(&mut buffer, r#"      padding: 0 10px;"#).unwrap();
         writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
-        if effects_in_use.contains(anstyle::Effects::BOLD) {
-            writeln!(&mut buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::ITALIC) {
-            writeln!(&mut buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .underline {{ text-decoration-line: underline; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DOUBLE_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::CURLY_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DOTTED_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DASHED_UNDERLINE) {
-            writeln!(
-                &mut buffer,
-                r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::STRIKETHROUGH) {
-            writeln!(
-                &mut buffer,
-                r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
-            )
-            .unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::DIMMED) {
-            writeln!(&mut buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
-        }
-        if effects_in_use.contains(anstyle::Effects::HIDDEN) {
-            writeln!(&mut buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
-        }
+        write_effects_in_use(&mut buffer, &elements);
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
@@ -237,7 +174,7 @@ impl Term {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, &element.style, &element.text);
+                    write_bg_span(&mut buffer, "tspan", &element.style, &element.text);
                 }
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -249,7 +186,7 @@ impl Term {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, element, &element.text);
+                write_fg_span(&mut buffer, "tspan", element, &element.text);
             }
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
@@ -268,7 +205,71 @@ impl Term {
 const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White);
 const BG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::Black);
 
-fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str) {
+fn write_effects_in_use(buffer: &mut String, elements: &[adapter::Element]) {
+    use std::fmt::Write as _;
+
+    let mut effects_in_use = anstyle::Effects::new();
+    for element in elements {
+        effects_in_use |= element.style.get_effects();
+    }
+
+    if effects_in_use.contains(anstyle::Effects::BOLD) {
+        writeln!(buffer, r#"    .bold {{ font-weight: bold; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::ITALIC) {
+        writeln!(buffer, r#"    .italic {{ font-style: italic; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::UNDERLINE) {
+        writeln!(
+            buffer,
+            r#"    .underline {{ text-decoration-line: underline; }}"#
+        )
+        .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DOUBLE_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .double-underline {{ text-decoration-line: underline; text-decoration-style: double; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::CURLY_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .curly-underline {{ text-decoration-line: underline; text-decoration-style: wavy; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DOTTED_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .dotted-underline {{ text-decoration-line: underline; text-decoration-style: dotted; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DASHED_UNDERLINE) {
+        writeln!(
+                buffer,
+                r#"    .dashed-underline {{ text-decoration-line: underline; text-decoration-style: dashed; }}"#
+            )
+            .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::STRIKETHROUGH) {
+        writeln!(
+            buffer,
+            r#"    .strikethrough {{ text-decoration-line: line-through; }}"#
+        )
+        .unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::DIMMED) {
+        writeln!(buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
+    }
+    if effects_in_use.contains(anstyle::Effects::HIDDEN) {
+        writeln!(buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
+    }
+}
+
+fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fragment: &str) {
     use std::fmt::Write as _;
     let style = element.style;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
@@ -329,7 +330,7 @@ fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str
 
     let mut need_closing_a = false;
 
-    write!(buffer, r#"<tspan"#).unwrap();
+    write!(buffer, r#"<{span}"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
@@ -343,10 +344,10 @@ fn write_fg_span(buffer: &mut String, element: &adapter::Element, fragment: &str
     if need_closing_a {
         write!(buffer, r#"</a>"#).unwrap();
     }
-    write!(buffer, r#"</tspan>"#).unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
-fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
+fn write_bg_span(buffer: &mut String, span: &str, style: &anstyle::Style, fragment: &str) {
     use std::fmt::Write as _;
     use unicode_width::UnicodeWidthStr;
 
@@ -361,14 +362,14 @@ fn write_bg_span(buffer: &mut String, style: &anstyle::Style, fragment: &str) {
     if let Some(class) = bg_color.as_deref() {
         classes.push(class);
     }
-    write!(buffer, r#"<tspan"#).unwrap();
+    write!(buffer, r#"<{span}"#).unwrap();
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
     write!(buffer, r#">"#).unwrap();
     write!(buffer, "{fragment}").unwrap();
-    write!(buffer, r#"</tspan>"#).unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
 impl Default for Term {
@@ -447,6 +448,23 @@ fn color_styles(
     }
 
     colors.into_iter()
+}
+
+fn preprocess_invert_style(
+    elements: &mut [adapter::Element],
+    bg_color: anstyle::Color,
+    fg_color: anstyle::Color,
+) {
+    for element in elements {
+        let style = &mut element.style;
+        // Pre-process INVERT to make fg/bg calculations easier
+        if style.get_effects().contains(anstyle::Effects::INVERT) {
+            *style = style
+                .fg_color(Some(style.get_bg_color().unwrap_or(bg_color)))
+                .bg_color(Some(style.get_fg_color().unwrap_or(fg_color)))
+                .effects(style.get_effects().remove(anstyle::Effects::INVERT));
+        }
+    }
 }
 
 fn split_lines(styled: &[adapter::Element]) -> Vec<Vec<adapter::Element>> {
