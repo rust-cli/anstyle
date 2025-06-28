@@ -4,3 +4,6 @@ check-file = false
 
 [type.svg]
 check-file = false
+
+[type.html]
+check-file = false
