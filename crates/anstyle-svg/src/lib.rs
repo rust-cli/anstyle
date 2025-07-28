@@ -507,10 +507,7 @@ fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element
     let mut need_closing_a = false;
 
     write!(buffer, r#"<{span}"#).unwrap();
-    if !classes.is_empty() {
-        let classes = classes.join(" ");
-        write!(buffer, r#" class="{classes}""#).unwrap();
-    }
+    write_classes(buffer, classes);
     write!(buffer, r#">"#).unwrap();
     if let Some(hyperlink) = &element.url {
         write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
@@ -539,13 +536,19 @@ fn write_bg_span(buffer: &mut String, span: SpanKind, style: &anstyle::Style, fr
         classes.push(class);
     }
     write!(buffer, r#"<{span}"#).unwrap();
+    write_classes(buffer, classes);
+    write!(buffer, r#">"#).unwrap();
+    write!(buffer, "{fragment}").unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
+}
+
+fn write_classes(buffer: &mut String, classes: Vec<&str>) {
+    use std::fmt::Write as _;
+
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
-    write!(buffer, r#">"#).unwrap();
-    write!(buffer, "{fragment}").unwrap();
-    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
 impl Default for Term {
