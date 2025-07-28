@@ -186,7 +186,7 @@ impl Term {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, "tspan", &element.style, &element.text);
+                    write_bg_span(&mut buffer, SpanKind::Tspan, &element.style, &element.text);
                 }
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -198,7 +198,7 @@ impl Term {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, "tspan", element, &element.text);
+                write_fg_span(&mut buffer, SpanKind::Tspan, element, &element.text);
             }
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
@@ -312,7 +312,7 @@ impl Term {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(buffer, "span", &element.style, &element.text);
+                    write_bg_span(buffer, SpanKind::Span, &element.style, &element.text);
                 }
                 buffer.write_str(br).unwrap();
             }
@@ -321,7 +321,7 @@ impl Term {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(buffer, "span", element, &element.text);
+                write_fg_span(buffer, SpanKind::Span, element, &element.text);
             }
             buffer.write_str(br).unwrap();
         }
@@ -430,7 +430,22 @@ fn write_effects_in_use(buffer: &mut String, elements: &[adapter::Element]) {
     }
 }
 
-fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fragment: &str) {
+#[derive(PartialEq)]
+enum SpanKind {
+    Tspan,
+    Span,
+}
+
+impl std::fmt::Display for SpanKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Tspan => f.write_str("tspan"),
+            Self::Span => f.write_str("span"),
+        }
+    }
+}
+
+fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element, fragment: &str) {
     use std::fmt::Write as _;
     let style = element.style;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
@@ -508,7 +523,7 @@ fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fr
     write!(buffer, r#"</{span}>"#).unwrap();
 }
 
-fn write_bg_span(buffer: &mut String, span: &str, style: &anstyle::Style, fragment: &str) {
+fn write_bg_span(buffer: &mut String, span: SpanKind, style: &anstyle::Style, fragment: &str) {
     use std::fmt::Write as _;
     use unicode_width::UnicodeWidthStr;
 
