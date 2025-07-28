@@ -246,27 +246,7 @@ impl Term {
         }
         writeln!(&mut buffer).unwrap();
 
-        writeln!(&mut buffer, r#"  <div class="container {FG}">"#).unwrap();
-        for line in &styled_lines {
-            if line.iter().any(|e| e.style.get_bg_color().is_some()) {
-                for element in line {
-                    if element.text.is_empty() {
-                        continue;
-                    }
-                    write_bg_span(&mut buffer, "span", &element.style, &element.text);
-                }
-                writeln!(&mut buffer, r#"<br />"#).unwrap();
-            }
-
-            for element in line {
-                if element.text.is_empty() {
-                    continue;
-                }
-                write_fg_span(&mut buffer, "span", element, &element.text);
-            }
-            writeln!(&mut buffer, r#"<br />"#).unwrap();
-        }
-        writeln!(&mut buffer, r#"  </div>"#).unwrap();
+        self.render_content(&mut buffer, styled_lines);
         writeln!(&mut buffer).unwrap();
 
         writeln!(&mut buffer, r#"</body>"#).unwrap();
@@ -311,6 +291,32 @@ impl Term {
         writeln!(buffer, r#"      white-space: pre;"#).unwrap();
         writeln!(buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(buffer, r#"    }}"#).unwrap();
+    }
+
+    fn render_content(&self, buffer: &mut String, styled_lines: Vec<Vec<adapter::Element>>) {
+        use std::fmt::Write as _;
+
+        writeln!(buffer, r#"  <div class="container {FG}">"#).unwrap();
+        for line in &styled_lines {
+            if line.iter().any(|e| e.style.get_bg_color().is_some()) {
+                for element in line {
+                    if element.text.is_empty() {
+                        continue;
+                    }
+                    write_bg_span(buffer, "span", &element.style, &element.text);
+                }
+                writeln!(buffer, r#"<br />"#).unwrap();
+            }
+
+            for element in line {
+                if element.text.is_empty() {
+                    continue;
+                }
+                write_fg_span(buffer, "span", element, &element.text);
+            }
+            writeln!(buffer, r#"<br />"#).unwrap();
+        }
+        writeln!(buffer, r#"  </div>"#).unwrap();
     }
 }
 
