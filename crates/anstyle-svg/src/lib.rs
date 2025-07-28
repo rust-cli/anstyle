@@ -95,9 +95,6 @@ impl Term {
         use std::fmt::Write as _;
         use unicode_width::UnicodeWidthStr as _;
 
-        const FG: &str = "fg";
-        const BG: &str = "bg";
-
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
         preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
@@ -108,8 +105,7 @@ impl Term {
         let bg_color = rgb_value(self.bg_color, self.palette);
         let font_family = self.font_family;
 
-        let line_height = 18;
-        let height = styled_lines.len() * line_height + self.padding_px * 2;
+        let height = styled_lines.len() * LINE_HEIGHT + self.padding_px * 2;
         let max_width = styled_lines
             .iter()
             .map(|l| l.iter().map(|e| e.text.width()).sum())
@@ -148,13 +144,13 @@ impl Term {
         }
         writeln!(&mut buffer, r#"    .container {{"#).unwrap();
         writeln!(&mut buffer, r#"      padding: 0 10px;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         write_effects_in_use(&mut buffer, &elements);
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -169,7 +165,7 @@ impl Term {
         }
 
         let text_x = self.padding_px;
-        let mut text_y = self.padding_px + line_height;
+        let mut text_y = self.padding_px + LINE_HEIGHT;
         writeln!(
             &mut buffer,
             r#"  <text xml:space="preserve" class="container {FG}">"#
@@ -200,7 +196,7 @@ impl Term {
             writeln!(&mut buffer).unwrap();
             writeln!(&mut buffer, r#"</tspan>"#).unwrap();
 
-            text_y += line_height;
+            text_y += LINE_HEIGHT;
         }
         writeln!(&mut buffer, r#"  </text>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -216,20 +212,11 @@ impl Term {
     pub fn render_html(&self, ansi: &str) -> String {
         use std::fmt::Write as _;
 
-        const FG: &str = "fg";
-        const BG: &str = "bg";
-
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
         preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
 
         let styled_lines = split_lines(&elements);
-
-        let fg_color = rgb_value(self.fg_color, self.palette);
-        let bg_color = rgb_value(self.bg_color, self.palette);
-        let font_family = self.font_family;
-
-        let line_height = 18;
 
         let mut buffer = String::new();
         writeln!(&mut buffer, r#"<!DOCTYPE html>"#).unwrap();
@@ -247,36 +234,7 @@ impl Term {
         )
         .unwrap();
         writeln!(&mut buffer, r#"  <style>"#).unwrap();
-        writeln!(&mut buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
-        for (name, rgb) in color_styles(&elements, self.palette) {
-            if name.starts_with(FG_PREFIX) {
-                writeln!(&mut buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
-            }
-            if name.starts_with(BG_PREFIX) {
-                writeln!(
-                    &mut buffer,
-                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
-                )
-                .unwrap();
-            }
-            if name.starts_with(UNDERLINE_PREFIX) {
-                writeln!(
-                    &mut buffer,
-                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
-                )
-                .unwrap();
-            }
-        }
-        writeln!(&mut buffer, r#"    .container {{"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
-        writeln!(&mut buffer, r#"    }}"#).unwrap();
-        write_effects_in_use(&mut buffer, &elements);
-        writeln!(&mut buffer, r#"    span {{"#).unwrap();
-        writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
-        writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
-        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        self.render_classes(&mut buffer, &elements);
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
         writeln!(&mut buffer, r#"</head>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -288,32 +246,111 @@ impl Term {
         }
         writeln!(&mut buffer).unwrap();
 
-        writeln!(&mut buffer, r#"  <div class="container {FG}">"#).unwrap();
+        self.render_content(&mut buffer, styled_lines);
+        writeln!(&mut buffer).unwrap();
+
+        writeln!(&mut buffer, r#"</body>"#).unwrap();
+        writeln!(&mut buffer, r#"</html>"#).unwrap();
+        buffer
+    }
+
+    fn render_classes(&self, buffer: &mut String, elements: &[adapter::Element]) {
+        use std::fmt::Write as _;
+
+        let fg_color = rgb_value(self.fg_color, self.palette);
+        let bg_color = rgb_value(self.bg_color, self.palette);
+        let font_family = self.font_family;
+
+        writeln!(buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
+        writeln!(buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
+        for (name, rgb) in color_styles(elements, self.palette) {
+            if name.starts_with(FG_PREFIX) {
+                writeln!(buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
+            }
+            if name.starts_with(BG_PREFIX) {
+                writeln!(
+                    buffer,
+                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
+                )
+                .unwrap();
+            }
+            if name.starts_with(UNDERLINE_PREFIX) {
+                writeln!(
+                    buffer,
+                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
+                )
+                .unwrap();
+            }
+        }
+        writeln!(buffer, r#"    .container {{"#).unwrap();
+        writeln!(buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
+        writeln!(buffer, r#"    }}"#).unwrap();
+        write_effects_in_use(buffer, elements);
+        writeln!(buffer, r#"    span {{"#).unwrap();
+        writeln!(buffer, r#"      font: 14px {font_family};"#).unwrap();
+        writeln!(buffer, r#"      white-space: pre;"#).unwrap();
+        writeln!(buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
+        writeln!(buffer, r#"    }}"#).unwrap();
+    }
+
+    fn render_content(&self, buffer: &mut String, styled_lines: Vec<Vec<adapter::Element>>) {
+        use std::fmt::Write as _;
+
+        writeln!(buffer, r#"  <div class="container {FG}">"#).unwrap();
         for line in &styled_lines {
             if line.iter().any(|e| e.style.get_bg_color().is_some()) {
                 for element in line {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, "span", &element.style, &element.text);
+                    write_bg_span(buffer, "span", &element.style, &element.text);
                 }
-                writeln!(&mut buffer, r#"<br />"#).unwrap();
+                writeln!(buffer, r#"<br />"#).unwrap();
             }
 
             for element in line {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, "span", element, &element.text);
+                write_fg_span(buffer, "span", element, &element.text);
             }
-            writeln!(&mut buffer, r#"<br />"#).unwrap();
+            writeln!(buffer, r#"<br />"#).unwrap();
         }
-        writeln!(&mut buffer, r#"  </div>"#).unwrap();
-        writeln!(&mut buffer).unwrap();
+        writeln!(buffer, r#"  </div>"#).unwrap();
+    }
 
-        writeln!(&mut buffer, r#"</body>"#).unwrap();
-        writeln!(&mut buffer, r#"</html>"#).unwrap();
-        buffer
+    /// Returns the various parts needed to create an HTML page.
+    pub fn render_html_fragments(&self, ansi: &str) -> HtmlFragments {
+        let mut styled = adapter::AnsiBytes::new();
+        let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
+        let styled_lines = split_lines(&elements);
+
+        let mut style = String::new();
+        let mut body = String::new();
+
+        self.render_classes(&mut style, &elements);
+        self.render_content(&mut body, styled_lines);
+        HtmlFragments { style, body }
+    }
+}
+
+/// Contains the different parts of a HTML rendered page.
+pub struct HtmlFragments {
+    style: String,
+    body: String,
+}
+
+impl HtmlFragments {
+    /// Content that can be used directly in a `<style>` tag.
+    pub fn style(&self) -> &str {
+        &self.style
+    }
+
+    /// Content that can be put in the HTML body or any tag inside the `<body>`.
+    pub fn body(&self) -> &str {
+        &self.body
     }
 }
 
@@ -518,9 +555,12 @@ fn rgb_value(color: anstyle::Color, palette: Palette) -> String {
     format!("#{r:02X}{g:02X}{b:02X}")
 }
 
+const FG: &str = "fg";
+const BG: &str = "bg";
 const FG_PREFIX: &str = "fg";
 const BG_PREFIX: &str = "bg";
 const UNDERLINE_PREFIX: &str = "underline";
+const LINE_HEIGHT: usize = 18;
 
 fn color_name(prefix: &str, color: anstyle::Color) -> String {
     match color {
