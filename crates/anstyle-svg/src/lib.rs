@@ -218,10 +218,6 @@ impl Term {
 
         let styled_lines = split_lines(&elements);
 
-        let fg_color = rgb_value(self.fg_color, self.palette);
-        let bg_color = rgb_value(self.bg_color, self.palette);
-        let font_family = self.font_family;
-
         let mut buffer = String::new();
         writeln!(&mut buffer, r#"<!DOCTYPE html>"#).unwrap();
         writeln!(&mut buffer, r#"<html>"#).unwrap();
@@ -238,36 +234,7 @@ impl Term {
         )
         .unwrap();
         writeln!(&mut buffer, r#"  <style>"#).unwrap();
-        writeln!(&mut buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
-        for (name, rgb) in color_styles(&elements, self.palette) {
-            if name.starts_with(FG_PREFIX) {
-                writeln!(&mut buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
-            }
-            if name.starts_with(BG_PREFIX) {
-                writeln!(
-                    &mut buffer,
-                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
-                )
-                .unwrap();
-            }
-            if name.starts_with(UNDERLINE_PREFIX) {
-                writeln!(
-                    &mut buffer,
-                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
-                )
-                .unwrap();
-            }
-        }
-        writeln!(&mut buffer, r#"    .container {{"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
-        writeln!(&mut buffer, r#"    }}"#).unwrap();
-        write_effects_in_use(&mut buffer, &elements);
-        writeln!(&mut buffer, r#"    span {{"#).unwrap();
-        writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
-        writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
-        writeln!(&mut buffer, r#"    }}"#).unwrap();
+        self.render_classes(&mut buffer, &elements);
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
         writeln!(&mut buffer, r#"</head>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -305,6 +272,45 @@ impl Term {
         writeln!(&mut buffer, r#"</body>"#).unwrap();
         writeln!(&mut buffer, r#"</html>"#).unwrap();
         buffer
+    }
+
+    fn render_classes(&self, buffer: &mut String, elements: &[adapter::Element]) {
+        use std::fmt::Write as _;
+
+        let fg_color = rgb_value(self.fg_color, self.palette);
+        let bg_color = rgb_value(self.bg_color, self.palette);
+        let font_family = self.font_family;
+
+        writeln!(buffer, r#"    .{FG} {{ color: {fg_color} }}"#).unwrap();
+        writeln!(buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
+        for (name, rgb) in color_styles(elements, self.palette) {
+            if name.starts_with(FG_PREFIX) {
+                writeln!(buffer, r#"    .{name} {{ color: {rgb} }}"#).unwrap();
+            }
+            if name.starts_with(BG_PREFIX) {
+                writeln!(
+                    buffer,
+                    r#"    .{name} {{ background: {rgb}; user-select: none; }}"#
+                )
+                .unwrap();
+            }
+            if name.starts_with(UNDERLINE_PREFIX) {
+                writeln!(
+                    buffer,
+                    r#"    .{name} {{ text-decoration-line: underline; text-decoration-color: {rgb} }}"#
+                )
+                .unwrap();
+            }
+        }
+        writeln!(buffer, r#"    .container {{"#).unwrap();
+        writeln!(buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
+        writeln!(buffer, r#"    }}"#).unwrap();
+        write_effects_in_use(buffer, elements);
+        writeln!(buffer, r#"    span {{"#).unwrap();
+        writeln!(buffer, r#"      font: 14px {font_family};"#).unwrap();
+        writeln!(buffer, r#"      white-space: pre;"#).unwrap();
+        writeln!(buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
+        writeln!(buffer, r#"    }}"#).unwrap();
     }
 }
 
