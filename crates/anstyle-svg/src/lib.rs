@@ -95,9 +95,6 @@ impl Term {
         use std::fmt::Write as _;
         use unicode_width::UnicodeWidthStr as _;
 
-        const FG: &str = "fg";
-        const BG: &str = "bg";
-
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
         preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
@@ -214,9 +211,6 @@ impl Term {
     /// output with escape codes translated to HTML elements.
     pub fn render_html(&self, ansi: &str) -> String {
         use std::fmt::Write as _;
-
-        const FG: &str = "fg";
-        const BG: &str = "bg";
 
         let mut styled = adapter::AnsiBytes::new();
         let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
@@ -515,6 +509,8 @@ fn rgb_value(color: anstyle::Color, palette: Palette) -> String {
     format!("#{r:02X}{g:02X}{b:02X}")
 }
 
+const FG: &str = "fg";
+const BG: &str = "bg";
 const FG_PREFIX: &str = "fg";
 const BG_PREFIX: &str = "bg";
 const UNDERLINE_PREFIX: &str = "underline";
