@@ -318,6 +318,40 @@ impl Term {
         }
         writeln!(buffer, r#"  </div>"#).unwrap();
     }
+
+    /// Returns the various parts needed to create an HTML page.
+    pub fn render_html_fragments(&self, ansi: &str) -> HtmlFragments {
+        let mut styled = adapter::AnsiBytes::new();
+        let mut elements = styled.extract_next(ansi.as_bytes()).collect::<Vec<_>>();
+        preprocess_invert_style(&mut elements, self.bg_color, self.fg_color);
+
+        let styled_lines = split_lines(&elements);
+
+        let mut style = String::new();
+        let mut body = String::new();
+
+        self.render_classes(&mut style, &elements);
+        self.render_content(&mut body, styled_lines);
+        HtmlFragments { style, body }
+    }
+}
+
+/// Contains the different parts of a HTML rendered page.
+pub struct HtmlFragments {
+    style: String,
+    body: String,
+}
+
+impl HtmlFragments {
+    /// Content that can be used directly in a `<style>` tag.
+    pub fn style(&self) -> &str {
+        &self.style
+    }
+
+    /// Content that can be put in the HTML body or any tag inside the `<body>`.
+    pub fn body(&self) -> &str {
+        &self.body
+    }
 }
 
 const FG_COLOR: anstyle::Color = anstyle::Color::Ansi(anstyle::AnsiColor::White);
