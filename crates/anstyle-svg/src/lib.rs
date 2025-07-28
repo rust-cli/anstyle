@@ -41,6 +41,7 @@ pub struct Term {
     font_family: &'static str,
     min_width_px: usize,
     padding_px: usize,
+    use_html5: bool,
 }
 
 impl Term {
@@ -54,6 +55,7 @@ impl Term {
             font_family: "SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
             min_width_px: 720,
             padding_px: 10,
+            use_html5: true,
         }
     }
 
@@ -84,6 +86,12 @@ impl Term {
     /// Minimum width for the text
     pub const fn min_width_px(mut self, px: usize) -> Self {
         self.min_width_px = px;
+        self
+    }
+
+    /// Whether or not to generate HTML5 compatible tags. Enabled by default.
+    pub const fn use_html5(mut self, use_html5: bool) -> Self {
+        self.use_html5 = use_html5;
         self
     }
 
@@ -296,6 +304,7 @@ impl Term {
     fn render_content(&self, buffer: &mut String, styled_lines: Vec<Vec<adapter::Element>>) {
         use std::fmt::Write as _;
 
+        let br = if self.use_html5 { "<br>" } else { "<br />" };
         writeln!(buffer, r#"  <div class="container {FG}">"#).unwrap();
         for line in &styled_lines {
             if line.iter().any(|e| e.style.get_bg_color().is_some()) {
@@ -305,7 +314,7 @@ impl Term {
                     }
                     write_bg_span(buffer, "span", &element.style, &element.text);
                 }
-                writeln!(buffer, r#"<br />"#).unwrap();
+                buffer.write_str(br).unwrap();
             }
 
             for element in line {
@@ -314,7 +323,7 @@ impl Term {
                 }
                 write_fg_span(buffer, "span", element, &element.text);
             }
-            writeln!(buffer, r#"<br />"#).unwrap();
+            buffer.write_str(br).unwrap();
         }
         writeln!(buffer, r#"  </div>"#).unwrap();
     }
