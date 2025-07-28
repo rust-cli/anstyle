@@ -108,8 +108,7 @@ impl Term {
         let bg_color = rgb_value(self.bg_color, self.palette);
         let font_family = self.font_family;
 
-        let line_height = 18;
-        let height = styled_lines.len() * line_height + self.padding_px * 2;
+        let height = styled_lines.len() * LINE_HEIGHT + self.padding_px * 2;
         let max_width = styled_lines
             .iter()
             .map(|l| l.iter().map(|e| e.text.width()).sum())
@@ -148,13 +147,13 @@ impl Term {
         }
         writeln!(&mut buffer, r#"    .container {{"#).unwrap();
         writeln!(&mut buffer, r#"      padding: 0 10px;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         write_effects_in_use(&mut buffer, &elements);
         writeln!(&mut buffer, r#"    tspan {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -169,7 +168,7 @@ impl Term {
         }
 
         let text_x = self.padding_px;
-        let mut text_y = self.padding_px + line_height;
+        let mut text_y = self.padding_px + LINE_HEIGHT;
         writeln!(
             &mut buffer,
             r#"  <text xml:space="preserve" class="container {FG}">"#
@@ -200,7 +199,7 @@ impl Term {
             writeln!(&mut buffer).unwrap();
             writeln!(&mut buffer, r#"</tspan>"#).unwrap();
 
-            text_y += line_height;
+            text_y += LINE_HEIGHT;
         }
         writeln!(&mut buffer, r#"  </text>"#).unwrap();
         writeln!(&mut buffer).unwrap();
@@ -228,8 +227,6 @@ impl Term {
         let fg_color = rgb_value(self.fg_color, self.palette);
         let bg_color = rgb_value(self.bg_color, self.palette);
         let font_family = self.font_family;
-
-        let line_height = 18;
 
         let mut buffer = String::new();
         writeln!(&mut buffer, r#"<!DOCTYPE html>"#).unwrap();
@@ -269,13 +266,13 @@ impl Term {
             }
         }
         writeln!(&mut buffer, r#"    .container {{"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         write_effects_in_use(&mut buffer, &elements);
         writeln!(&mut buffer, r#"    span {{"#).unwrap();
         writeln!(&mut buffer, r#"      font: 14px {font_family};"#).unwrap();
         writeln!(&mut buffer, r#"      white-space: pre;"#).unwrap();
-        writeln!(&mut buffer, r#"      line-height: {line_height}px;"#).unwrap();
+        writeln!(&mut buffer, r#"      line-height: {LINE_HEIGHT}px;"#).unwrap();
         writeln!(&mut buffer, r#"    }}"#).unwrap();
         writeln!(&mut buffer, r#"  </style>"#).unwrap();
         writeln!(&mut buffer, r#"</head>"#).unwrap();
@@ -521,6 +518,7 @@ fn rgb_value(color: anstyle::Color, palette: Palette) -> String {
 const FG_PREFIX: &str = "fg";
 const BG_PREFIX: &str = "bg";
 const UNDERLINE_PREFIX: &str = "underline";
+const LINE_HEIGHT: usize = 18;
 
 fn color_name(prefix: &str, color: anstyle::Color) -> String {
     match color {
