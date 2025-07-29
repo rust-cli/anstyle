@@ -504,24 +504,42 @@ fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element
         classes.push("hidden");
     }
 
-    if span != SpanKind::Tspan && classes.is_empty() && element.url.is_none() {
-        // No need to create an element if there is no class or href.
-        write!(buffer, "{fragment}").unwrap();
-    }
     let mut need_closing_a = false;
 
-    write!(buffer, r#"<{span}"#).unwrap();
-    write_classes(buffer, classes);
-    write!(buffer, r#">"#).unwrap();
-    if let Some(hyperlink) = &element.url {
-        write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
-        need_closing_a = true;
+    match span {
+        SpanKind::Span => {
+            if classes.is_empty() && element.url.is_none() {
+                // No need to create an element if there is no class or href.
+                write!(buffer, "{fragment}").unwrap();
+            }
+            write!(buffer, r#"<span"#).unwrap();
+            write_classes(buffer, classes);
+            write!(buffer, r#">"#).unwrap();
+            if let Some(hyperlink) = &element.url {
+                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+                need_closing_a = true;
+            }
+            write!(buffer, "{fragment}").unwrap();
+            if need_closing_a {
+                write!(buffer, r#"</a>"#).unwrap();
+            }
+            write!(buffer, r#"</span>"#).unwrap();
+        }
+        SpanKind::Tspan => {
+            write!(buffer, r#"<tspan"#).unwrap();
+            write_classes(buffer, classes);
+            write!(buffer, r#">"#).unwrap();
+            if let Some(hyperlink) = &element.url {
+                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+                need_closing_a = true;
+            }
+            write!(buffer, "{fragment}").unwrap();
+            if need_closing_a {
+                write!(buffer, r#"</a>"#).unwrap();
+            }
+            write!(buffer, r#"</tspan>"#).unwrap();
+        }
     }
-    write!(buffer, "{fragment}").unwrap();
-    if need_closing_a {
-        write!(buffer, r#"</a>"#).unwrap();
-    }
-    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
 fn write_bg_span(buffer: &mut String, span: SpanKind, style: &anstyle::Style, fragment: &str) {
