@@ -504,6 +504,10 @@ fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element
         classes.push("hidden");
     }
 
+    if span != SpanKind::Tspan && classes.is_empty() && element.url.is_none() {
+        // No need to create an element if there is no class or href.
+        write!(buffer, "{fragment}").unwrap();
+    }
     let mut need_closing_a = false;
 
     write!(buffer, r#"<{span}"#).unwrap();
