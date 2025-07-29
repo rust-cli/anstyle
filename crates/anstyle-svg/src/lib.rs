@@ -504,28 +504,27 @@ fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element
         classes.push("hidden");
     }
 
-    let mut need_closing_a = false;
-
     match span {
         SpanKind::Span => {
             if classes.is_empty() && element.url.is_none() {
                 // No need to create an element if there is no class or href.
                 write!(buffer, "{fragment}").unwrap();
             }
-            write!(buffer, r#"<span"#).unwrap();
+            let closing_tag = if let Some(hyperlink) = &element.url {
+                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+                "</a>"
+            } else {
+                write!(buffer, r#"<span"#).unwrap();
+                "</span>"
+            };
             write_classes(buffer, classes);
             write!(buffer, r#">"#).unwrap();
-            if let Some(hyperlink) = &element.url {
-                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
-                need_closing_a = true;
-            }
             write!(buffer, "{fragment}").unwrap();
-            if need_closing_a {
-                write!(buffer, r#"</a>"#).unwrap();
-            }
-            write!(buffer, r#"</span>"#).unwrap();
+            buffer.write_str(closing_tag).unwrap();
         }
         SpanKind::Tspan => {
+            let mut need_closing_a = false;
+
             write!(buffer, r#"<tspan"#).unwrap();
             write_classes(buffer, classes);
             write!(buffer, r#">"#).unwrap();
