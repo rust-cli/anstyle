@@ -305,7 +305,7 @@ impl Term {
         use std::fmt::Write as _;
 
         let br = if self.use_html5 { "<br>" } else { "<br />" };
-        writeln!(buffer, r#"  <div class="container {FG}">"#).unwrap();
+        write!(buffer, r#"<div class="container {FG}">"#).unwrap();
         for line in &styled_lines {
             if line.iter().any(|e| e.style.get_bg_color().is_some()) {
                 for element in line {
@@ -325,7 +325,7 @@ impl Term {
             }
             buffer.write_str(br).unwrap();
         }
-        writeln!(buffer, r#"  </div>"#).unwrap();
+        write!(buffer, r#"</div>"#).unwrap();
     }
 
     /// Returns the various parts needed to create an HTML page.
