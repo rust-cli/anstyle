@@ -157,7 +157,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-roff"
-version = "0.3.6"
+version = "0.3.7"
 dependencies = [
  "anstyle 1.0.11",
  "anstyle-lossy",
