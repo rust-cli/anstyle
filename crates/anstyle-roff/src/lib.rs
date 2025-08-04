@@ -39,9 +39,15 @@ mod control_requests {
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
     for styled in styled_str::styled_stream(styled_text) {
-        set_color(
-            (&styled.style.get_fg_color(), &styled.style.get_bg_color()),
+        add_color_to_roff(
             &mut doc,
+            control_requests::FOREGROUND,
+            &styled.style.get_fg_color(),
+        );
+        add_color_to_roff(
+            &mut doc,
+            control_requests::BACKGROUND,
+            &styled.style.get_bg_color(),
         );
         set_effects_and_text(&styled, &mut doc);
     }
@@ -91,13 +97,6 @@ fn is_bright(fg_color: &Color) -> bool {
     } else {
         false
     }
-}
-
-type ColorSet<'a> = (&'a Option<Color>, &'a Option<Color>);
-
-fn set_color(colors: ColorSet<'_>, doc: &mut Roff) {
-    add_color_to_roff(doc, control_requests::FOREGROUND, colors.0);
-    add_color_to_roff(doc, control_requests::BACKGROUND, colors.1);
 }
 
 fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color>) {
