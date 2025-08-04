@@ -72,11 +72,11 @@ fn set_effects_and_text(styled: &StyledStr<'_>, doc: &mut Roff) {
     // perhaps by spinning off some of this code
     let effects = styled.style.get_effects();
     if effects.contains(anstyle::Effects::BOLD) | has_bright_fg(&styled.style) {
-        doc.text(vec![bold(styled.text)]);
+        doc.text([bold(styled.text)]);
     } else if effects.contains(anstyle::Effects::ITALIC) {
-        doc.text(vec![italic(styled.text)]);
+        doc.text([italic(styled.text)]);
     } else {
-        doc.text(vec![roff::roman(styled.text)]);
+        doc.text([roff::roman(styled.text)]);
     }
 }
 
@@ -116,13 +116,13 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
             let name = rgb_name(c);
             doc.control(
                 control_requests::CREATE_COLOR,
-                vec![name.as_str(), "rgb", to_hex(c).as_str()],
+                [name.as_str(), "rgb", to_hex(c).as_str()],
             )
-            .control(control_request, vec![name.as_str()]);
+            .control(control_request, [name.as_str()]);
         }
 
         Some(Color::Ansi(c)) => {
-            doc.control(control_request, vec![ansi_color_to_roff(c)]);
+            doc.control(control_request, [ansi_color_to_roff(c)]);
         }
         Some(Color::Ansi256(c)) => {
             // Adding Support for Ansi256 colors, however cansi does not support
@@ -132,7 +132,7 @@ fn add_color_to_roff(doc: &mut Roff, control_request: &str, color: &Option<Color
         }
         None => {
             // TODO: get rid of "default" hardcoded str?
-            doc.control(control_request, vec!["default"]);
+            doc.control(control_request, ["default"]);
         }
     }
 }
