@@ -38,17 +38,25 @@ mod control_requests {
 /// ```
 pub fn to_roff(styled_text: &str) -> Roff {
     let mut doc = Roff::new();
+    let mut previous_fg_color = None;
+    let mut previous_bg_color = None;
     for styled in styled_str::styled_stream(styled_text) {
-        add_color_to_roff(
-            &mut doc,
-            control_requests::FOREGROUND,
-            &styled.style.get_fg_color(),
-        );
-        add_color_to_roff(
-            &mut doc,
-            control_requests::BACKGROUND,
-            &styled.style.get_bg_color(),
-        );
+        if previous_fg_color != styled.style.get_fg_color() {
+            add_color_to_roff(
+                &mut doc,
+                control_requests::FOREGROUND,
+                &styled.style.get_fg_color(),
+            );
+            previous_fg_color = styled.style.get_fg_color();
+        }
+        if previous_bg_color != styled.style.get_bg_color() {
+            add_color_to_roff(
+                &mut doc,
+                control_requests::BACKGROUND,
+                &styled.style.get_bg_color(),
+            );
+            previous_bg_color = styled.style.get_bg_color();
+        }
         set_effects_and_text(&styled, &mut doc);
     }
     doc
