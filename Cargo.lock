@@ -43,12 +43,12 @@ dependencies = [
 
 [[package]]
 name = "anstream"
-version = "0.6.19"
+version = "0.6.20"
 dependencies = [
  "anstyle 1.0.11",
  "anstyle-parse 0.2.7",
- "anstyle-query 1.1.3",
- "anstyle-wincon 3.0.9",
+ "anstyle-query 1.1.4",
+ "anstyle-wincon 3.0.10",
  "colorchoice 1.0.4",
  "divan",
  "is_terminal_polyfill",
@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-crossterm"
-version = "4.0.1"
+version = "4.0.2"
 dependencies = [
  "anstyle 1.0.11",
  "crossterm",
@@ -150,7 +150,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-query"
-version = "1.1.3"
+version = "1.1.4"
 dependencies = [
  "windows-sys 0.60.2",
 ]
@@ -168,7 +168,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-svg"
-version = "0.1.9"
+version = "0.1.10"
 dependencies = [
  "anstyle 1.0.11",
  "anstyle-lossy",
@@ -218,7 +218,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-wincon"
-version = "3.0.9"
+version = "3.0.10"
 dependencies = [
  "anstyle 1.0.11",
  "lexopt",
@@ -357,7 +357,7 @@ version = "1.0.4"
 name = "colorchoice-clap"
 version = "1.0.7"
 dependencies = [
- "anstream 0.6.19",
+ "anstream 0.6.20",
  "clap",
  "colorchoice 1.0.4",
  "owo-colors",

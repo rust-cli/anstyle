@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [3.0.10] - 2025-08-05
+
 ### Internal
 
 - Dependency update
@@ -119,7 +121,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.9...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.10...HEAD
+[3.0.10]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.9...anstyle-wincon-v3.0.10
 [3.0.9]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.8...anstyle-wincon-v3.0.9
 [3.0.8]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.7...anstyle-wincon-v3.0.8
 [3.0.7]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.6...anstyle-wincon-v3.0.7

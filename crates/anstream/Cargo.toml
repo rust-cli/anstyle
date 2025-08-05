@@ -1,6 +1,6 @@
 [package]
 name = "anstream"
-version = "0.6.19"
+version = "0.6.20"
 description = "IO stream adapters for writing colored text that will gracefully degrade according to your terminal's capabilities."
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "strip", "wincon"]

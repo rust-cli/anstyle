@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.4] - 2025-08-05
+
 ### Internal
 
 - Dependency update
@@ -48,7 +50,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.0.0] - 2023-04-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.4...HEAD
+[1.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.3...anstyle-query-v1.1.4
 [1.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.2...anstyle-query-v1.1.3
 [1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.1...anstyle-query-v1.1.2
 [1.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.0...anstyle-query-v1.1.1

@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-svg"
-version = "0.1.9"
+version = "0.1.10"
 description = "Convert ANSI escape codes to SVG"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "svg"]
