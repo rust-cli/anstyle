@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add `Term::render_html_fragments`
+
 ## [0.1.9] - 2025-06-16
 
 ### Features
