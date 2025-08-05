@@ -69,7 +69,7 @@ fn ansi_to_ansi_color(color: anstyle::AnsiColor) -> crossterm::style::Color {
         anstyle::AnsiColor::BrightRed => crossterm::style::Color::Red,
         anstyle::AnsiColor::BrightGreen => crossterm::style::Color::Green,
         anstyle::AnsiColor::BrightYellow => crossterm::style::Color::Yellow,
-        anstyle::AnsiColor::BrightBlue => crossterm::style::Color::Black,
+        anstyle::AnsiColor::BrightBlue => crossterm::style::Color::Blue,
         anstyle::AnsiColor::BrightMagenta => crossterm::style::Color::Magenta,
         anstyle::AnsiColor::BrightCyan => crossterm::style::Color::Cyan,
         anstyle::AnsiColor::BrightWhite => crossterm::style::Color::White,
