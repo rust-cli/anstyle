@@ -122,7 +122,7 @@ impl Term {
         .unwrap();
         writeln!(&mut buffer, r#"  <style>"#).unwrap();
         writeln!(&mut buffer, r#"    .{FG} {{ fill: {fg_color} }}"#).unwrap();
-        writeln!(&mut buffer, r#"    .{BG} {{ background: {bg_color} }}"#).unwrap();
+        writeln!(&mut buffer, r#"    .{BG} {{ fill: {bg_color} }}"#).unwrap();
         for (name, rgb) in color_styles(&elements, self.palette) {
             if name.starts_with(FG_PREFIX) {
                 writeln!(&mut buffer, r#"    .{name} {{ fill: {rgb} }}"#).unwrap();
