@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Fix custom background colors for SVGs
+
 ## [0.1.10] - 2025-08-05
 
 ### Features
