@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.11] - 2025-09-17
+
 ### Fixes
 
 - Fix custom background colors for SVGs
@@ -73,7 +75,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.0] - 2024-02-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.10...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.11...HEAD
+[0.1.11]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.10...anstyle-svg-v0.1.11
 [0.1.10]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.9...anstyle-svg-v0.1.10
 [0.1.9]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.8...anstyle-svg-v0.1.9
 [0.1.8]: https://github.com/rust-cli/anstyle/compare/anstyle-svg-v0.1.7...anstyle-svg-v0.1.8
