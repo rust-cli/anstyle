@@ -1,3 +1,5 @@
+use anstyle::RgbColor;
+
 #[test]
 fn rainbow() {
     let input = std::fs::read_to_string("tests/rainbow.vte").unwrap();
@@ -22,6 +24,20 @@ fn hyperlink_demo() {
 }
 
 #[test]
+fn custom_background_color() {
+    let bytes = std::fs::read("tests/custom_background_color.vte").unwrap();
+    String::from_utf8(bytes).unwrap();
+    let input = std::fs::read_to_string("tests/custom_background_color.vte").unwrap();
+    let actual = anstyle_svg::Term::new()
+        .bg_color(anstyle::Color::Rgb(RgbColor(0x18, 0x18, 0x18)))
+        .render_svg(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["custom_background_color.svg": Text].raw()
+    );
+}
+
+#[test]
 fn rainbow_html() {
     let input = std::fs::read_to_string("tests/rainbow.vte").unwrap();
     let actual = anstyle_svg::Term::new().render_html(&input);
@@ -42,4 +58,18 @@ fn hyperlink_demo_html() {
     let input = std::fs::read_to_string("tests/hyperlink-demo.vte").unwrap();
     let actual = anstyle_svg::Term::new().render_html(&input);
     snapbox::assert_data_eq!(actual, snapbox::file!["hyperlink-demo.html": Text].raw());
+}
+
+#[test]
+fn custom_background_color_html() {
+    let bytes = std::fs::read("tests/custom_background_color.vte").unwrap();
+    String::from_utf8(bytes).unwrap();
+    let input = std::fs::read_to_string("tests/custom_background_color.vte").unwrap();
+    let actual = anstyle_svg::Term::new()
+        .bg_color(anstyle::Color::Rgb(RgbColor(0x18, 0x18, 0x18)))
+        .render_html(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["custom_background_color.html": Text].raw()
+    );
 }
