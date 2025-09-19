@@ -302,7 +302,7 @@ mod tests {
         assert_raw_stream::<Box<dyn std::io::Write + Send>>();
         assert_raw_stream::<Box<dyn std::io::Write + Send + Sync>>();
 
-        assert_raw_stream::<&mut (dyn std::io::Write)>();
+        assert_raw_stream::<&mut dyn std::io::Write>();
         assert_raw_stream::<&mut (dyn std::io::Write + 'static)>();
         assert_raw_stream::<&mut (dyn std::io::Write + Send)>();
         assert_raw_stream::<&mut (dyn std::io::Write + Send + Sync)>();
