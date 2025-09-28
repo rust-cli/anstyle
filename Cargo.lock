@@ -70,6 +70,7 @@ name = "anstyle"
 version = "1.0.11"
 dependencies = [
  "lexopt",
+ "snapbox",
 ]
 
 [[package]]
