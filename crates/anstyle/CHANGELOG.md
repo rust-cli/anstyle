@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Remove leading zero when rendering single-digit `Ansi256Color`
+
 ## [1.0.11] - 2025-06-04
 
 ## [1.0.10] - 2024-11-01
