@@ -170,6 +170,7 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
       with:
         toolchain: stable
+        components: rustfmt
     - uses: Swatinem/rust-cache@v2
     - name: Install cargo-tarpaulin
       run: cargo install cargo-tarpaulin
