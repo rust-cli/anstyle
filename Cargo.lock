@@ -45,7 +45,7 @@ dependencies = [
 name = "anstream"
 version = "0.6.20"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "anstyle-parse 0.2.7",
  "anstyle-query 1.1.4",
  "anstyle-wincon 3.0.10",
@@ -67,7 +67,7 @@ checksum = "55cc3b69f167a1ef2e161439aa98aed94e6028e5f9a59be9a6ffb47aef1651f9"
 
 [[package]]
 name = "anstyle"
-version = "1.0.12"
+version = "1.0.13"
 dependencies = [
  "lexopt",
  "snapbox",
@@ -78,14 +78,14 @@ name = "anstyle-ansi-term"
 version = "1.0.4"
 dependencies = [
  "ansi_term",
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
 ]
 
 [[package]]
 name = "anstyle-crossterm"
 version = "4.0.2"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "crossterm",
 ]
 
@@ -93,28 +93,28 @@ dependencies = [
 name = "anstyle-git"
 version = "1.1.3"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
 ]
 
 [[package]]
 name = "anstyle-lossy"
 version = "1.1.4"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
 ]
 
 [[package]]
 name = "anstyle-ls"
 version = "1.0.5"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
 ]
 
 [[package]]
 name = "anstyle-owo-colors"
 version = "2.0.4"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "owo-colors",
 ]
 
@@ -160,7 +160,7 @@ dependencies = [
 name = "anstyle-roff"
 version = "0.3.8"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "anstyle-lossy",
  "cansi",
  "roff",
@@ -171,7 +171,7 @@ dependencies = [
 name = "anstyle-svg"
 version = "0.1.11"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "anstyle-lossy",
  "anstyle-parse 0.2.7",
  "html-escape",
@@ -184,7 +184,7 @@ dependencies = [
 name = "anstyle-syntect"
 version = "1.0.4"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "syntect",
  "thiserror",
 ]
@@ -193,7 +193,7 @@ dependencies = [
 name = "anstyle-termcolor"
 version = "1.1.4"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "termcolor",
 ]
 
@@ -221,7 +221,7 @@ dependencies = [
 name = "anstyle-wincon"
 version = "3.0.10"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "lexopt",
  "once_cell_polyfill",
  "windows-sys 0.60.2",
@@ -231,7 +231,7 @@ dependencies = [
 name = "anstyle-yansi"
 version = "2.0.3"
 dependencies = [
- "anstyle 1.0.12",
+ "anstyle 1.0.13",
  "yansi",
 ]
 
