@@ -2,7 +2,7 @@
 //! Currently uses [roff](https://docs.rs/roff/0.2.1/roff/) as the engine for generating
 //! roff output.
 
-#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_docs)]
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]

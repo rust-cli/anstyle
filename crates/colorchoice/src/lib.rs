@@ -1,7 +1,7 @@
 //! Global override of color control
 
 #![cfg_attr(not(test), no_std)]
-#![cfg_attr(docsrs, feature(doc_auto_cfg))]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_docs)]
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
