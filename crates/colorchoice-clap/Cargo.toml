@@ -25,11 +25,11 @@ pre-release-replacements = [
 
 [dependencies]
 colorchoice = { version = "1.0.0", path = "../colorchoice", default-features = false }
-clap = { version = "4.3.5", default-features = false, features = ["std", "derive", "color"] }
+clap = { version = "4.3.24", default-features = false, features = ["std", "derive", "color"] }
 
 [dev-dependencies]
 anstream = { path = "../anstream" }
-clap = "4.3.5"
+clap = "4.3.24"
 owo-colors = "4.0.0"
 
 [lints]
