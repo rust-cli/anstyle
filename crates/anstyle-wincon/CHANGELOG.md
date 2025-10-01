@@ -91,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.2.0] - 2023-03-13
 
-### Breaking Chaneg
+### Breaking Change
 
 - Take two at `Console::new` reporting errors
 
