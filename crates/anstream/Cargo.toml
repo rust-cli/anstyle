@@ -35,18 +35,18 @@ anstyle = { version = "1.0.0", path = "../anstyle" }
 anstyle-parse = { version = "0.2.0", path = "../anstyle-parse" }
 colorchoice = { version = "1.0.0", path = "../colorchoice" }
 anstyle-query = { version = "1.0.0", path = "../anstyle-query", optional = true }
-utf8parse = "0.2.1"
+utf8parse = "0.2.2"
 is_terminal_polyfill = "1.48"
 
 [target.'cfg(windows)'.dependencies]
 anstyle-wincon = { version = "3.0.5", path = "../anstyle-wincon", optional = true }
 
 [dev-dependencies]
-divan = "0.1.11"
-lexopt = "0.3.0"
+divan = "0.1.16"
+lexopt = "0.3.1"
 owo-colors = "4.0.0"
-proptest = "1.4.0"
-strip-ansi-escapes = "0.2.0"
+proptest = "1.7.0"
+strip-ansi-escapes = "0.2.1"
 
 [[example]]
 name = "dump-stream"
