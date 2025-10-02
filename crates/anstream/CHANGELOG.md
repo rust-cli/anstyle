@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.6.21] - 2025-10-02
+
 ### Features
 
 - Add `as_inner` functions to streams
@@ -261,7 +263,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.20...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.21...HEAD
+[0.6.21]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.20...anstream-v0.6.21
 [0.6.20]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.19...anstream-v0.6.20
 [0.6.19]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.18...anstream-v0.6.19
 [0.6.18]: https://github.com/rust-cli/anstyle/compare/anstream-v0.6.17...anstream-v0.6.18

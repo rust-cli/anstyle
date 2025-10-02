@@ -29,6 +29,21 @@ dependencies = [
 [[package]]
 name = "anstream"
 version = "0.6.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ae563653d1938f79b1ab1b5e668c87c76a9930414574a6583a7b7e11a8e6192"
+dependencies = [
+ "anstyle 1.0.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-parse 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-query 1.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstyle-wincon 3.0.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "colorchoice 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "is_terminal_polyfill",
+ "utf8parse",
+]
+
+[[package]]
+name = "anstream"
+version = "0.6.21"
 dependencies = [
  "anstyle 1.0.13",
  "anstyle-parse 0.2.7",
@@ -41,21 +56,6 @@ dependencies = [
  "owo-colors",
  "proptest",
  "strip-ansi-escapes",
- "utf8parse",
-]
-
-[[package]]
-name = "anstream"
-version = "0.6.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ae563653d1938f79b1ab1b5e668c87c76a9930414574a6583a7b7e11a8e6192"
-dependencies = [
- "anstyle 1.0.13 (registry+https://github.com/rust-lang/crates.io-index)",
- "anstyle-parse 0.2.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "anstyle-query 1.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "anstyle-wincon 3.0.10 (registry+https://github.com/rust-lang/crates.io-index)",
- "colorchoice 1.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
- "is_terminal_polyfill",
  "utf8parse",
 ]
 
@@ -354,7 +354,7 @@ checksum = "b05b61dc5112cbb17e4b6cd61790d9845d13888356391624cbe7e41efeac1e75"
 name = "colorchoice-clap"
 version = "1.0.7"
 dependencies = [
- "anstream 0.6.20",
+ "anstream 0.6.21",
  "clap",
  "colorchoice 1.0.4",
  "owo-colors",
@@ -916,7 +916,7 @@ version = "0.6.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96dcfc4581e3355d70ac2ee14cfdf81dce3d85c85f1ed9e2c1d3013f53b3436b"
 dependencies = [
- "anstream 0.6.20 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstream 0.6.20",
  "anstyle 1.0.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "normalize-line-endings",
  "similar",
@@ -929,7 +929,7 @@ version = "0.3.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16569f53ca23a41bb6f62e0a5084aa1661f4814a67fa33696a79073e03a664af"
 dependencies = [
- "anstream 0.6.20 (registry+https://github.com/rust-lang/crates.io-index)",
+ "anstream 0.6.20",
 ]
 
 [[package]]
