@@ -34,6 +34,12 @@ where
     pub fn into_inner(self) -> S {
         self.raw
     }
+
+    /// Get the wrapped [`std::io::Write`]
+    #[inline]
+    pub fn as_inner(&self) -> &S {
+        &self.raw
+    }
 }
 
 impl<S> WinconStream<S>
