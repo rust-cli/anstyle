@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add `as_inner` functions to streams
+
 ## [0.6.20] - 2025-08-05
 
 ## [0.6.19] - 2025-06-04
