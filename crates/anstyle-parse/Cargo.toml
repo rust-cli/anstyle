@@ -36,8 +36,8 @@ utf8 = ["dep:utf8parse"]
 codegenrs = { version = "3.0.0", default-features = false }
 divan = "0.1.16"
 proptest = "1.7.0"
-snapbox = "0.6.21"
-vte_generate_state_changes = { version = "0.1.1" }
+snapbox = "0.6.23"
+vte_generate_state_changes = { version = "0.1.2" }
 
 [[bench]]
 name = "parse"

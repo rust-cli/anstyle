@@ -32,7 +32,7 @@ std = []
 
 [dev-dependencies]
 lexopt = "0.3.1"
-snapbox = "0.6.21"
+snapbox = "0.6.23"
 
 [lints]
 workspace = true
