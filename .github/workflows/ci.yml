@@ -74,7 +74,10 @@ jobs:
       run: cargo hack check --each-feature --locked --rust-version --ignore-private --workspace --keep-going
   minimal-versions:
     name: Minimal versions
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: ["ubuntu-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v5
