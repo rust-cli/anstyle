@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.5] - 2025-11-13
+
 ### Internal
 
 - Allow use of windows-sys 0.61 without bumping MSRV
@@ -54,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.0.0] - 2023-04-13
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.5...HEAD
+[1.1.5]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.4...anstyle-query-v1.1.5
 [1.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.3...anstyle-query-v1.1.4
 [1.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.2...anstyle-query-v1.1.3
 [1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-query-v1.1.1...anstyle-query-v1.1.2

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [3.0.11] - 2025-11-13
+
 ### Internal
 
 - Allow use of windows-sys 0.61 without bumping MSRV
@@ -125,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.1] - 2023-03-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.10...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.11...HEAD
+[3.0.11]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.10...anstyle-wincon-v3.0.11
 [3.0.10]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.9...anstyle-wincon-v3.0.10
 [3.0.9]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.8...anstyle-wincon-v3.0.9
 [3.0.8]: https://github.com/rust-cli/anstyle/compare/anstyle-wincon-v3.0.7...anstyle-wincon-v3.0.8
