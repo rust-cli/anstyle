@@ -29,6 +29,7 @@ syntect = { version = "5.2.0", default-features = false }
 
 [target.'cfg(any())'.dependencies]
 thiserror = "1.0.2"  # HACK: bad minimal dep in syntect
+same-file = "1.0.6"  # HACK: bad mininal dep somewhere
 
 [lints]
 workspace = true

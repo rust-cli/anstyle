@@ -185,6 +185,7 @@ name = "anstyle-syntect"
 version = "1.0.4"
 dependencies = [
  "anstyle 1.0.13",
+ "same-file",
  "syntect",
  "thiserror",
 ]
