@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Internal
+
+- Allow use of windows-sys 0.61 without bumping MSRV
+
 ## [3.0.10] - 2025-08-05
 
 ### Internal
