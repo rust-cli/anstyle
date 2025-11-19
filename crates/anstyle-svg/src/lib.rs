@@ -414,7 +414,7 @@ fn write_effects_in_use(buffer: &mut String, elements: &[adapter::Element]) {
         .unwrap();
     }
     if effects_in_use.contains(anstyle::Effects::DIMMED) {
-        writeln!(buffer, r#"    .dimmed {{ opacity: 0.7; }}"#).unwrap();
+        writeln!(buffer, r#"    .dimmed {{ opacity: 0.4; }}"#).unwrap();
     }
     if effects_in_use.contains(anstyle::Effects::HIDDEN) {
         writeln!(buffer, r#"    .hidden {{ opacity: 0; }}"#).unwrap();
