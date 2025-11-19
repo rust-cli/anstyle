@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Switch to kitty's opacity value for `dimmed`
+
 ## [0.1.11] - 2025-09-17
 
 ### Fixes
