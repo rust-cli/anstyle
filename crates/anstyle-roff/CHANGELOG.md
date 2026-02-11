@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.0] - 2026-02-11
+
 ## [0.3.8] - 2025-08-04
 
 ## [0.3.7] - 2025-08-04
@@ -50,7 +52,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.0] - 2023-02-10
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.8...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v1.0.0...HEAD
+[1.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.8...anstyle-roff-v1.0.0
 [0.3.8]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.7...anstyle-roff-v0.3.8
 [0.3.7]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.6...anstyle-roff-v0.3.7
 [0.3.6]: https://github.com/rust-cli/anstyle/compare/anstyle-roff-v0.3.5...anstyle-roff-v0.3.6

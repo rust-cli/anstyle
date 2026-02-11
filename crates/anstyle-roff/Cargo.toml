@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-roff"
-version = "0.3.8"
+version = "1.0.0"
 description = "Adapt between anstyle and roff"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "roff"]

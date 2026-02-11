@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-parse"
-version = "0.2.7"
+version = "1.0.0"
 description = "Parse ANSI Style Escapes"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "vte"]
