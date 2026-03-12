@@ -23,13 +23,13 @@
   <text xml:space="preserve" class="container fg">
     <tspan x="10px" y="28px"><tspan class="underline">underline</tspan><tspan> normal</tspan>
 </tspan>
-    <tspan x="10px" y="46px"><tspan class="double-underline">double normal</tspan>
+    <tspan x="10px" y="46px"><tspan class="double-underline">double</tspan><tspan> normal</tspan>
 </tspan>
-    <tspan x="10px" y="64px"><tspan class="double-underline curly-underline">curly normal</tspan>
+    <tspan x="10px" y="64px"><tspan class="curly-underline">curly</tspan><tspan> normal</tspan>
 </tspan>
-    <tspan x="10px" y="82px"><tspan class="double-underline curly-underline dotted-underline">dotted normal</tspan>
+    <tspan x="10px" y="82px"><tspan class="dotted-underline">dotted</tspan><tspan> normal</tspan>
 </tspan>
-    <tspan x="10px" y="100px"><tspan class="double-underline curly-underline dotted-underline dashed-underline">dashed normal</tspan>
+    <tspan x="10px" y="100px"><tspan class="dashed-underline">dashed</tspan><tspan> normal</tspan>
 </tspan>
     <tspan x="10px" y="118px">
 </tspan>

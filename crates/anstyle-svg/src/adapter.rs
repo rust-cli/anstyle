@@ -275,8 +275,15 @@ impl anstyle_parse::Perform for AnsiCapture {
                         }
                     },
                     (CsiState::Underline, 0) => {
-                        style =
-                            style.effects(style.get_effects().remove(anstyle::Effects::UNDERLINE));
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::UNDERLINE)
+                                .remove(anstyle::Effects::DOUBLE_UNDERLINE)
+                                .remove(anstyle::Effects::CURLY_UNDERLINE)
+                                .remove(anstyle::Effects::DOTTED_UNDERLINE)
+                                .remove(anstyle::Effects::DASHED_UNDERLINE),
+                        );
                     }
                     (CsiState::Underline, 1) => {
                         // underline already set
