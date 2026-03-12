@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    .fg { color: #AAAAAA }
+    .bg { background: #000000 }
+    .bg-white { background: #AAAAAA; user-select: none; }
+    .fg-black { color: #000000 }
+    .container {
+      line-height: 18px;
+    }
+    .bold { font-weight: bold; }
+    .italic { font-style: italic; }
+    .underline { text-decoration-line: underline; }
+    .strikethrough { text-decoration-line: line-through; }
+    .dimmed { opacity: 0.4; }
+    .hidden { opacity: 0; }
+    span {
+      font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      white-space: pre;
+      line-height: 18px;
+    }
+  </style>
+</head>
+
+<body class="bg">
+
+  <div class="container fg">
+<span class="bold">bold normal</span><br />
+<span class="bold dimmed">dim normal</span><br />
+<span class="bold italic dimmed">italic normal</span><br />
+<span class="underline bold italic dimmed">underline normal</span><br />
+<span class="bg-white">█████████████</span><br />
+<span class="fg-black underline bold italic dimmed">invert normal</span><br />
+<span class="bg-white">█████████████</span><br />
+<span class="fg-black underline bold italic dimmed hidden">hidden normal</span><br />
+<span class="bg-white">████████████████████</span><br />
+<span class="fg-black underline strikethrough bold italic dimmed hidden">strikethrough normal</span><br />
+<span class="bg-white">█████████████████████████████████</span><br />
+<span class="fg-black underline strikethrough bold italic dimmed hidden">all three no bold no italic plain</span><br />
+<br />
+<br />
+  </div>
+
+</body>
+</html>

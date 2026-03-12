@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    .fg { color: #AAAAAA }
+    .bg { background: #000000 }
+    .container {
+      line-height: 18px;
+    }
+    .underline { text-decoration-line: underline; }
+    .double-underline { text-decoration-line: underline; text-decoration-style: double; }
+    .curly-underline { text-decoration-line: underline; text-decoration-style: wavy; }
+    .dotted-underline { text-decoration-line: underline; text-decoration-style: dotted; }
+    .dashed-underline { text-decoration-line: underline; text-decoration-style: dashed; }
+    span {
+      font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      white-space: pre;
+      line-height: 18px;
+    }
+  </style>
+</head>
+
+<body class="bg">
+
+  <div class="container fg">
+<span class="underline">underline</span><span> normal</span><br />
+<span class="double-underline">double normal</span><br />
+<span class="double-underline curly-underline">curly normal</span><br />
+<span class="double-underline curly-underline dotted-underline">dotted normal</span><br />
+<span class="double-underline curly-underline dotted-underline dashed-underline">dashed normal</span><br />
+<br />
+  </div>
+
+</body>
+</html>

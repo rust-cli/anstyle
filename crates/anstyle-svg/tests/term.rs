@@ -73,3 +73,57 @@ fn custom_background_color_html() {
         snapbox::file!["custom_background_color.html": Text].raw()
     );
 }
+
+#[test]
+fn sgr_off_codes() {
+    let input = std::fs::read_to_string("tests/sgr_off_codes.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_svg(&input);
+    snapbox::assert_data_eq!(actual, snapbox::file!["sgr_off_codes.svg": Text].raw());
+}
+
+#[test]
+fn sgr_off_codes_html() {
+    let input = std::fs::read_to_string("tests/sgr_off_codes.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_html(&input);
+    snapbox::assert_data_eq!(actual, snapbox::file!["sgr_off_codes.html": Text].raw());
+}
+
+#[test]
+fn underline_subparams() {
+    let input = std::fs::read_to_string("tests/underline_subparams.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_svg(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["underline_subparams.svg": Text].raw()
+    );
+}
+
+#[test]
+fn underline_subparams_html() {
+    let input = std::fs::read_to_string("tests/underline_subparams.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_html(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["underline_subparams.html": Text].raw()
+    );
+}
+
+#[test]
+fn underline_color_reset() {
+    let input = std::fs::read_to_string("tests/underline_color_reset.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_svg(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["underline_color_reset.svg": Text].raw()
+    );
+}
+
+#[test]
+fn underline_color_reset_html() {
+    let input = std::fs::read_to_string("tests/underline_color_reset.vte").unwrap();
+    let actual = anstyle_svg::Term::new().render_html(&input);
+    snapbox::assert_data_eq!(
+        actual,
+        snapbox::file!["underline_color_reset.html": Text].raw()
+    );
+}
