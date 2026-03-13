@@ -97,6 +97,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-hyperlink"
+version = "1.0.0"
+dependencies = [
+ "snapbox",
+]
+
+[[package]]
 name = "anstyle-lossy"
 version = "1.1.4"
 dependencies = [
