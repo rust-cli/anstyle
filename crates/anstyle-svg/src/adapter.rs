@@ -138,10 +138,6 @@ impl anstyle_parse::Perform for AnsiCapture {
                         style = style.underline();
                         state = CsiState::Underline;
                     }
-                    (CsiState::Normal, 21) => {
-                        style |= anstyle::Effects::DOUBLE_UNDERLINE;
-                        break;
-                    }
                     (CsiState::Normal, 7) => {
                         style = style.invert();
                         break;
@@ -152,6 +148,10 @@ impl anstyle_parse::Perform for AnsiCapture {
                     }
                     (CsiState::Normal, 9) => {
                         style = style.strikethrough();
+                        break;
+                    }
+                    (CsiState::Normal, 21) => {
+                        style |= anstyle::Effects::DOUBLE_UNDERLINE;
                         break;
                     }
                     (CsiState::Normal, 30..=37) => {
