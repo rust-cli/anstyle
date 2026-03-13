@@ -222,6 +222,10 @@ impl anstyle_parse::Perform for AnsiCapture {
                         color_target = ColorTarget::Underline;
                         state = CsiState::PrepareCustomColor;
                     }
+                    (CsiState::Normal, 59) => {
+                        style = style.underline_color(None);
+                        break;
+                    }
                     (CsiState::Normal, 90..=97) => {
                         let color = to_ansi_color(value - 90)
                             .expect("within 4-bit range")
