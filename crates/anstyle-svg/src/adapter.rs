@@ -154,6 +154,44 @@ impl anstyle_parse::Perform for AnsiCapture {
                         style |= anstyle::Effects::DOUBLE_UNDERLINE;
                         break;
                     }
+                    (CsiState::Normal, 22) => {
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::BOLD)
+                                .remove(anstyle::Effects::DIMMED),
+                        );
+                        break;
+                    }
+                    (CsiState::Normal, 23) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::ITALIC));
+                        break;
+                    }
+                    (CsiState::Normal, 24) => {
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::UNDERLINE)
+                                .remove(anstyle::Effects::DOUBLE_UNDERLINE)
+                                .remove(anstyle::Effects::CURLY_UNDERLINE)
+                                .remove(anstyle::Effects::DOTTED_UNDERLINE)
+                                .remove(anstyle::Effects::DASHED_UNDERLINE),
+                        );
+                        break;
+                    }
+                    (CsiState::Normal, 27) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::INVERT));
+                        break;
+                    }
+                    (CsiState::Normal, 28) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::HIDDEN));
+                        break;
+                    }
+                    (CsiState::Normal, 29) => {
+                        style = style
+                            .effects(style.get_effects().remove(anstyle::Effects::STRIKETHROUGH));
+                        break;
+                    }
                     (CsiState::Normal, 30..=37) => {
                         let color = to_ansi_color(value - 30).expect("within 4-bit range");
                         style = style.fg_color(Some(color.into()));
