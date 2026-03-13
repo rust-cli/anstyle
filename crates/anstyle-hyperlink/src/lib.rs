@@ -1,4 +1,7 @@
-//! ANSI escape code hyperlink
+//! ANSI escape code hyperlink (OSC 8)
+//!
+//! For details on the protocol, see
+//! [Hyperlinks (a.k.a. HTML-like anchors) in terminal emulators](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda)
 //!
 //! To detect support, see [supports-hyperlinks](https://crates.io/crates/supports-hyperlinks)
 

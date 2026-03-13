@@ -1,6 +1,6 @@
 # anstyle-hyperlink
 
-> ANSI escape code hyperlinks
+> ANSI escape code hyperlinks (OSC 8)
 
 [![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-hyperlink.svg)

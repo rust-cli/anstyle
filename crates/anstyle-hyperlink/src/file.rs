@@ -18,6 +18,7 @@ pub fn path_to_url(path: &std::path::Path) -> Option<String> {
 ///
 /// For hyperlink escape codes, the hostname is used to avoid issues with opening a link scoped to
 /// the computer you've SSH'ed into
+/// ([reference](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda#file-uris-and-the-hostname))
 pub fn file_to_url(hostname: Option<&str>, path: &std::path::Path) -> Option<String> {
     if !path.is_absolute() {
         return None;
@@ -51,6 +52,7 @@ pub fn file_to_url(hostname: Option<&str>, path: &std::path::Path) -> Option<Str
 ///
 /// For hyperlink escape codes, the hostname is used to avoid issues with opening a link scoped to
 /// the computer you've SSH'ed into
+/// ([reference](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda#file-uris-and-the-hostname))
 pub fn dir_to_url(hostname: Option<&str>, path: &std::path::Path) -> Option<String> {
     let mut url = file_to_url(hostname, path)?;
     if !url.ends_with(URL_PATH_SEP) {
