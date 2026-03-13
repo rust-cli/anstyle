@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    .fg { color: #AAAAAA }
+    .bg { background: #000000 }
+    .underline-ansi256-202 { text-decoration-line: underline; text-decoration-color: #FF5F00 }
+    .underline-rgb-0080FF { text-decoration-line: underline; text-decoration-color: #0080FF }
+    .underline-rgb-FF0000 { text-decoration-line: underline; text-decoration-color: #FF0000 }
+    .container {
+      line-height: 18px;
+    }
+    .underline { text-decoration-line: underline; }
+    span {
+      font: 14px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      white-space: pre;
+      line-height: 18px;
+    }
+  </style>
+</head>
+
+<body class="bg">
+
+  <div class="container fg">
+<span class="underline-rgb-FF0000 underline">red underline</span><span class="underline"> default color underline</span><span> normal</span><br />
+<span class="underline-ansi256-202 underline">orange underline</span><span class="underline"> default color underline</span><span> normal</span><br />
+<span class="underline-rgb-0080FF underline">blue underline</span><span class="underline"> default color underline</span><span> normal</span><br />
+<br />
+  </div>
+
+</body>
+</html>

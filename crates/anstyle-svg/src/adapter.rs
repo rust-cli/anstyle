@@ -138,10 +138,6 @@ impl anstyle_parse::Perform for AnsiCapture {
                         style = style.underline();
                         state = CsiState::Underline;
                     }
-                    (CsiState::Normal, 21) => {
-                        style |= anstyle::Effects::DOUBLE_UNDERLINE;
-                        break;
-                    }
                     (CsiState::Normal, 7) => {
                         style = style.invert();
                         break;
@@ -152,6 +148,48 @@ impl anstyle_parse::Perform for AnsiCapture {
                     }
                     (CsiState::Normal, 9) => {
                         style = style.strikethrough();
+                        break;
+                    }
+                    (CsiState::Normal, 21) => {
+                        style |= anstyle::Effects::DOUBLE_UNDERLINE;
+                        break;
+                    }
+                    (CsiState::Normal, 22) => {
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::BOLD)
+                                .remove(anstyle::Effects::DIMMED),
+                        );
+                        break;
+                    }
+                    (CsiState::Normal, 23) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::ITALIC));
+                        break;
+                    }
+                    (CsiState::Normal, 24) => {
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::UNDERLINE)
+                                .remove(anstyle::Effects::DOUBLE_UNDERLINE)
+                                .remove(anstyle::Effects::CURLY_UNDERLINE)
+                                .remove(anstyle::Effects::DOTTED_UNDERLINE)
+                                .remove(anstyle::Effects::DASHED_UNDERLINE),
+                        );
+                        break;
+                    }
+                    (CsiState::Normal, 27) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::INVERT));
+                        break;
+                    }
+                    (CsiState::Normal, 28) => {
+                        style = style.effects(style.get_effects().remove(anstyle::Effects::HIDDEN));
+                        break;
+                    }
+                    (CsiState::Normal, 29) => {
+                        style = style
+                            .effects(style.get_effects().remove(anstyle::Effects::STRIKETHROUGH));
                         break;
                     }
                     (CsiState::Normal, 30..=37) => {
@@ -183,6 +221,10 @@ impl anstyle_parse::Perform for AnsiCapture {
                     (CsiState::Normal, 58) => {
                         color_target = ColorTarget::Underline;
                         state = CsiState::PrepareCustomColor;
+                    }
+                    (CsiState::Normal, 59) => {
+                        style = style.underline_color(None);
+                        break;
                     }
                     (CsiState::Normal, 90..=97) => {
                         let color = to_ansi_color(value - 90)
@@ -233,8 +275,15 @@ impl anstyle_parse::Perform for AnsiCapture {
                         }
                     },
                     (CsiState::Underline, 0) => {
-                        style =
-                            style.effects(style.get_effects().remove(anstyle::Effects::UNDERLINE));
+                        style = style.effects(
+                            style
+                                .get_effects()
+                                .remove(anstyle::Effects::UNDERLINE)
+                                .remove(anstyle::Effects::DOUBLE_UNDERLINE)
+                                .remove(anstyle::Effects::CURLY_UNDERLINE)
+                                .remove(anstyle::Effects::DOTTED_UNDERLINE)
+                                .remove(anstyle::Effects::DASHED_UNDERLINE),
+                        );
                     }
                     (CsiState::Underline, 1) => {
                         // underline already set
