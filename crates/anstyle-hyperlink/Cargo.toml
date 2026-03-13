@@ -27,8 +27,11 @@ pre-release-replacements = [
 [features]
 default = ["std"]
 std = []
+file = ["std", "dep:percent-encoding", "dep:libc"]
 
 [dependencies]
+libc = { version = "0.2.183", optional = true }
+percent-encoding = { version = "2.3.2", optional = true }
 
 [dev-dependencies]
 snapbox = "0.6.23"

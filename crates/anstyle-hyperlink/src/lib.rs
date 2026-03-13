@@ -10,8 +10,20 @@
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
 
+#[cfg(feature = "file")]
+mod file;
+#[cfg(feature = "file")]
+mod hostname;
 mod hyperlink;
 
+#[cfg(feature = "file")]
+pub use file::dir_to_url;
+#[cfg(feature = "file")]
+pub use file::file_to_url;
+#[cfg(feature = "file")]
+pub use file::path_to_url;
+#[cfg(feature = "file")]
+pub use hostname::hostname;
 pub use hyperlink::Hyperlink;
 
 #[doc = include_str!("../README.md")]

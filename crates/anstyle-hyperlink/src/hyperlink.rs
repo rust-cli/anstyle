@@ -24,6 +24,24 @@ impl<D: core::fmt::Display> Hyperlink<D> {
     }
 }
 
+#[cfg(feature = "std")]
+impl Hyperlink<String> {
+    /// Create a hyperlink for a path
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let path = std::env::current_dir().unwrap();
+    /// let link = anstyle_hyperlink::Hyperlink::with_path(&path);
+    /// format!("Go to {link}CWD{link:#}!");
+    /// ```
+    #[cfg(feature = "file")]
+    pub fn with_path(path: &std::path::Path) -> Self {
+        let url = crate::path_to_url(path);
+        Self { url }
+    }
+}
+
 impl<D: core::fmt::Display> Default for Hyperlink<D> {
     fn default() -> Self {
         Self { url: None }
