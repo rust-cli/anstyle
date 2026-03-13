@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Make 4:0 removes all underline styles
+- Support SGR 59 (reset underline color to default)
+- Support SGR 22-29 (off codes)
+
 ## [1.0.0] - 2026-02-11
 
 ## [0.1.12] - 2025-11-19
