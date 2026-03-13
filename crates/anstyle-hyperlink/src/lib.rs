@@ -1,4 +1,6 @@
 //! ANSI escape code hyperlink
+//!
+//! To detect support, see [supports-hyperlinks](https://crates.io/crates/supports-hyperlinks)
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(docsrs, feature(doc_cfg))]
