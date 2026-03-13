@@ -150,6 +150,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "anstyle-progress"
+version = "0.0.1"
+dependencies = [
+ "snapbox",
+]
+
+[[package]]
 name = "anstyle-query"
 version = "1.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
