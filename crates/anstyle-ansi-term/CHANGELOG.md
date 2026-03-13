@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.5] - 2026-03-13
+
 ## [1.0.4] - 2025-06-04
 
 ## [1.0.3] - 2024-10-24
@@ -40,7 +42,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.1] - 2022-08-17
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.5...HEAD
+[1.0.5]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.4...anstyle-ansi-term-v1.0.5
 [1.0.4]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.3...anstyle-ansi-term-v1.0.4
 [1.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.2...anstyle-ansi-term-v1.0.3
 [1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-ansi-term-v1.0.1...anstyle-ansi-term-v1.0.2

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [4.0.3] - 2026-03-13
+
 ## [4.0.2] - 2025-08-05
 
 ### Fixes
@@ -66,7 +68,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v4.0.2...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v4.0.3...HEAD
+[4.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v4.0.2...anstyle-crossterm-v4.0.3
 [4.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v4.0.1...anstyle-crossterm-v4.0.2
 [4.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v4.0.0...anstyle-crossterm-v4.0.1
 [4.0.0]: https://github.com/rust-cli/anstyle/compare/anstyle-crossterm-v3.0.1...anstyle-crossterm-v4.0.0

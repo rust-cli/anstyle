@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.5] - 2026-03-13
+
 ## [1.1.4] - 2025-06-04
 
 ## [1.1.3] - 2024-10-24
@@ -52,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.1] - 2022-10-07
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.5...HEAD
+[1.1.5]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.4...anstyle-lossy-v1.1.5
 [1.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.3...anstyle-lossy-v1.1.4
 [1.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.2...anstyle-lossy-v1.1.3
 [1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-lossy-v1.1.1...anstyle-lossy-v1.1.2

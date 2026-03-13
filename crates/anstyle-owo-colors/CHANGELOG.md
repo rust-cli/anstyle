@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [2.0.5] - 2026-03-13
+
 ## [2.0.4] - 2025-06-04
 
 ## [2.0.3] - 2024-10-24
@@ -57,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.1.1] - 2022-05-18
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.5...HEAD
+[2.0.5]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.4...anstyle-owo-colors-v2.0.5
 [2.0.4]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.3...anstyle-owo-colors-v2.0.4
 [2.0.3]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.2...anstyle-owo-colors-v2.0.3
 [2.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-owo-colors-v2.0.1...anstyle-owo-colors-v2.0.2

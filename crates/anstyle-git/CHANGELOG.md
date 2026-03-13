@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.4] - 2026-03-13
+
 ## [1.1.3] - 2025-06-04
 
 ## [1.1.2] - 2024-10-24
@@ -52,7 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.2.1] - 2022-05-19
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.4...HEAD
+[1.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.3...anstyle-git-v1.1.4
 [1.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.2...anstyle-git-v1.1.3
 [1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.1...anstyle-git-v1.1.2
 [1.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.0...anstyle-git-v1.1.1
