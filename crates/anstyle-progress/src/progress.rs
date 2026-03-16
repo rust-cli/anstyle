@@ -51,18 +51,18 @@ impl TermProgress {
         Self::none().status(TermProgressStatus::Removed)
     }
 
-    /// Change the reported status
-    pub fn status(mut self, status: TermProgressStatus) -> Self {
-        self.status = Some(status);
-        self
-    }
-
     /// Set progress percentage (between `0..=100`)
     ///
     /// Without setting this, progress will be indeterminate
     pub fn percent(mut self, percent: u8) -> Self {
         assert!(matches!(percent, 0..=100));
         self.percent = Some(percent);
+        self
+    }
+
+    /// Change the reported status
+    pub fn status(mut self, status: TermProgressStatus) -> Self {
+        self.status = Some(status);
         self
     }
 }
