@@ -40,6 +40,11 @@ impl TermProgress {
         Self::none().status(TermProgressStatus::Normal)
     }
 
+    /// Start an error indicator
+    pub fn error() -> Self {
+        Self::none().status(TermProgressStatus::Error)
+    }
+
     /// Change the reported status
     pub fn status(mut self, status: TermProgressStatus) -> Self {
         self.status = Some(status);
