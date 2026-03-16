@@ -7,13 +7,13 @@
 /// # use anstyle_progress::TermProgressStatus;
 /// let mut progress = anstyle_progress::TermProgress::start();
 ///
-/// let progress = progress.percent(Some(0));
+/// let progress = progress.percent(0);
 /// println!("{progress}");
 ///
-/// let progress = progress.percent(Some(50));
+/// let progress = progress.percent(50);
 /// println!("{progress}");
 ///
-/// let progress = progress.percent(Some(100));
+/// let progress = progress.percent(100);
 /// println!("{progress}");
 ///
 /// let progress = progress.remove();
@@ -59,12 +59,12 @@ impl TermProgress {
         self
     }
 
-    /// Between `0..=100`
+    /// Set progress percentage (between `0..=100`)
     ///
-    /// When `None`, will report an indeterminate status
-    pub fn percent(mut self, percent: Option<u8>) -> Self {
-        assert!(matches!(percent, Some(0..=100) | None));
-        self.percent = percent;
+    /// Without setting this, progress will be indeterminate
+    pub fn percent(mut self, percent: u8) -> Self {
+        assert!(matches!(percent, 0..=100));
+        self.percent = Some(percent);
         self
     }
 }
