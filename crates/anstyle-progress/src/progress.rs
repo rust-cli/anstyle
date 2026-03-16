@@ -5,19 +5,19 @@
 /// ```rust
 /// # use anstyle_progress::TermProgress;
 /// # use anstyle_progress::TermProgressStatus;
-/// let mut progress = anstyle_progress::TermProgress::none()
-///   .status(TermProgressStatus::Normal);
+/// let mut progress = TermProgress::start();
 ///
-/// let progress = progress.percent(Some(0));
+/// let progress = progress.percent(0);
 /// println!("{progress}");
 ///
-/// let progress = progress.percent(Some(50));
+/// let progress = progress.percent(50);
 /// println!("{progress}");
 ///
-/// let progress = progress.percent(Some(100));
+/// let progress = progress.percent(100);
 /// println!("{progress}");
 ///
-/// println!("{progress:#}");
+/// let progress = TermProgress::remove();
+/// println!("{progress}");
 /// ```
 #[derive(Copy, Clone)]
 pub struct TermProgress {
@@ -34,16 +34,35 @@ impl TermProgress {
         }
     }
 
-    /// Change the reported status
-    pub fn status(mut self, status: TermProgressStatus) -> Self {
-        self.status = Some(status);
+    /// Start a progress indicator
+    ///
+    /// This starts in an indeterminate state
+    pub fn start() -> Self {
+        Self::none().status(TermProgressStatus::Normal)
+    }
+
+    /// Start an error indicator
+    pub fn error() -> Self {
+        Self::none().status(TermProgressStatus::Error)
+    }
+
+    /// Remove the indicator
+    pub fn remove() -> Self {
+        Self::none().status(TermProgressStatus::Removed)
+    }
+
+    /// Set progress percentage (between `0..=100`)
+    ///
+    /// Without setting this, progress will be indeterminate
+    pub fn percent(mut self, percent: u8) -> Self {
+        assert!(matches!(percent, 0..=100));
+        self.percent = Some(percent);
         self
     }
 
-    /// Between `0..=100`
-    pub fn percent(mut self, percent: Option<u8>) -> Self {
-        assert!(matches!(percent, Some(0..=100) | None));
-        self.percent = percent;
+    /// Change the reported status
+    pub fn status(mut self, status: TermProgressStatus) -> Self {
+        self.status = Some(status);
         self
     }
 }
@@ -58,6 +77,7 @@ impl Default for TermProgress {
 #[allow(missing_docs)]
 #[derive(Copy, Clone)]
 pub enum TermProgressStatus {
+    Removed,
     Normal,
     /// Some terminals treat this as a Warning
     Paused,
@@ -69,14 +89,17 @@ impl core::fmt::Display for TermProgress {
         let Some(status) = self.status else {
             return Ok(());
         };
-        let st = match (f.alternate(), status, self.percent) {
-            (true, _, _) => 0,
-            (false, TermProgressStatus::Normal, Some(_)) => 1,
-            (false, TermProgressStatus::Error, _) => 2,
-            (false, TermProgressStatus::Normal, None) => 3,
-            (false, TermProgressStatus::Paused, _) => 4,
+        let (st, pr) = match (status, self.percent) {
+            (TermProgressStatus::Removed, _) => (0, None),
+            (TermProgressStatus::Normal, Some(_)) => (1, self.percent),
+            (TermProgressStatus::Error, _) => (2, self.percent),
+            (TermProgressStatus::Normal, None) => (3, None),
+            (TermProgressStatus::Paused, _) => (4, self.percent),
         };
-        let pr = self.percent.unwrap_or(0);
-        write!(f, "\x1b]9;4;{st};{pr}\x1b\\")
+        write!(f, "\x1b]9;4;{st}")?;
+        if let Some(pr) = pr {
+            write!(f, ";{pr}")?;
+        }
+        write!(f, "\x1b\\")
     }
 }
