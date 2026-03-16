@@ -41,6 +41,8 @@ impl TermProgress {
     }
 
     /// Between `0..=100`
+    ///
+    /// When `None`, will report an indeterminate status
     pub fn percent(mut self, percent: Option<u8>) -> Self {
         assert!(matches!(percent, Some(0..=100) | None));
         self.percent = percent;
