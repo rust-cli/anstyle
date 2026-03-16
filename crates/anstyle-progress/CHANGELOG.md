@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.0] - 2026-03-16
+
 ### Breaking changes
 
 - Instead of using `alternate` to remove, use `TermProgressStatus::Removed`
@@ -28,5 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 Initial release
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-progress-v0.0.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-progress-v0.1.0...HEAD
+[0.1.0]: https://github.com/rust-cli/anstyle/compare/anstyle-progress-v0.0.1...anstyle-progress-v0.1.0
 [0.0.1]: https://github.com/rust-cli/anstyle/compare/8ed060819922c65d8bdf37bb83442db64579c53f...anstyle-progress-v0.0.1

@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-progress"
-version = "0.0.1"
+version = "0.1.0"
 description = "ANSI escape code progress reporting (OSC 9;4)"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "no_std"]
