@@ -2,11 +2,12 @@
 pub fn supports_term_progress(is_terminal: bool) -> bool {
     let windows_terminal = std::env::var("WT_SESSION").is_ok();
     let conemu = std::env::var("ConEmuANSI").ok() == Some("ON".into());
-    let wezterm = std::env::var("TERM_PROGRAM").ok() == Some("WezTerm".into());
-    let ghostty = std::env::var("TERM_PROGRAM").ok() == Some("ghostty".into());
+    let term_program = std::env::var("TERM_PROGRAM").ok();
+    let wezterm = term_program == Some("WezTerm".into());
+    let ghostty = term_program == Some("ghostty".into());
     // iTerm added OSC 9;4 support in v3.6.6, which we can check for.
     // For context: https://github.com/rust-lang/cargo/pull/16506#discussion_r2706584034
-    let iterm = std::env::var("TERM_PROGRAM").ok() == Some("iTerm.app".into())
+    let iterm = term_program == Some("iTerm.app".into())
         && std::env::var("TERM_FEATURES")
             .ok()
             .map(|v| term_features_has_progress(&v))
