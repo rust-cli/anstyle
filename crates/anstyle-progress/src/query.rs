@@ -4,14 +4,18 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return false;
     }
 
+    // https://github.com/microsoft/terminal/pull/8055
     if std::env::var("WT_SESSION").is_ok() {
         return true;
     }
 
+    // https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC
     if std::env::var("ConEmuANSI").ok() == Some("ON".into()) {
         return true;
     }
 
+    // https://github.com/wezterm/wezterm/issues/6581
+    // https://ghostty.org/docs/install/release-notes/1-2-0#graphical-progress-bars
     let term_program = std::env::var("TERM_PROGRAM").ok();
     if matches!(term_program.as_deref(), Some("WezTerm") | Some("ghostty")) {
         return true;
