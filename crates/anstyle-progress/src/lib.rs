@@ -11,6 +11,11 @@
 #![warn(clippy::print_stderr)]
 #![warn(clippy::print_stdout)]
 
+mod progress;
+
+pub use progress::TermProgress;
+pub use progress::TermProgressStatus;
+
 #[doc = include_str!("../README.md")]
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
