@@ -77,14 +77,17 @@ impl core::fmt::Display for TermProgress {
         let Some(status) = self.status else {
             return Ok(());
         };
-        let st = match (f.alternate(), status, self.percent) {
-            (true, _, _) => 0,
-            (false, TermProgressStatus::Normal, Some(_)) => 1,
-            (false, TermProgressStatus::Error, _) => 2,
-            (false, TermProgressStatus::Normal, None) => 3,
-            (false, TermProgressStatus::Paused, _) => 4,
+        let (st, pr) = match (f.alternate(), status, self.percent) {
+            (true, _, _) => (0, None),
+            (false, TermProgressStatus::Normal, Some(_)) => (1, self.percent),
+            (false, TermProgressStatus::Error, _) => (2, self.percent),
+            (false, TermProgressStatus::Normal, None) => (3, None),
+            (false, TermProgressStatus::Paused, _) => (4, self.percent),
         };
-        let pr = self.percent.unwrap_or(0);
-        write!(f, "\x1b]9;4;{st};{pr}\x1b\\")
+        write!(f, "\x1b]9;4;{st}")?;
+        if let Some(pr) = pr {
+            write!(f, ";{pr}")?;
+        }
+        write!(f, "\x1b\\")
     }
 }
