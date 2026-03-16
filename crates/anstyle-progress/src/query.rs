@@ -1,16 +1,36 @@
 /// Determines whether the terminal supports ANSI OSC 9;4.
 pub fn supports_term_progress(is_terminal: bool) -> bool {
-    let windows_terminal = std::env::var("WT_SESSION").is_ok();
-    let conemu = std::env::var("ConEmuANSI").ok() == Some("ON".into());
-    let wezterm = std::env::var("TERM_PROGRAM").ok() == Some("WezTerm".into());
-    let ghostty = std::env::var("TERM_PROGRAM").ok() == Some("ghostty".into());
-    // iTerm added OSC 9;4 support in v3.6.6, which we can check for.
-    // For context: https://github.com/rust-lang/cargo/pull/16506#discussion_r2706584034
-    let iterm = std::env::var("TERM_PROGRAM").ok() == Some("iTerm.app".into())
-        && std::env::var("TERM_FEATURES")
-            .ok()
-            .map(|v| term_features_has_progress(&v))
-            .unwrap_or(false);
+    if !is_terminal {
+        return false;
+    }
+
+    // Terminal feature detection, includes
+    // - iTerm support in v3.6.6
+    let term_features = std::env::var("TERM_FEATURES")
+        .ok()
+        .map(|v| term_features_has_progress(&v))
+        .unwrap_or(false);
+    if term_features {
+        return true;
+    }
+
+    // https://github.com/wezterm/wezterm/issues/6581
+    // https://ghostty.org/docs/install/release-notes/1-2-0#graphical-progress-bars
+    let term_program = std::env::var("TERM_PROGRAM").ok();
+    if matches!(term_program.as_deref(), Some("WezTerm") | Some("ghostty")) {
+        return true;
+    }
+
+    // https://github.com/microsoft/terminal/pull/8055
+    if std::env::var("WT_SESSION").is_ok() {
+        return true;
+    }
+
+    // https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC
+    if std::env::var("ConEmuANSI").ok() == Some("ON".into()) {
+        return true;
+    }
+
     // Ptyxis added OSC 9;4 support in 48.0.
     // See https://gitlab.gnome.org/chergert/ptyxis/-/issues/305
     let ptyxis = std::env::var("PTYXIS_VERSION")
@@ -18,11 +38,15 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         .and_then(|version| version.split(".").next()?.parse::<i32>().ok())
         .map(|major_version| major_version >= 48)
         .unwrap_or(false);
+    if ptyxis {
+        return true;
+    }
 
-    (windows_terminal || conemu || wezterm || ghostty || iterm || ptyxis) && is_terminal
+    false
 }
 
 // For iTerm, the TERM_FEATURES value "P" indicates OSC 9;4 support.
+//
 // Context: https://iterm2.com/feature-reporting/
 fn term_features_has_progress(value: &str) -> bool {
     let mut current = String::new();
