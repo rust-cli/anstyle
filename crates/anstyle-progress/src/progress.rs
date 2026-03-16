@@ -96,9 +96,9 @@ impl core::fmt::Display for TermProgress {
             (TermProgressStatus::Normal, None) => (3, None),
             (TermProgressStatus::Paused, _) => (4, self.percent),
         };
-        write!(f, "\x1b]9;4;{st}")?;
+        write!(f, "\x1b]9;4;{st};")?;
         if let Some(pr) = pr {
-            write!(f, ";{pr}")?;
+            write!(f, "{pr}")?;
         }
         write!(f, "\x1b\\")
     }
