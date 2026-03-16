@@ -4,13 +4,13 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return false;
     }
 
-    // https://github.com/microsoft/terminal/pull/8055
-    if std::env::var("WT_SESSION").is_ok() {
-        return true;
-    }
-
-    // https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC
-    if std::env::var("ConEmuANSI").ok() == Some("ON".into()) {
+    // Terminal feature detection, includes
+    // - iTerm support in v3.6.6
+    let term_features = std::env::var("TERM_FEATURES")
+        .ok()
+        .map(|v| term_features_has_progress(&v))
+        .unwrap_or(false);
+    if term_features {
         return true;
     }
 
@@ -21,13 +21,13 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return true;
     }
 
-    // Terminal feature detection, includes
-    // - iTerm support in v3.6.6
-    let term_features = std::env::var("TERM_FEATURES")
-        .ok()
-        .map(|v| term_features_has_progress(&v))
-        .unwrap_or(false);
-    if term_features {
+    // https://github.com/microsoft/terminal/pull/8055
+    if std::env::var("WT_SESSION").is_ok() {
+        return true;
+    }
+
+    // https://conemu.github.io/en/AnsiEscapeCodes.html#ConEmu_specific_OSC
+    if std::env::var("ConEmuANSI").ok() == Some("ON".into()) {
         return true;
     }
 
