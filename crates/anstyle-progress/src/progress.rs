@@ -16,7 +16,8 @@
 /// let progress = progress.percent(Some(100));
 /// println!("{progress}");
 ///
-/// println!("{progress:#}");
+/// let progress = progress.remove();
+/// println!("{progress}");
 /// ```
 #[derive(Copy, Clone)]
 pub struct TermProgress {
@@ -45,6 +46,13 @@ impl TermProgress {
         Self::none().status(TermProgressStatus::Error)
     }
 
+    /// Remove the indicator
+    pub fn remove(mut self) -> Self {
+        self.status = Some(TermProgressStatus::Removed);
+        self.percent = None;
+        self
+    }
+
     /// Change the reported status
     pub fn status(mut self, status: TermProgressStatus) -> Self {
         self.status = Some(status);
@@ -71,6 +79,7 @@ impl Default for TermProgress {
 #[allow(missing_docs)]
 #[derive(Copy, Clone)]
 pub enum TermProgressStatus {
+    Removed,
     Normal,
     /// Some terminals treat this as a Warning
     Paused,
@@ -82,12 +91,12 @@ impl core::fmt::Display for TermProgress {
         let Some(status) = self.status else {
             return Ok(());
         };
-        let (st, pr) = match (f.alternate(), status, self.percent) {
-            (true, _, _) => (0, None),
-            (false, TermProgressStatus::Normal, Some(_)) => (1, self.percent),
-            (false, TermProgressStatus::Error, _) => (2, self.percent),
-            (false, TermProgressStatus::Normal, None) => (3, None),
-            (false, TermProgressStatus::Paused, _) => (4, self.percent),
+        let (st, pr) = match (status, self.percent) {
+            (TermProgressStatus::Removed, _) => (0, None),
+            (TermProgressStatus::Normal, Some(_)) => (1, self.percent),
+            (TermProgressStatus::Error, _) => (2, self.percent),
+            (TermProgressStatus::Normal, None) => (3, None),
+            (TermProgressStatus::Paused, _) => (4, self.percent),
         };
         write!(f, "\x1b]9;4;{st}")?;
         if let Some(pr) = pr {
