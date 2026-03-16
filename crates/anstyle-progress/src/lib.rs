@@ -12,9 +12,13 @@
 #![warn(clippy::print_stdout)]
 
 mod progress;
+#[cfg(feature = "std")]
+mod query;
 
 pub use progress::TermProgress;
 pub use progress::TermProgressStatus;
+#[cfg(feature = "std")]
+pub use query::supports_term_progress;
 
 #[doc = include_str!("../README.md")]
 #[cfg(doctest)]
