@@ -21,14 +21,13 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return true;
     }
 
-    // iTerm added OSC 9;4 support in v3.6.6, which we can check for.
-    // For context: https://github.com/rust-lang/cargo/pull/16506#discussion_r2706584034
-    let iterm = term_program == Some("iTerm.app".into())
-        && std::env::var("TERM_FEATURES")
-            .ok()
-            .map(|v| term_features_has_progress(&v))
-            .unwrap_or(false);
-    if iterm {
+    // Terminal feature detection, includes
+    // - iTerm support in v3.6.6
+    let term_features = std::env::var("TERM_FEATURES")
+        .ok()
+        .map(|v| term_features_has_progress(&v))
+        .unwrap_or(false);
+    if term_features {
         return true;
     }
 
@@ -47,6 +46,7 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
 }
 
 // For iTerm, the TERM_FEATURES value "P" indicates OSC 9;4 support.
+//
 // Context: https://iterm2.com/feature-reporting/
 fn term_features_has_progress(value: &str) -> bool {
     let mut current = String::new();
