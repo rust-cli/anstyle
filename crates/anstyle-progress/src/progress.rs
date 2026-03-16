@@ -5,8 +5,7 @@
 /// ```rust
 /// # use anstyle_progress::TermProgress;
 /// # use anstyle_progress::TermProgressStatus;
-/// let mut progress = anstyle_progress::TermProgress::none()
-///   .status(TermProgressStatus::Normal);
+/// let mut progress = anstyle_progress::TermProgress::start();
 ///
 /// let progress = progress.percent(Some(0));
 /// println!("{progress}");
@@ -32,6 +31,13 @@ impl TermProgress {
             status: None,
             percent: None,
         }
+    }
+
+    /// Start a progress indicator
+    ///
+    /// This starts in an indeterminate state
+    pub fn start() -> Self {
+        Self::none().status(TermProgressStatus::Normal)
     }
 
     /// Change the reported status
