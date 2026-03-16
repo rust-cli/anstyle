@@ -5,7 +5,7 @@
 /// ```rust
 /// # use anstyle_progress::TermProgress;
 /// # use anstyle_progress::TermProgressStatus;
-/// let mut progress = anstyle_progress::TermProgress::start();
+/// let mut progress = TermProgress::start();
 ///
 /// let progress = progress.percent(0);
 /// println!("{progress}");
@@ -16,7 +16,7 @@
 /// let progress = progress.percent(100);
 /// println!("{progress}");
 ///
-/// let progress = progress.remove();
+/// let progress = TermProgress::remove();
 /// println!("{progress}");
 /// ```
 #[derive(Copy, Clone)]
@@ -47,10 +47,8 @@ impl TermProgress {
     }
 
     /// Remove the indicator
-    pub fn remove(mut self) -> Self {
-        self.status = Some(TermProgressStatus::Removed);
-        self.percent = None;
-        self
+    pub fn remove() -> Self {
+        Self::none().status(TermProgressStatus::Removed)
     }
 
     /// Change the reported status
