@@ -59,6 +59,7 @@ impl Default for TermProgress {
 #[derive(Copy, Clone)]
 pub enum TermProgressStatus {
     Normal,
+    /// Some terminals treat this as a Warning
     Paused,
     Error,
 }
