@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Breaking changes
+
+- Instead of using `alternate` to remove, use `TermProgressStatus::Removed`
+- `TermProgress::percent` no longer takes an `Option`
+
+### Features
+
+- Added `TermProgress::start`
+- Added `TermProgress::error`
+- Added `TermProgress::remove`
+
+### Fixes
+
+- Only include percent when needed
+- Removed iTerm check for `TERM_FEATURES`
+
 ## [0.0.1] - 2026-03-16
 
 Initial release
