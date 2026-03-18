@@ -26,6 +26,10 @@ pub use file::file_to_url;
 #[cfg(feature = "file")]
 pub use file::path_to_url;
 #[cfg(feature = "file")]
+pub use file::Editor;
+#[cfg(feature = "file")]
+pub use file::ParseEditorError;
+#[cfg(feature = "file")]
 pub use hostname::hostname;
 pub use hyperlink::Hyperlink;
 
