@@ -20,10 +20,6 @@ pub fn path_to_url(path: &std::path::Path) -> Option<String> {
 /// the computer you've SSH'ed into
 /// ([reference](https://gist.github.com/egmontkob/eb114294efbcd5adb1944c9f3cb5feda#file-uris-and-the-hostname))
 pub fn file_to_url(hostname: Option<&str>, path: &std::path::Path) -> Option<String> {
-    if !path.is_absolute() {
-        return None;
-    }
-
     let mut url = "file://".to_owned();
     if let Some(hostname) = hostname {
         url.push_str(hostname);
