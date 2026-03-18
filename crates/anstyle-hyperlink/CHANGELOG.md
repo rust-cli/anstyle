@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add `Editor` for creating editor-specific URLs
+
+### Fixes
+
+- Support Windows URLs
+
 ## [1.0.1] - 2026-03-13
 
 ## [1.0.0] - 2026-03-13
