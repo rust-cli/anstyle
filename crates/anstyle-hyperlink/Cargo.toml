@@ -1,6 +1,6 @@
 [package]
 name = "anstyle-hyperlink"
-version = "1.0.1"
+version = "1.0.2"
 description = "ANSI escape code hyperlinks (OSC 8)"
 categories = ["command-line-interface"]
 keywords = ["ansi", "terminal", "color", "no_std"]

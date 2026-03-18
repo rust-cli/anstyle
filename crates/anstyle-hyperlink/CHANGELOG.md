@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.0.2] - 2026-03-18
+
 ### Features
 
 - Add `Editor` for creating editor-specific URLs
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 Initial release
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-hyperlink-v1.0.1...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-hyperlink-v1.0.2...HEAD
+[1.0.2]: https://github.com/rust-cli/anstyle/compare/anstyle-hyperlink-v1.0.1...anstyle-hyperlink-v1.0.2
 [1.0.1]: https://github.com/rust-cli/anstyle/compare/anstyle-hyperlink-v1.0.0...anstyle-hyperlink-v1.0.1
 [1.0.0]: https://github.com/rust-cli/anstyle/compare/22205da0833d0c597801a0ee73b86dd89bdb94c6...anstyle-hyperlink-v1.0.0

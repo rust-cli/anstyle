@@ -98,7 +98,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-hyperlink"
-version = "1.0.1"
+version = "1.0.2"
 dependencies = [
  "libc",
  "percent-encoding",
