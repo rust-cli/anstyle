@@ -63,16 +63,29 @@ const PATH_SEGMENT: &percent_encoding::AsciiSet = &PATH.add(b'/').add(b'%');
 const SPECIAL_PATH_SEGMENT: &percent_encoding::AsciiSet = &PATH_SEGMENT.add(b'\\');
 
 fn encode_path(path: &std::path::Path, url: &mut String) {
-    // skip the root component
     let mut is_path_empty = true;
-    for component in path.components().skip(1) {
+
+    for component in path.components() {
         is_path_empty = false;
-        url.push_str(URL_PATH_SEP);
-        let component = component.as_os_str().to_str()?;
-        url.extend(percent_encoding::percent_encode(
-            component.as_bytes(),
-            SPECIAL_PATH_SEGMENT,
-        ));
+        match component {
+            std::path::Component::Prefix(prefix) => {
+                let component = prefix.as_os_str().to_string_lossy();
+                url.push_str(&component);
+            }
+            std::path::Component::RootDir => {}
+            std::path::Component::CurDir => {}
+            std::path::Component::ParentDir => {
+                url.push_str("..");
+            }
+            std::path::Component::Normal(part) => {
+                url.push_str(URL_PATH_SEP);
+                let component = part.to_string_lossy();
+                url.extend(percent_encoding::percent_encode(
+                    component.as_bytes(),
+                    SPECIAL_PATH_SEGMENT,
+                ));
+            }
+        }
     }
     if is_path_empty {
         // An URL's path must not be empty
