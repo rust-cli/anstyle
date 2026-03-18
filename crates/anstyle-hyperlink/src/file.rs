@@ -25,21 +25,7 @@ pub fn file_to_url(hostname: Option<&str>, path: &std::path::Path) -> Option<Str
         url.push_str(hostname);
     }
 
-    // skip the root component
-    let mut is_path_empty = true;
-    for component in path.components().skip(1) {
-        is_path_empty = false;
-        url.push_str(URL_PATH_SEP);
-        let component = component.as_os_str().to_str()?;
-        url.extend(percent_encoding::percent_encode(
-            component.as_bytes(),
-            SPECIAL_PATH_SEGMENT,
-        ));
-    }
-    if is_path_empty {
-        // An URL's path must not be empty
-        url.push_str(URL_PATH_SEP);
-    }
+    encode_path(path, &mut url);
 
     Some(url)
 }
@@ -75,3 +61,21 @@ const PATH_SEGMENT: &percent_encoding::AsciiSet = &PATH.add(b'/').add(b'%');
 // The backslash (\) character is treated as a path separator in special URLs
 // so it needs to be additionally escaped in that case.
 const SPECIAL_PATH_SEGMENT: &percent_encoding::AsciiSet = &PATH_SEGMENT.add(b'\\');
+
+fn encode_path(path: &std::path::Path, url: &mut String) {
+    // skip the root component
+    let mut is_path_empty = true;
+    for component in path.components().skip(1) {
+        is_path_empty = false;
+        url.push_str(URL_PATH_SEP);
+        let component = component.as_os_str().to_str()?;
+        url.extend(percent_encoding::percent_encode(
+            component.as_bytes(),
+            SPECIAL_PATH_SEGMENT,
+        ));
+    }
+    if is_path_empty {
+        // An URL's path must not be empty
+        url.push_str(URL_PATH_SEP);
+    }
+}
