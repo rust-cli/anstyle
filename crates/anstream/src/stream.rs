@@ -1,4 +1,4 @@
-//! Higher-level traits to describe writeable streams
+//! Higher-level traits to describe writable streams
 
 /// Required functionality for underlying [`std::io::Write`] for adaptation
 #[cfg(not(all(windows, feature = "wincon")))]
