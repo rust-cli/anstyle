@@ -102,7 +102,7 @@ where
     #[inline]
     fn always_ansi_(raw: S) -> Self {
         let inner = StreamInner::PassThrough(raw);
-        AutoStream { inner }
+        Self { inner }
     }
 
     /// Force color, no matter what the inner `Write` supports.
@@ -129,7 +129,7 @@ where
     #[inline]
     pub fn never(raw: S) -> Self {
         let inner = StreamInner::Strip(StripStream::new(raw));
-        AutoStream { inner }
+        Self { inner }
     }
 
     #[inline]

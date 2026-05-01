@@ -40,7 +40,7 @@ fn eprintln() {
 
 #[test]
 #[cfg(feature = "auto")]
-#[should_panic]
+#[should_panic = "This should be captured"]
 fn panic() {
     anstream::panic!(
         "{}This should be captured{}",

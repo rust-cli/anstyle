@@ -19,7 +19,7 @@ pub enum Color {
 impl Color {
     /// Create a [`Style`][crate::Style] with this as the foreground
     #[inline]
-    pub fn on(self, background: impl Into<Color>) -> crate::Style {
+    pub fn on(self, background: impl Into<Self>) -> crate::Style {
         crate::Style::new()
             .fg_color(Some(self))
             .bg_color(Some(background.into()))
