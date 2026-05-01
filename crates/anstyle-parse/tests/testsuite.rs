@@ -73,7 +73,7 @@ impl std::ops::Deref for Dispatcher {
 
 impl<D> std::ops::Add<D> for Dispatcher
 where
-    D: Into<Dispatcher>,
+    D: Into<Self>,
 {
     type Output = Self;
     fn add(mut self, rhs: D) -> Self::Output {
@@ -84,7 +84,7 @@ where
 
 impl From<Vec<Sequence>> for Dispatcher {
     fn from(seq: Vec<Sequence>) -> Self {
-        Dispatcher { dispatched: seq }
+        Self { dispatched: seq }
     }
 }
 

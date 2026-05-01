@@ -14,7 +14,7 @@ where
     W: FnMut(&[u8]) -> std::io::Result<()>,
 {
     pub(crate) fn new(writer: W) -> Self {
-        Adapter {
+        Self {
             writer,
             error: Ok(()),
         }

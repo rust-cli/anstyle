@@ -10,32 +10,32 @@ pub struct Effects(u16);
 
 impl Effects {
     /// No [`Effects`] applied
-    const PLAIN: Self = Effects(0);
+    const PLAIN: Self = Self(0);
 
     #[allow(missing_docs)]
-    pub const BOLD: Self = Effects(1 << 0);
+    pub const BOLD: Self = Self(1 << 0);
     #[allow(missing_docs)]
-    pub const DIMMED: Self = Effects(1 << 1);
+    pub const DIMMED: Self = Self(1 << 1);
     /// Not widely supported. Sometimes treated as inverse or blink
-    pub const ITALIC: Self = Effects(1 << 2);
+    pub const ITALIC: Self = Self(1 << 2);
     /// Style extensions exist for Kitty, VTE, mintty and iTerm2.
-    pub const UNDERLINE: Self = Effects(1 << 3);
+    pub const UNDERLINE: Self = Self(1 << 3);
     #[allow(missing_docs)]
-    pub const DOUBLE_UNDERLINE: Self = Effects(1 << 4);
+    pub const DOUBLE_UNDERLINE: Self = Self(1 << 4);
     #[allow(missing_docs)]
-    pub const CURLY_UNDERLINE: Self = Effects(1 << 5);
+    pub const CURLY_UNDERLINE: Self = Self(1 << 5);
     #[allow(missing_docs)]
-    pub const DOTTED_UNDERLINE: Self = Effects(1 << 6);
+    pub const DOTTED_UNDERLINE: Self = Self(1 << 6);
     #[allow(missing_docs)]
-    pub const DASHED_UNDERLINE: Self = Effects(1 << 7);
+    pub const DASHED_UNDERLINE: Self = Self(1 << 7);
     #[allow(missing_docs)]
-    pub const BLINK: Self = Effects(1 << 8);
+    pub const BLINK: Self = Self(1 << 8);
     /// Swap foreground and background colors; inconsistent emulation
-    pub const INVERT: Self = Effects(1 << 9);
+    pub const INVERT: Self = Self(1 << 9);
     #[allow(missing_docs)]
-    pub const HIDDEN: Self = Effects(1 << 10);
+    pub const HIDDEN: Self = Self(1 << 10);
     ///  Characters legible but marked as if for deletion. Not supported in Terminal.app
-    pub const STRIKETHROUGH: Self = Effects(1 << 11);
+    pub const STRIKETHROUGH: Self = Self(1 << 11);
 
     /// No effects enabled
     ///
@@ -77,7 +77,7 @@ impl Effects {
     /// assert!(!effects.contains(anstyle::Effects::BOLD));
     /// ```
     #[inline(always)]
-    pub const fn contains(self, other: Effects) -> bool {
+    pub const fn contains(self, other: Self) -> bool {
         (other.0 & self.0) == other.0
     }
 
@@ -94,7 +94,7 @@ impl Effects {
     /// ```
     #[inline(always)]
     #[must_use]
-    pub const fn insert(mut self, other: Effects) -> Self {
+    pub const fn insert(mut self, other: Self) -> Self {
         self.0 |= other.0;
         self
     }
@@ -110,7 +110,7 @@ impl Effects {
     /// ```
     #[inline(always)]
     #[must_use]
-    pub const fn remove(mut self, other: Effects) -> Self {
+    pub const fn remove(mut self, other: Self) -> Self {
         self.0 &= !other.0;
         self
     }
