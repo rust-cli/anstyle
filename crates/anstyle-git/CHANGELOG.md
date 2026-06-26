@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [1.1.5] - 2026-06-26
+
 ### Fixes
 
 - Correct parse of 3-digit hex colors
@@ -58,7 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.2.1] - 2022-05-19
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.4...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle.git/compare/anstyle-git-v1.1.5...HEAD
+[1.1.5]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.4...anstyle-git-v1.1.5
 [1.1.4]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.3...anstyle-git-v1.1.4
 [1.1.3]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.2...anstyle-git-v1.1.3
 [1.1.2]: https://github.com/rust-cli/anstyle/compare/anstyle-git-v1.1.1...anstyle-git-v1.1.2
