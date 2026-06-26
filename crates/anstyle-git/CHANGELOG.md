@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Correct parse of 3-digit hex colors
+
 ## [1.1.4] - 2026-03-13
 
 ## [1.1.3] - 2025-06-04
