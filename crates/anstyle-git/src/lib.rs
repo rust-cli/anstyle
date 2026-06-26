@@ -133,7 +133,8 @@ fn parse_hex_color(hex: &str) -> Result<anstyle::Color, ()> {
         u8::from_str_radix(&hex[l..(2 * l)], 16),
         u8::from_str_radix(&hex[(2 * l)..(3 * l)], 16),
     ) {
-        Ok(anstyle::Color::from((r, g, b)))
+        let m = if l == 1 { 0x11 } else { 1 };
+        Ok(anstyle::Color::from((r * m, g * m, b * m)))
     } else {
         Err(())
     }
@@ -221,12 +222,12 @@ mod tests {
         test!("#204060" => RgbColor(0x20,0x40,0x60).on_default());
         test!("#1a2b3c" => RgbColor(0x1a,0x2b,0x3c).on_default());
         test!("#000" => RgbColor(0,0,0).on_default());
-        test!("#cba" => RgbColor(0xc,0xb,0xa).on_default());
-        test!("#cba   " => RgbColor(0xc,0xb,0xa).on_default());
-        test!("#987 #135" => RgbColor(9,8,7).on(RgbColor(1, 3, 5)));
-        test!("#987    #135   " => RgbColor(9,8,7).on(RgbColor(1, 3, 5)));
-        test!("#123 #abcdef" => RgbColor(1,2,3).on(RgbColor(0xab, 0xcd, 0xef)));
-        test!("#654321 #a9b" => RgbColor(0x65,0x43,0x21).on(RgbColor(0xa, 0x9, 0xb)));
+        test!("#cba" => RgbColor(0xcc, 0xbb, 0xaa).on_default());
+        test!("#cba   " => RgbColor(0xcc, 0xbb, 0xaa).on_default());
+        test!("#987 #135" => RgbColor(0x99, 0x88, 0x77).on(RgbColor(0x11, 0x33, 0x55)));
+        test!("#987    #135   " => RgbColor(0x99, 0x88, 0x77).on(RgbColor(0x11, 0x33, 0x55)));
+        test!("#123 #abcdef" => RgbColor(0x11, 0x22, 0x33).on(RgbColor(0xab, 0xcd, 0xef)));
+        test!("#654321 #a9b" => RgbColor(0x65, 0x43, 0x21).on(RgbColor(0xaa, 0x99, 0xbb)));
 
         test!("bold cyan white" => Cyan.on(White).bold());
         test!("bold cyan nobold white" => Cyan.on(White));
@@ -236,8 +237,8 @@ mod tests {
         test!("italic cyan white" => Cyan.on(White).italic());
         test!("strike cyan white" => Cyan.on(White).strikethrough());
         test!("blink #050505 white" => RgbColor(5,5,5).on(White).blink());
-        test!("bold #987 green" => RgbColor(9,8,7).on(Green).bold());
-        test!("strike #147 #cba" => RgbColor(1,4,7).on(RgbColor(0xc, 0xb, 0xa)).strikethrough());
+        test!("bold #987 green" => RgbColor(0x99, 0x88, 0x77).on(Green).bold());
+        test!("strike #147 #cba" => RgbColor(0x11, 0x44, 0x77).on(RgbColor(0xcc, 0xbb, 0xaa)).strikethrough());
     }
 
     #[test]
