@@ -31,7 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 - Update MSRV to 1.70.0
 
-### Feaures
+### Features
 
 - Expose palette API
 
