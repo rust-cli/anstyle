@@ -41,6 +41,7 @@ pub struct Term {
     font_family: &'static str,
     min_width_px: usize,
     padding_px: usize,
+    use_html5: bool,
 }
 
 impl Term {
@@ -54,6 +55,7 @@ impl Term {
             font_family: "SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace",
             min_width_px: 720,
             padding_px: 10,
+            use_html5: true,
         }
     }
 
@@ -84,6 +86,12 @@ impl Term {
     /// Minimum width for the text
     pub const fn min_width_px(mut self, px: usize) -> Self {
         self.min_width_px = px;
+        self
+    }
+
+    /// Whether or not to generate HTML5 compatible tags. Enabled by default.
+    pub const fn use_html5(mut self, use_html5: bool) -> Self {
+        self.use_html5 = use_html5;
         self
     }
 
@@ -178,7 +186,7 @@ impl Term {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(&mut buffer, "tspan", &element.style, &element.text);
+                    write_bg_span(&mut buffer, SpanKind::Tspan, &element.style, &element.text);
                 }
                 // HACK: must close tspan on newline to include them in copy/paste
                 writeln!(&mut buffer).unwrap();
@@ -190,7 +198,7 @@ impl Term {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(&mut buffer, "tspan", element, &element.text);
+                write_fg_span(&mut buffer, SpanKind::Tspan, element, &element.text);
             }
             // HACK: must close tspan on newline to include them in copy/paste
             writeln!(&mut buffer).unwrap();
@@ -296,27 +304,28 @@ impl Term {
     fn render_content(&self, buffer: &mut String, styled_lines: Vec<Vec<adapter::Element>>) {
         use std::fmt::Write as _;
 
-        writeln!(buffer, r#"  <div class="container {FG}">"#).unwrap();
+        let br = if self.use_html5 { "<br>" } else { "<br />" };
+        write!(buffer, r#"<div class="container {FG}">"#).unwrap();
         for line in &styled_lines {
             if line.iter().any(|e| e.style.get_bg_color().is_some()) {
                 for element in line {
                     if element.text.is_empty() {
                         continue;
                     }
-                    write_bg_span(buffer, "span", &element.style, &element.text);
+                    write_bg_span(buffer, SpanKind::Span, &element.style, &element.text);
                 }
-                writeln!(buffer, r#"<br />"#).unwrap();
+                buffer.write_str(br).unwrap();
             }
 
             for element in line {
                 if element.text.is_empty() {
                     continue;
                 }
-                write_fg_span(buffer, "span", element, &element.text);
+                write_fg_span(buffer, SpanKind::Span, element, &element.text);
             }
-            writeln!(buffer, r#"<br />"#).unwrap();
+            buffer.write_str(br).unwrap();
         }
-        writeln!(buffer, r#"  </div>"#).unwrap();
+        write!(buffer, r#"</div>"#).unwrap();
     }
 
     /// Returns the various parts needed to create an HTML page.
@@ -421,7 +430,22 @@ fn write_effects_in_use(buffer: &mut String, elements: &[adapter::Element]) {
     }
 }
 
-fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fragment: &str) {
+#[derive(PartialEq)]
+enum SpanKind {
+    Tspan,
+    Span,
+}
+
+impl std::fmt::Display for SpanKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Tspan => f.write_str("tspan"),
+            Self::Span => f.write_str("span"),
+        }
+    }
+}
+
+fn write_fg_span(buffer: &mut String, span: SpanKind, element: &adapter::Element, fragment: &str) {
     use std::fmt::Write as _;
     let style = element.style;
     let fg_color = style.get_fg_color().map(|c| color_name(FG_PREFIX, c));
@@ -480,26 +504,44 @@ fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fr
         classes.push("hidden");
     }
 
-    let mut need_closing_a = false;
+    match span {
+        SpanKind::Span => {
+            if classes.is_empty() && element.url.is_none() {
+                // No need to create an element if there is no class or href.
+                write!(buffer, "{fragment}").unwrap();
+            }
+            let closing_tag = if let Some(hyperlink) = &element.url {
+                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+                "</a>"
+            } else {
+                write!(buffer, r#"<span"#).unwrap();
+                "</span>"
+            };
+            write_classes(buffer, classes);
+            write!(buffer, r#">"#).unwrap();
+            write!(buffer, "{fragment}").unwrap();
+            buffer.write_str(closing_tag).unwrap();
+        }
+        SpanKind::Tspan => {
+            let mut need_closing_a = false;
 
-    write!(buffer, r#"<{span}"#).unwrap();
-    if !classes.is_empty() {
-        let classes = classes.join(" ");
-        write!(buffer, r#" class="{classes}""#).unwrap();
+            write!(buffer, r#"<tspan"#).unwrap();
+            write_classes(buffer, classes);
+            write!(buffer, r#">"#).unwrap();
+            if let Some(hyperlink) = &element.url {
+                write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
+                need_closing_a = true;
+            }
+            write!(buffer, "{fragment}").unwrap();
+            if need_closing_a {
+                write!(buffer, r#"</a>"#).unwrap();
+            }
+            write!(buffer, r#"</tspan>"#).unwrap();
+        }
     }
-    write!(buffer, r#">"#).unwrap();
-    if let Some(hyperlink) = &element.url {
-        write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
-        need_closing_a = true;
-    }
-    write!(buffer, "{fragment}").unwrap();
-    if need_closing_a {
-        write!(buffer, r#"</a>"#).unwrap();
-    }
-    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
-fn write_bg_span(buffer: &mut String, span: &str, style: &anstyle::Style, fragment: &str) {
+fn write_bg_span(buffer: &mut String, span: SpanKind, style: &anstyle::Style, fragment: &str) {
     use std::fmt::Write as _;
     use unicode_width::UnicodeWidthStr;
 
@@ -515,13 +557,19 @@ fn write_bg_span(buffer: &mut String, span: &str, style: &anstyle::Style, fragme
         classes.push(class);
     }
     write!(buffer, r#"<{span}"#).unwrap();
+    write_classes(buffer, classes);
+    write!(buffer, r#">"#).unwrap();
+    write!(buffer, "{fragment}").unwrap();
+    write!(buffer, r#"</{span}>"#).unwrap();
+}
+
+fn write_classes(buffer: &mut String, classes: Vec<&str>) {
+    use std::fmt::Write as _;
+
     if !classes.is_empty() {
         let classes = classes.join(" ");
         write!(buffer, r#" class="{classes}""#).unwrap();
     }
-    write!(buffer, r#">"#).unwrap();
-    write!(buffer, "{fragment}").unwrap();
-    write!(buffer, r#"</{span}>"#).unwrap();
 }
 
 impl Default for Term {
