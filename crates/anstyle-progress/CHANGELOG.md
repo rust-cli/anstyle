@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Add `Debug` impl
+
 ## [0.1.2] - 2026-07-15
 
 ## [0.1.1] - 2026-07-15
