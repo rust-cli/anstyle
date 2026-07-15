@@ -27,7 +27,7 @@ pub struct TermProgress {
 
 impl TermProgress {
     /// No progress to display
-    pub fn none() -> Self {
+    pub const fn none() -> Self {
         Self {
             status: None,
             percent: None,
@@ -37,31 +37,31 @@ impl TermProgress {
     /// Start a progress indicator
     ///
     /// This starts in an indeterminate state
-    pub fn start() -> Self {
+    pub const fn start() -> Self {
         Self::none().status(TermProgressStatus::Normal)
     }
 
     /// Start an error indicator
-    pub fn error() -> Self {
+    pub const fn error() -> Self {
         Self::none().status(TermProgressStatus::Error)
     }
 
     /// Remove the indicator
-    pub fn remove() -> Self {
+    pub const fn remove() -> Self {
         Self::none().status(TermProgressStatus::Removed)
     }
 
     /// Set progress percentage (between `0..=100`)
     ///
     /// Without setting this, progress will be indeterminate
-    pub fn percent(mut self, percent: u8) -> Self {
+    pub const fn percent(mut self, percent: u8) -> Self {
         assert!(matches!(percent, 0..=100));
         self.percent = Some(percent);
         self
     }
 
     /// Change the reported status
-    pub fn status(mut self, status: TermProgressStatus) -> Self {
+    pub const fn status(mut self, status: TermProgressStatus) -> Self {
         self.status = Some(status);
         self
     }
