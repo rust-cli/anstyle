@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Features
+
+- Exposed constructors in `const` context
+
 ## [0.1.0] - 2026-03-16
 
 ### Breaking changes
