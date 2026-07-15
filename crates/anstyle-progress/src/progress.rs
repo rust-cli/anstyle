@@ -19,7 +19,7 @@
 /// let progress = TermProgress::remove();
 /// println!("{progress}");
 /// ```
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct TermProgress {
     status: Option<TermProgressStatus>,
     percent: Option<u8>,
@@ -75,7 +75,7 @@ impl Default for TermProgress {
 
 /// Reported status along with progress
 #[allow(missing_docs)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum TermProgressStatus {
     Removed,
     Normal,
