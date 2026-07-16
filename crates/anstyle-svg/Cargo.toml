@@ -31,6 +31,7 @@ html-escape = "0.2.13"
 unicode-width = "0.2.2"
 
 [dev-dependencies]
+anstyle-hyperlink = { path = "../anstyle-hyperlink" }
 proptest = "1.7.0"
 snapbox = "0.6.23"
 
