@@ -185,7 +185,7 @@ dependencies = [
 
 [[package]]
 name = "anstyle-svg"
-version = "1.1.0"
+version = "1.1.1"
 dependencies = [
  "anstyle 1.0.14",
  "anstyle-hyperlink",
