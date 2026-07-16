@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Ensure hyperlinks are escaped
+
 ## [1.1.0] - 2026-03-13
 
 ### Fixes
