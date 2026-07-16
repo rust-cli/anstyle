@@ -489,6 +489,7 @@ fn write_fg_span(buffer: &mut String, span: &str, element: &adapter::Element, fr
     }
     write!(buffer, r#">"#).unwrap();
     if let Some(hyperlink) = &element.url {
+        let hyperlink = sanitize_hyperlink(hyperlink);
         write!(buffer, r#"<a href="{hyperlink}">"#).unwrap();
         need_closing_a = true;
     }
@@ -641,6 +642,26 @@ fn split_lines(styled: &[adapter::Element]) -> Vec<Vec<adapter::Element>> {
         lines.push(current_line);
     }
     lines
+}
+
+fn sanitize_hyperlink(link: &str) -> String {
+    html_escape::encode_double_quoted_attribute(link).into_owned()
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn link_injection() {
+        let link = anstyle_hyperlink::Hyperlink::with_url("https://example.com/\">");
+        let input = format!("Hello {link}world{link:#}!");
+        let mut styled = adapter::AnsiBytes::new();
+        let elements = styled.extract_next(input.as_bytes()).collect::<Vec<_>>();
+        let actual = elements.into_iter().find_map(|e| e.url).unwrap();
+        let actual = sanitize_hyperlink(&actual);
+        snapbox::assert_data_eq!(actual, snapbox::str!["https://example.com/&quot;&gt;"]);
+    }
 }
 
 #[doc = include_str!("../README.md")]

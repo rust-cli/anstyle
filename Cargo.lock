@@ -188,6 +188,7 @@ name = "anstyle-svg"
 version = "1.1.0"
 dependencies = [
  "anstyle 1.0.14",
+ "anstyle-hyperlink",
  "anstyle-lossy",
  "anstyle-parse 1.0.0",
  "html-escape",
