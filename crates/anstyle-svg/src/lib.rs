@@ -645,7 +645,7 @@ fn split_lines(styled: &[adapter::Element]) -> Vec<Vec<adapter::Element>> {
 }
 
 fn sanitize_hyperlink(link: &str) -> String {
-    link.to_owned()
+    html_escape::encode_double_quoted_attribute(link).into_owned()
 }
 
 #[cfg(test)]
@@ -660,7 +660,7 @@ mod test {
         let elements = styled.extract_next(input.as_bytes()).collect::<Vec<_>>();
         let actual = elements.into_iter().find_map(|e| e.url).unwrap();
         let actual = sanitize_hyperlink(&actual);
-        snapbox::assert_data_eq!(actual, snapbox::str![[r#"https://example.com/">"#]]);
+        snapbox::assert_data_eq!(actual, snapbox::str!["https://example.com/&quot;&gt;"]);
     }
 }
 
