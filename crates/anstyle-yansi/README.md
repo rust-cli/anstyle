@@ -2,7 +2,7 @@
 
 > Convert between [yansi](https://lib.rs/yansi) and generic styling types
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-yansi.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-yansi.svg)](https://crates.io/crates/anstyle-yansi)
 

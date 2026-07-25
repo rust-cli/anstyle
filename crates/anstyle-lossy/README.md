@@ -2,7 +2,7 @@
 
 > Lossy conversion between ANSI Color Codes
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-lossy.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-lossy.svg)](https://crates.io/crates/anstyle-lossy)
 

@@ -2,7 +2,7 @@
 
 > ANSI escape code progress reporting (OSC 9;4)
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-progress.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-progress.svg)](https://crates.io/crates/anstyle-progress)
 

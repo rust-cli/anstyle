@@ -2,7 +2,7 @@
 
 > Parse [Git Style Descriptions](https://git-scm.com/book/en/v2/Customizing-Git-Git-Configuration)
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-git.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-git.svg)](https://crates.io/crates/anstyle-git)
 
