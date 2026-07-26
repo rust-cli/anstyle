@@ -2,7 +2,7 @@
 
 > **Convenience helper for working with `clap` to override console colors**
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/colorchoice-clap.svg)
 [![Crates Status](https://img.shields.io/crates/v/colorchoice-clap.svg)](https://crates.io/crates/colorchoice-clap)
 

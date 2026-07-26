@@ -2,7 +2,7 @@
 
 > Parse [Parse ANSI Style Escapes](https://vt100.net/emu/dec_ansi_parser)
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-parse.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-parse.svg)](https://crates.io/crates/anstyle-parse)
 

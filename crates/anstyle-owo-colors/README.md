@@ -2,7 +2,7 @@
 
 > Convert between [owo-colors](https://lib.rs/owo-colors) and generic styling types
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-owo-colors.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-owo-colors.svg)](https://crates.io/crates/anstyle-owo-colors)
 

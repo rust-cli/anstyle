@@ -2,7 +2,7 @@
 
 > Convert between [`ansi_term`](https://lib.rs/ansi_term) and generic styling types
 
-[![Documentation](https://img.shields.io/badge/docs-master-blue.svg)][Documentation]
+[![Documentation](https://img.shields.io/badge/docs-main-blue.svg)][Documentation]
 ![License](https://img.shields.io/crates/l/anstyle-ansi-term.svg)
 [![Crates Status](https://img.shields.io/crates/v/anstyle-ansi-term.svg)](https://crates.io/crates/anstyle-ansi-term)
 
