@@ -42,6 +42,17 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return true;
     }
 
+    // Konsole added support in 26.04.0.
+    // https://invent.kde.org/utilities/konsole/-/merge_requests/1054
+    let konsole = std::env::var("KONSOLE_VERSION")
+        .ok()
+        .and_then(|version| version.parse::<u32>().ok())
+        .map(|version| version >= 260400)
+        .unwrap_or(false);
+    if konsole {
+        return true;
+    }
+
     false
 }
 
