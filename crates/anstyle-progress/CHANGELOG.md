@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.4] - 2026-07-30
+
 ### Features
 
 - Detect Konsole support
@@ -48,7 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 Initial release
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.3...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.4...HEAD
+[0.1.4]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.3...anstyle-progress-v0.1.4
 [0.1.3]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.2...anstyle-progress-v0.1.3
 [0.1.2]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.1...anstyle-progress-v0.1.2
 [0.1.1]: https://github.com/rust-cli/anstyle/compare/anstyle-progress-v0.1.0...anstyle-progress-v0.1.1
