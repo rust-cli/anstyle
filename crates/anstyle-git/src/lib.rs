@@ -111,7 +111,10 @@ fn parse_color(word: &str) -> Result<Option<anstyle::Color>, ()> {
         "white" => Some(anstyle::AnsiColor::White.into()),
         _ => {
             if let Some(hex) = word.strip_prefix('#') {
-                Some(parse_hex_color(hex)?)
+                match anstyle::Color::from_hex_str(hex) {
+                    None => return Err(()),
+                    c => c,
+                }
             } else if let Ok(n) = word.parse::<u8>() {
                 Some(anstyle::Color::from(n))
             } else {
@@ -120,24 +123,6 @@ fn parse_color(word: &str) -> Result<Option<anstyle::Color>, ()> {
         }
     };
     Ok(color)
-}
-
-fn parse_hex_color(hex: &str) -> Result<anstyle::Color, ()> {
-    let l = hex.len();
-    if l != 3 && l != 6 {
-        return Err(());
-    }
-    let l = l / 3;
-    if let (Ok(r), Ok(g), Ok(b)) = (
-        u8::from_str_radix(&hex[0..l], 16),
-        u8::from_str_radix(&hex[l..(2 * l)], 16),
-        u8::from_str_radix(&hex[(2 * l)..(3 * l)], 16),
-    ) {
-        let m = if l == 1 { 0x11 } else { 1 };
-        Ok(anstyle::Color::from((r * m, g * m, b * m)))
-    } else {
-        Err(())
-    }
 }
 
 /// Type for errors returned by the parser.
