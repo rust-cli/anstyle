@@ -15,12 +15,12 @@ customizing the colors used without putting the underlying text styling crate
 in the API.
 
 For integration with your text styling crate, see:
-- [anstyle-termcolor](crates/termcolor)
-- [anstyle-owo-colors](crates/owo)
-- [anstyle-yansi](crates/yansi)
+- [anstyle-termcolor](../anstyle-termcolor)
+- [anstyle-owo-colors](../anstyle-owo-colors)
+- [anstyle-yansi](../anstyle-yansi)
 
 General utilities:
-- [anstyle-git](crates/git): Parse Git style descriptions
+- [anstyle-git](../anstyle-git): Parse Git style descriptions
 
 ## License
 
