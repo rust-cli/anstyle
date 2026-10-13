@@ -120,7 +120,12 @@ fn next_str<'s>(bytes: &mut &'s [u8], state: &mut State) -> Option<&'s str> {
         }
         is_printable_bytes(action, b)
     });
-    let (_, next) = bytes.split_at(offset.unwrap_or(bytes.len()));
+    let Some(offset) = offset else {
+        // Preserve incomplete escape sequences until the next segment of data.
+        *bytes = &[];
+        return None;
+    };
+    let (_, next) = bytes.split_at(offset);
     *bytes = next;
     *state = State::Ground;
 
@@ -428,6 +433,62 @@ mod test {
             }
         }
         result
+    }
+
+    #[test]
+    fn test_strip_str_incremental_csi() {
+        let mut strip = StripStr::new();
+        assert_eq!(strip.strip_next("\x1b[").collect::<String>(), "");
+        assert_eq!(strip.strip_next("38;").collect::<String>(), "");
+        assert_eq!(
+            strip.strip_next("5;2mgreen\x1b[0m").collect::<String>(),
+            "green"
+        );
+    }
+
+    #[test]
+    fn test_strip_str_incremental_empty_chunks() {
+        let mut strip = StripStr::new();
+        let mut iter = strip.strip_next("\x1b[");
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next(), None);
+        assert_eq!(strip.strip_next("").next(), None);
+        assert_eq!(strip.strip_next("31mred").collect::<String>(), "red");
+    }
+
+    #[test]
+    fn test_strip_str_chunk_boundaries() {
+        let cases = [
+            ("\x1b[38;5;2mgreen\x1b[0m", "green"),
+            ("before\x1b[31mafter\x1b[", "beforeafter"),
+            ("\x1b]2;title\x07text", "text"),
+            (
+                "\x1b]8;;https://example.org\x1b\\link\x1b]8;;\x1b\\",
+                "link",
+            ),
+            ("\x1bP0;1|payload\x1b\\text", "text"),
+            ("α\x1b[31m😀ö\x1b[0m\t\n", "α😀ö\t\n"),
+            ("\x1b]2;title", ""),
+        ];
+        for (input, expected) in cases {
+            assert_eq!(parser_strip(input.as_bytes()), expected);
+            assert_eq!(strip_str(input).to_string(), expected);
+            assert_eq!(strip_char(input), expected);
+            for boundary in 0..=input.len() {
+                if !input.is_char_boundary(boundary) {
+                    continue;
+                }
+                let mut strip = StripStr::new();
+                let mut actual = String::new();
+                let (left, right) = input.split_at(boundary);
+                for chunk in [left, "", right, ""] {
+                    for printable in strip.strip_next(chunk) {
+                        actual.push_str(printable);
+                    }
+                }
+                assert_eq!(actual, expected, "input {input:?}, boundary {boundary}");
+            }
+        }
     }
 
     #[test]
