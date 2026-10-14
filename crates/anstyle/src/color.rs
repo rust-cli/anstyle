@@ -17,6 +17,23 @@ pub enum Color {
 }
 
 impl Color {
+    /// Parse a `Color` from a hex string of length 3 or 6.
+    ///
+    /// Strings of length 3 (`abc`) will get interpreted as though each character were doubled
+    /// (`aabbcc`), as in HTML or Git.
+    ///
+    /// This does not handle an initial `#`; strip it before calling this function. This allows the
+    /// caller to distinguish hex colors from other possible inputs, such as named or numbered
+    /// colors.
+    ///
+    /// The result will always be a 24-bit `RgbColor`.
+    ///
+    /// Returns `None` on parse error.
+    #[inline]
+    pub fn from_hex_str(hex: &str) -> Option<Self> {
+        Some(RgbColor::from_hex_str(hex)?.into())
+    }
+
     /// Create a [`Style`][crate::Style] with this as the foreground
     #[inline]
     pub fn on(self, background: impl Into<Self>) -> crate::Style {
@@ -476,6 +493,33 @@ impl From<AnsiColor> for Ansi256Color {
 pub struct RgbColor(pub u8, pub u8, pub u8);
 
 impl RgbColor {
+    /// Parse an `RgbColor` from a hex string of length 3 or 6.
+    ///
+    /// Strings of length 3 (`abc`) will get interpreted as though each character were doubled
+    /// (`aabbcc`), as in HTML or Git.
+    ///
+    /// This does not handle an initial `#`; strip it before calling this function. This allows the
+    /// caller to distinguish hex colors from other possible inputs, such as named or numbered
+    /// colors.
+    ///
+    /// Returns `None` on parse error.
+    pub fn from_hex_str(hex: &str) -> Option<Self> {
+        let l = hex.len();
+        if l != 3 && l != 6 {
+            return None;
+        }
+        let l = l / 3;
+        let (Ok(r), Ok(g), Ok(b)) = (
+            u8::from_str_radix(&hex[0..l], 16),
+            u8::from_str_radix(&hex[l..(2 * l)], 16),
+            u8::from_str_radix(&hex[(2 * l)..(3 * l)], 16),
+        ) else {
+            return None;
+        };
+        let m = if l == 1 { 0x11 } else { 1 };
+        Some(Self(r * m, g * m, b * m))
+    }
+
     /// Create a [`Style`][crate::Style] with this as the foreground
     #[inline]
     pub fn on(self, background: impl Into<Color>) -> crate::Style {
