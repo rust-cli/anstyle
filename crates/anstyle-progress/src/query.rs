@@ -21,6 +21,16 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return true;
     }
 
+    // Ghostty is detected through TERM_PROGRAM locally and over SSH when the
+    // client requests forwarding and the server's AcceptEnv permits it.
+    // SSH also carries TERM in PTY requests independently of AcceptEnv, so
+    // xterm-ghostty identifies sessions without TERM_PROGRAM forwarding.
+    // This fallback does not apply when SSH integration or user configuration
+    // substitutes xterm-256color.
+    if std::env::var("TERM").as_deref() == Ok("xterm-ghostty") {
+        return true;
+    }
+
     // https://github.com/microsoft/terminal/pull/8055
     if std::env::var("WT_SESSION").is_ok() {
         return true;
