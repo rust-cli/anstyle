@@ -16,6 +16,7 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
 
     // https://github.com/wezterm/wezterm/issues/6581
     // https://ghostty.org/docs/install/release-notes/1-2-0#graphical-progress-bars
+    // cmux also identifies as Ghostty through TERM_PROGRAM.
     let term_program = std::env::var("TERM_PROGRAM").ok();
     if matches!(term_program.as_deref(), Some("WezTerm") | Some("ghostty")) {
         return true;
@@ -63,7 +64,48 @@ pub fn supports_term_progress(is_terminal: bool) -> bool {
         return true;
     }
 
+    // Herdr 0.6.9 added OSC 9;4 capture in
+    // https://github.com/herdrdev/herdr/commit/82468a0e03360219898ebf3735bdf559182009f8
+    if term_program.as_deref() == Some("herdr") {
+        return true;
+    }
+
+    // tmux 3.7 added OSC 9;4 handling and forwarding to capable client terminals.
+    // https://github.com/tmux/tmux/blob/3.7/CHANGES
+    if term_program.as_deref() == Some("tmux")
+        && std::env::var("TERM_PROGRAM_VERSION")
+            .ok()
+            .map(|version| tmux_version_has_progress(&version))
+            .unwrap_or(false)
+    {
+        return true;
+    }
+
     false
+}
+
+fn tmux_version_has_progress(version: &str) -> bool {
+    let Some((major, minor)) = version.split_once('.') else {
+        return false;
+    };
+    // tmux patch releases append a lowercase letter, for example "3.7b".
+    let minor = match minor.as_bytes().last() {
+        Some(ch) if ch.is_ascii_lowercase() => &minor[..minor.len() - 1],
+        _ => minor,
+    };
+    if major.is_empty()
+        || minor.is_empty()
+        || !major
+            .bytes()
+            .chain(minor.bytes())
+            .all(|ch| ch.is_ascii_digit())
+    {
+        return false;
+    }
+    match (major.parse::<u32>(), minor.parse::<u32>()) {
+        (Ok(major), Ok(minor)) => (major, minor) >= (3, 7),
+        _ => false,
+    }
 }
 
 // For iTerm, the TERM_FEATURES value "P" indicates OSC 9;4 support.
@@ -91,7 +133,7 @@ fn term_features_has_progress(value: &str) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::term_features_has_progress;
+    use super::{term_features_has_progress, tmux_version_has_progress};
 
     #[test]
     fn term_features_progress_detection() {
@@ -100,5 +142,29 @@ mod tests {
 
         // Without PROGRESS feature
         assert!(!term_features_has_progress("MBT2Sc"));
+    }
+
+    #[test]
+    fn tmux_progress_detection() {
+        for (version, expected) in [
+            ("3.6b", false),
+            ("3.7", true),
+            ("3.7b", true),
+            ("3.8", true),
+            ("3.10", true),
+            ("4.0", true),
+            ("2.10", false),
+            ("", false),
+            ("next-3.7", false),
+            ("3.7junk", false),
+            ("3.7.0", false),
+            ("3.", false),
+            ("3.a", false),
+            ("+3.7", false),
+            ("3.+7", false),
+            ("4294967296.7", false),
+        ] {
+            assert_eq!(tmux_version_has_progress(version), expected, "{version:?}");
+        }
     }
 }
