@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+## [0.1.6] - 2026-11-07
+
 ### Fixes
 
 - Detect tmux and herdr
@@ -60,7 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 Initial release
 
 <!-- next-url -->
-[Unreleased]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.5...HEAD
+[Unreleased]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.6...HEAD
+[0.1.6]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.5...anstyle-progress-v0.1.6
 [0.1.5]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.4...anstyle-progress-v0.1.5
 [0.1.4]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.3...anstyle-progress-v0.1.4
 [0.1.3]: https://github.com/rust-cli/anstyle.git/compare/anstyle-progress-v0.1.2...anstyle-progress-v0.1.3
