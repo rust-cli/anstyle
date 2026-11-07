@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Fixes
+
+- Detect tmux and herdr
+
 ## [0.1.5] - 2026-11-05
 
 ### Fixes
